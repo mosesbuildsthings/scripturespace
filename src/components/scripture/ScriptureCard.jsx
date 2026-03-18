@@ -4,7 +4,7 @@ import { Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 
-export default function ScriptureCard() {
+export default function ScriptureCard({ onReferenceLoaded }) {
   const [scripture, setScripture] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(true);

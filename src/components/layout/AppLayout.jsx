@@ -9,6 +9,8 @@ const NAV_ITEMS = [
   { path: "/Feed", icon: Users, label: "Feed" },
   { path: "/CreatePost", icon: PlusCircle, label: "Post" },
   { path: "/Scripture", icon: BookOpen, label: "Scripture" },
+  { path: "/BibleStudy", icon: GraduationCap, label: "Study" },
+  { path: "/UserProfile", icon: UserCircle, label: "Profile" },
   { path: "/Settings", icon: Settings, label: "Settings" },
 ];
 

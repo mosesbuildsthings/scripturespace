@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Home, BookOpen, Users, Settings, PlusCircle } from "lucide-react";
+import { Home, BookOpen, Users, Settings, PlusCircle, GraduationCap, UserCircle } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { cn } from "@/lib/utils";
 

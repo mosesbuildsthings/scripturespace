@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Edit2, Camera, MapPin, Clock, Users, BookOpen, Loader2, X, Check } from "lucide-react";
+import { ArrowLeft, Edit2, Camera, MapPin, Clock, Users, BookOpen, Loader2, X, Check, MessageSquare } from "lucide-react";
+import SendMessageDialog from "@/components/profile/SendMessageDialog";
 import { format } from "date-fns";
 
 const COUNTRIES = [
@@ -25,6 +26,7 @@ export default function UserProfile() {
   const [profile, setProfile] = useState(null);
   const [sessions, setSessions] = useState([]);
   const [editing, setEditing] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploadingIdx, setUploadingIdx] = useState(null);
   const [form, setForm] = useState({ country: "", timezone: "", bio: "", photos: [] });
@@ -154,9 +156,14 @@ export default function UserProfile() {
             </div>
           </div>
           {!isOwn && (
-            <Button size="sm" variant={isFollowing ? "secondary" : "default"} className="rounded-full shrink-0" onClick={toggleFollow}>
-              {isFollowing ? "Following" : "Follow"}
-            </Button>
+            <div className="flex gap-2 shrink-0">
+              <Button size="sm" variant={isFollowing ? "secondary" : "default"} className="rounded-full" onClick={toggleFollow}>
+                {isFollowing ? "Following" : "Follow"}
+              </Button>
+              <Button size="sm" variant="outline" className="rounded-full gap-1" onClick={() => setShowMessage(true)}>
+                <MessageSquare className="w-3 h-3" /> Message
+              </Button>
+            </div>
           )}
         </div>
 
@@ -240,6 +247,7 @@ export default function UserProfile() {
           </Link>
         ))}
       </div>
+    <SendMessageDialog open={showMessage} onClose={() => setShowMessage(false)} toProfile={profile} currentUser={user} />
     </div>
   );
 }

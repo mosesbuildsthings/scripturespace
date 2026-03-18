@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Heart, MessageCircle, Share2, MoreHorizontal, Trash2, EyeOff, ExternalLink } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -94,17 +95,17 @@ export default function PostCard({ post, currentUser, onUpdate, onDelete }) {
 
       {/* Header */}
       <div className="flex items-center justify-between p-5 pb-3">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center">
-            <span className="text-sm font-semibold text-primary">
-              {(post.author_name || "U")[0].toUpperCase()}
-            </span>
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-foreground">{post.author_name || "Anonymous"}</p>
-            <p className="text-xs text-muted-foreground">{timeAgo}</p>
-          </div>
+        <Link to={`/UserProfile?email=${encodeURIComponent(post.author_email)}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+        <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center">
+          <span className="text-sm font-semibold text-primary">
+            {(post.author_name || "U")[0].toUpperCase()}
+          </span>
         </div>
+        <div>
+          <p className="text-sm font-semibold text-foreground">{post.author_name || "Anonymous"}</p>
+          <p className="text-xs text-muted-foreground">{timeAgo}</p>
+        </div>
+        </Link>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

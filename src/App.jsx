@@ -51,6 +51,12 @@ const AuthenticatedApp = () => {
         <Route path="/CreatePost" element={<CreatePost />} />
         <Route path="/Scripture" element={<Scripture />} />
         <Route path="/Settings" element={<Settings />} />
+        <Route path="/BibleStudy" element={<BibleStudy />} />
+        <Route path="/CreateBibleStudyPlan" element={<CreateBibleStudyPlan />} />
+        <Route path="/BibleStudyPlanDetail" element={<BibleStudyPlanDetail />} />
+        <Route path="/ScheduleSession" element={<ScheduleSession />} />
+        <Route path="/BibleStudyRoom" element={<BibleStudyRoom />} />
+        <Route path="/UserProfile" element={<UserProfile />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

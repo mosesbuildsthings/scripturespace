@@ -42,6 +42,7 @@ export default function ScriptureCard({ onReferenceLoaded }) {
 
     setScripture(result);
     setLoading(false);
+    if (onReferenceLoaded && result?.reference) onReferenceLoaded(result.reference);
 
     // Generate AI image based on scripture/season
     const imageResult = await base44.integrations.Core.GenerateImage({

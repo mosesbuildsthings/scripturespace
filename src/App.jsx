@@ -12,6 +12,12 @@ import Feed from './pages/Feed';
 import CreatePost from './pages/CreatePost';
 import Scripture from './pages/Scripture';
 import Settings from './pages/Settings';
+import BibleStudy from './pages/BibleStudy';
+import CreateBibleStudyPlan from './pages/CreateBibleStudyPlan';
+import BibleStudyPlanDetail from './pages/BibleStudyPlanDetail';
+import ScheduleSession from './pages/ScheduleSession';
+import BibleStudyRoom from './pages/BibleStudyRoom';
+import UserProfile from './pages/UserProfile';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();

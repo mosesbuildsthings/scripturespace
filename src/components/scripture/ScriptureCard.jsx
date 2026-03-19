@@ -4,14 +4,40 @@ import { Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 
+const CACHE_KEY = "scripture_cache";
+
+function getTodayKey() {
+  return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+}
+
+function loadCache() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const { date, scripture, imageUrl } = JSON.parse(raw);
+    if (date === getTodayKey()) return { scripture, imageUrl };
+  } catch {}
+  return null;
+}
+
+function saveCache(scripture, imageUrl) {
+  localStorage.setItem(CACHE_KEY, JSON.stringify({ date: getTodayKey(), scripture, imageUrl }));
+}
+
 export default function ScriptureCard({ onReferenceLoaded }) {
-  const [scripture, setScripture] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [imageLoading, setImageLoading] = useState(true);
+  const cached = loadCache();
+  const [scripture, setScripture] = useState(cached?.scripture || null);
+  const [imageUrl, setImageUrl] = useState(cached?.imageUrl || null);
+  const [loading, setLoading] = useState(!cached);
+  const [imageLoading, setImageLoading] = useState(!cached);
 
   useEffect(() => {
-    fetchScripture();
+    if (cached) {
+      if (onReferenceLoaded && cached.scripture?.reference) onReferenceLoaded(cached.scripture.reference);
+      setImageLoading(false);
+    } else {
+      fetchScripture();
+    }
   }, []);
 
   const fetchScripture = async () => {

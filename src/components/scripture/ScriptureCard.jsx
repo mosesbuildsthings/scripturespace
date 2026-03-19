@@ -77,6 +77,7 @@ export default function ScriptureCard({ onReferenceLoaded }) {
 
     setImageUrl(imageResult.url);
     setImageLoading(false);
+    saveCache(result, imageResult.url);
   };
 
   const today = format(new Date(), "EEEE, MMMM d, yyyy");

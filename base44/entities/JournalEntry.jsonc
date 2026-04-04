@@ -1,0 +1,61 @@
+{
+  "name": "JournalEntry",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email of the journal owner \u2014 entries are private to this user"
+    },
+    "entry_type": {
+      "type": "string",
+      "enum": [
+        "devotional",
+        "reflection",
+        "answered_prayer"
+      ],
+      "default": "reflection",
+      "description": "Type of journal entry"
+    },
+    "title": {
+      "type": "string",
+      "description": "Optional title for the entry"
+    },
+    "content": {
+      "type": "string",
+      "description": "The journal text"
+    },
+    "scripture_reference": {
+      "type": "string",
+      "description": "Bible verse reference linked to this entry"
+    },
+    "mood": {
+      "type": "string",
+      "enum": [
+        "grateful",
+        "hopeful",
+        "struggling",
+        "peaceful",
+        "joyful",
+        "seeking"
+      ],
+      "description": "Spiritual mood at time of writing"
+    },
+    "entry_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of the journal entry"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "User-defined tags"
+    }
+  },
+  "required": [
+    "user_email",
+    "content",
+    "entry_date"
+  ]
+}

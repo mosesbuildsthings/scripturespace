@@ -19,6 +19,8 @@ import ScheduleSession from './pages/ScheduleSession';
 import BibleStudyRoom from './pages/BibleStudyRoom';
 import UserProfile from './pages/UserProfile';
 import PrayerBoard from './pages/PrayerBoard';
+import Devotional from './pages/Devotional';
+import Journal from './pages/Journal';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -59,6 +61,8 @@ const AuthenticatedApp = () => {
         <Route path="/BibleStudyRoom" element={<BibleStudyRoom />} />
         <Route path="/UserProfile" element={<UserProfile />} />
         <Route path="/PrayerBoard" element={<PrayerBoard />} />
+        <Route path="/Devotional" element={<Devotional />} />
+        <Route path="/Journal" element={<Journal />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Home, BookOpen, Users, Settings, PlusCircle, GraduationCap, UserCircle } from "lucide-react";
+import { Home, BookOpen, Users, Settings, PlusCircle, GraduationCap, UserCircle, HandHeart } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { cn } from "@/lib/utils";
 
@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { path: "/CreatePost", icon: PlusCircle, label: "Post" },
   { path: "/Scripture", icon: BookOpen, label: "Scripture" },
   { path: "/BibleStudy", icon: GraduationCap, label: "Study" },
+  { path: "/PrayerBoard", icon: HandHeart, label: "Prayer" },
   { path: "/UserProfile", icon: UserCircle, label: "Profile" },
   { path: "/Settings", icon: Settings, label: "Settings" },
 ];

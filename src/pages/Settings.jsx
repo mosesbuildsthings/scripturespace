@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Check, Monitor, AlignRight, AlignLeft, ArrowDown, ArrowUp } from "lucide-react";
+import { Check, AlignRight, AlignLeft, ArrowDown, ArrowUp, Bell, BellOff } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -36,6 +37,9 @@ export default function Settings() {
   const [selectedColor, setSelectedColor] = useState("25 45% 42%");
   const [selectedNav, setSelectedNav] = useState("right");
   const [saving, setSaving] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [notificationTime, setNotificationTime] = useState("08:00");
+  const [notifPermission, setNotifPermission] = useState(typeof Notification !== "undefined" ? Notification.permission : "default");
 
   useEffect(() => {
     loadSettings();
@@ -45,6 +49,8 @@ export default function Settings() {
     const user = await base44.auth.me();
     if (user?.theme_color) setSelectedColor(user.theme_color);
     if (user?.nav_position) setSelectedNav(user.nav_position);
+    if (user?.daily_notif_enabled !== undefined) setNotificationsEnabled(user.daily_notif_enabled);
+    if (user?.daily_notif_time) setNotificationTime(user.daily_notif_time);
   };
 
   const handleColorSelect = (color) => {
@@ -54,12 +60,69 @@ export default function Settings() {
     document.documentElement.style.setProperty("--ring", color);
   };
 
+  const requestNotifPermission = async () => {
+    if (typeof Notification === "undefined") return;
+    const result = await Notification.requestPermission();
+    setNotifPermission(result);
+    if (result === "granted") {
+      setNotificationsEnabled(true);
+    } else {
+      setNotificationsEnabled(false);
+      toast.error("Notification permission denied. Please allow notifications in your browser settings.");
+    }
+  };
+
+  const handleToggleNotifications = async (val) => {
+    if (val && notifPermission !== "granted") {
+      await requestNotifPermission();
+    } else {
+      setNotificationsEnabled(val);
+    }
+  };
+
+  const scheduleNotification = (time) => {
+    if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
+    // Clear any existing scheduled notification key
+    const [hours, minutes] = time.split(":").map(Number);
+    const now = new Date();
+    const next = new Date();
+    next.setHours(hours, minutes, 0, 0);
+    if (next <= now) next.setDate(next.getDate() + 1);
+    const delay = next - now;
+
+    // Store timeout ID in sessionStorage to cancel on next visit/save
+    const existingId = sessionStorage.getItem("notif_timeout");
+    if (existingId) clearTimeout(Number(existingId));
+
+    const ENCOURAGEMENTS = [
+      "✨ You are loved beyond measure. 'The Lord your God is with you wherever you go.' — Joshua 1:9",
+      "🙏 Start your day in His presence. 'Draw near to God, and He will draw near to you.' — James 4:8",
+      "💛 Cast your worries on Him today. 'Do not be anxious about anything.' — Philippians 4:6",
+      "🌿 His mercies are new this morning. 'Great is your faithfulness.' — Lamentations 3:23",
+      "🕊️ Walk in peace today. 'The peace of God... will guard your hearts.' — Philippians 4:7",
+      "🌟 You are chosen and set apart. 'You are a chosen people, a royal priesthood.' — 1 Peter 2:9",
+      "🔥 Be strong and take heart. 'Wait for the Lord.' — Psalm 27:14",
+    ];
+    const msg = ENCOURAGEMENTS[new Date().getDay()];
+
+    const id = setTimeout(() => {
+      new Notification("Daily Spiritual Encouragement 🙏", { body: msg, icon: "/favicon.ico" });
+    }, delay);
+    sessionStorage.setItem("notif_timeout", String(id));
+  };
+
   const handleSave = async () => {
     setSaving(true);
     await base44.auth.updateMe({
       theme_color: selectedColor,
       nav_position: selectedNav,
+      daily_notif_enabled: notificationsEnabled,
+      daily_notif_time: notificationTime,
     });
+
+    if (notificationsEnabled && notifPermission === "granted") {
+      scheduleNotification(notificationTime);
+    }
 
     if (context?.setNavPosition) context.setNavPosition(selectedNav);
     if (context?.setThemeColor) context.setThemeColor(selectedColor);
@@ -137,6 +200,43 @@ export default function Settings() {
               </button>
             ))}
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Daily Encouragement Notifications */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            {notificationsEnabled ? <Bell className="w-5 h-5 text-primary" /> : <BellOff className="w-5 h-5 text-muted-foreground" />}
+            Daily Encouragement
+          </CardTitle>
+          <CardDescription>Receive a spiritual verse and reflection each day</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <Label className="text-sm font-medium">Enable daily notifications</Label>
+            <Switch
+              checked={notificationsEnabled}
+              onCheckedChange={handleToggleNotifications}
+            />
+          </div>
+
+          {notificationsEnabled && (
+            <div className="space-y-1">
+              <Label className="text-xs text-muted-foreground">Preferred time</Label>
+              <input
+                type="time"
+                value={notificationTime}
+                onChange={e => setNotificationTime(e.target.value)}
+                className="w-full text-sm border border-input rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                {notifPermission === "granted"
+                  ? "✅ Notifications are allowed. Save to schedule."
+                  : "⚠️ You'll be asked to allow notifications when you enable this."}
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
 

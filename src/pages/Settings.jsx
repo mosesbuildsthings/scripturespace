@@ -39,6 +39,8 @@ export default function Settings() {
   const [saving, setSaving] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [notificationTime, setNotificationTime] = useState("08:00");
+  const [readingReminderEnabled, setReadingReminderEnabled] = useState(false);
+  const [readingReminderTime, setReadingReminderTime] = useState("07:00");
   const [notifPermission, setNotifPermission] = useState(typeof Notification !== "undefined" ? Notification.permission : "default");
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
 
@@ -52,6 +54,8 @@ export default function Settings() {
     if (user?.nav_position) setSelectedNav(user.nav_position);
     if (user?.daily_notif_enabled !== undefined) setNotificationsEnabled(user.daily_notif_enabled);
     if (user?.daily_notif_time) setNotificationTime(user.daily_notif_time);
+    if (user?.reading_reminder_enabled !== undefined) setReadingReminderEnabled(user.reading_reminder_enabled);
+    if (user?.reading_reminder_time) setReadingReminderTime(user.reading_reminder_time);
     if (user?.dark_mode !== undefined) {
       setDarkMode(user.dark_mode);
       document.documentElement.classList.toggle("dark", user.dark_mode);
@@ -85,20 +89,26 @@ export default function Settings() {
     }
   };
 
-  const scheduleNotification = (time) => {
-    if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
-    // Clear any existing scheduled notification key
+  const scheduleTimeout = (storageKey, delayMs, title, body) => {
+    const existingId = sessionStorage.getItem(storageKey);
+    if (existingId) clearTimeout(Number(existingId));
+    const id = setTimeout(() => {
+      new Notification(title, { body, icon: "/favicon.ico" });
+    }, delayMs);
+    sessionStorage.setItem(storageKey, String(id));
+  };
+
+  const getDelayUntil = (time) => {
     const [hours, minutes] = time.split(":").map(Number);
     const now = new Date();
     const next = new Date();
     next.setHours(hours, minutes, 0, 0);
     if (next <= now) next.setDate(next.getDate() + 1);
-    const delay = next - now;
+    return next - now;
+  };
 
-    // Store timeout ID in sessionStorage to cancel on next visit/save
-    const existingId = sessionStorage.getItem("notif_timeout");
-    if (existingId) clearTimeout(Number(existingId));
-
+  const scheduleNotification = (time) => {
+    if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
     const ENCOURAGEMENTS = [
       "✨ You are loved beyond measure. 'The Lord your God is with you wherever you go.' — Joshua 1:9",
       "🙏 Start your day in His presence. 'Draw near to God, and He will draw near to you.' — James 4:8",
@@ -109,11 +119,22 @@ export default function Settings() {
       "🔥 Be strong and take heart. 'Wait for the Lord.' — Psalm 27:14",
     ];
     const msg = ENCOURAGEMENTS[new Date().getDay()];
+    scheduleTimeout("notif_timeout", getDelayUntil(time), "Daily Spiritual Encouragement 🙏", msg);
+  };
 
-    const id = setTimeout(() => {
-      new Notification("Daily Spiritual Encouragement 🙏", { body: msg, icon: "/favicon.ico" });
-    }, delay);
-    sessionStorage.setItem("notif_timeout", String(id));
+  const scheduleReadingReminder = (time) => {
+    if (typeof Notification === "undefined" || Notification.permission !== "granted") return;
+    const READING_NUDGES = [
+      "📖 Time to open the Word! Your daily reading plan is waiting for you.",
+      "📚 Don't forget your Bible reading today. Small steps lead to big growth!",
+      "🌅 A new day, a new chapter. Your 1-Year reading plan continues today!",
+      "✝️ His Word is a lamp to your feet. Complete today's reading plan!",
+      "🕊️ Nourish your soul — your daily Scripture reading is ready.",
+      "🔥 Stay on track! Your Bible reading plan awaits you today.",
+      "🌿 Wisdom grows one chapter at a time. Read today's plan!",
+    ];
+    const msg = READING_NUDGES[new Date().getDay()];
+    scheduleTimeout("reading_notif_timeout", getDelayUntil(time), "Bible Reading Reminder 📖", msg);
   };
 
   const handleSave = async () => {
@@ -123,12 +144,21 @@ export default function Settings() {
       nav_position: selectedNav,
       daily_notif_enabled: notificationsEnabled,
       daily_notif_time: notificationTime,
+      reading_reminder_enabled: readingReminderEnabled,
+      reading_reminder_time: readingReminderTime,
       dark_mode: darkMode,
     });
     document.documentElement.classList.toggle("dark", darkMode);
 
     if (notificationsEnabled && notifPermission === "granted") {
       scheduleNotification(notificationTime);
+    }
+    if (readingReminderEnabled && notifPermission === "granted") {
+      scheduleReadingReminder(readingReminderTime);
+    } else {
+      const existingId = sessionStorage.getItem("reading_notif_timeout");
+      if (existingId) clearTimeout(Number(existingId));
+      sessionStorage.removeItem("reading_notif_timeout");
     }
 
     if (context?.setNavPosition) context.setNavPosition(selectedNav);
@@ -275,6 +305,56 @@ export default function Settings() {
                 {notifPermission === "granted"
                   ? "✅ Notifications are allowed. Save to schedule."
                   : "⚠️ You'll be asked to allow notifications when you enable this."}
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Daily Reading Reminder */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            {readingReminderEnabled ? <Bell className="w-5 h-5 text-primary" /> : <BellOff className="w-5 h-5 text-muted-foreground" />}
+            Daily Reading Reminder
+          </CardTitle>
+          <CardDescription>Get nudged to complete your 1-Year Bible reading plan each day</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <Label className="text-sm font-medium">Enable reading reminder</Label>
+            <Switch
+              checked={readingReminderEnabled}
+              onCheckedChange={async (val) => {
+                if (val && notifPermission !== "granted") {
+                  await requestNotifPermission();
+                  setReadingReminderEnabled(Notification.permission === "granted");
+                } else {
+                  setReadingReminderEnabled(val);
+                }
+              }}
+            />
+          </div>
+
+          {readingReminderEnabled && (
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">Reminder time</Label>
+              <input
+                type="time"
+                value={readingReminderTime}
+                onChange={e => setReadingReminderTime(e.target.value)}
+                className="w-full text-sm border border-input rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+              />
+              <div className="bg-primary/5 border border-primary/20 rounded-lg px-3 py-2">
+                <p className="text-xs text-primary font-medium">📖 What you'll receive</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  A daily nudge at {readingReminderTime} reminding you to open your Bible reading plan for the day.
+                </p>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {notifPermission === "granted"
+                  ? "✅ Notifications allowed. Save to activate your reminder."
+                  : "⚠️ You'll be asked to allow notifications."}
               </p>
             </div>
           )}

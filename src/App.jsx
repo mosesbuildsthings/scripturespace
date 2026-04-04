@@ -22,6 +22,7 @@ import PrayerBoard from './pages/PrayerBoard';
 import Devotional from './pages/Devotional';
 import Journal from './pages/Journal';
 import Growth from './pages/Growth';
+import BibleReading from './pages/BibleReading';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -65,6 +66,7 @@ const AuthenticatedApp = () => {
         <Route path="/Devotional" element={<Devotional />} />
         <Route path="/Journal" element={<Journal />} />
         <Route path="/Growth" element={<Growth />} />
+        <Route path="/BibleReading" element={<BibleReading />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

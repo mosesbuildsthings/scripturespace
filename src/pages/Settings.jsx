@@ -222,18 +222,25 @@ export default function Settings() {
         <CardContent>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Sun className="w-4 h-4 text-muted-foreground" />
+              <Sun className="w-4 h-4 text-amber-500" />
               <span className="text-sm font-medium">{darkMode ? "Dark Mode" : "Light Mode"}</span>
-              <Moon className="w-4 h-4 text-muted-foreground" />
+              <Moon className="w-4 h-4 text-indigo-400" />
             </div>
             <Switch
               checked={darkMode}
               onCheckedChange={(val) => {
                 setDarkMode(val);
-                document.documentElement.classList.toggle("dark", val);
+                if (val) {
+                  document.documentElement.classList.add("dark");
+                } else {
+                  document.documentElement.classList.remove("dark");
+                }
               }}
             />
           </div>
+          <p className="text-xs text-muted-foreground mt-3">
+            Currently: <strong>{darkMode ? "Dark" : "Light"}</strong> — toggle to switch, then Save to persist.
+          </p>
         </CardContent>
       </Card>
 

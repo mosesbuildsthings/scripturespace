@@ -3,9 +3,11 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { BookOpen, Flame, Target, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import BibleBookSelector, { ALL_BOOKS, TOTAL_CHAPTERS } from "@/components/bible/BibleBookSelector";
 import ChapterGrid from "@/components/bible/ChapterGrid";
 import BibleReader, { TRANSLATIONS } from "@/components/bible/BibleReader";
+import YearPlan from "@/components/bible/YearPlan";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format, subDays } from "date-fns";
 
@@ -14,7 +16,8 @@ export default function BibleReading() {
   const [selectedBook, setSelectedBook] = useState(null);
   const [toggling, setToggling] = useState(false);
   const [translation, setTranslation] = useState("BSB");
-  const [readerChapter, setReaderChapter] = useState(null); // chapter number to read
+  // reader state: { bookName, chapter }
+  const [reader, setReader] = useState(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -30,7 +33,6 @@ export default function BibleReading() {
     enabled: !!user,
   });
 
-  // Map of book -> array of read chapter numbers
   const readChaptersMap = useMemo(() => {
     const map = {};
     for (const entry of progress) {
@@ -63,24 +65,29 @@ export default function BibleReading() {
     return count;
   }, [progress]);
 
-  const handleToggle = async (chapter, isRead) => {
-    if (!user || !selectedBook) return;
-    setToggling(true);
+  // Toggle a chapter read/unread (by book name + chapter number)
+  const handleToggleByName = async (bookName, chapter, isRead) => {
+    if (!user) return;
     const today = format(new Date(), "yyyy-MM-dd");
     if (isRead) {
-      const entry = progress.find(
-        (p) => p.book === selectedBook.name && p.chapter === chapter
-      );
+      const entry = progress.find((p) => p.book === bookName && p.chapter === chapter);
       if (entry) await base44.entities.BibleProgress.delete(entry.id);
     } else {
       await base44.entities.BibleProgress.create({
         user_email: user.email,
-        book: selectedBook.name,
+        book: bookName,
         chapter,
         read_date: today,
       });
     }
     await queryClient.invalidateQueries({ queryKey: ["bible-progress", user?.email] });
+  };
+
+  // Toggle for ChapterGrid (uses selectedBook context)
+  const handleToggle = async (chapter, isRead) => {
+    if (!selectedBook) return;
+    setToggling(true);
+    await handleToggleByName(selectedBook.name, chapter, isRead);
     setToggling(false);
   };
 
@@ -89,12 +96,18 @@ export default function BibleReading() {
     if (user) await base44.auth.updateMe({ preferred_translation: val });
   };
 
+  // Open reader — accepts book name + chapter
+  const openReader = (bookName, chapter) => {
+    const book = ALL_BOOKS.find((b) => b.name === bookName);
+    if (book) setReader({ book, chapter });
+  };
+
   const selectedReadChapters = selectedBook
     ? readChaptersMap[selectedBook.name] || []
     : [];
 
-  const readerIsRead = readerChapter
-    ? selectedReadChapters.includes(readerChapter)
+  const readerIsRead = reader
+    ? (readChaptersMap[reader.book.name] || []).includes(reader.chapter)
     : false;
 
   const percentDone = Math.round((totalRead / TOTAL_CHAPTERS) * 100);
@@ -105,15 +118,15 @@ export default function BibleReading() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 space-y-6">
       {/* Reader overlay */}
-      {readerChapter && selectedBook && (
+      {reader && (
         <BibleReader
-          book={selectedBook}
-          chapter={readerChapter}
-          totalChapters={selectedBook.chapters}
+          book={reader.book}
+          chapter={reader.chapter}
+          totalChapters={reader.book.chapters}
           translation={translation}
           onTranslationChange={handleTranslationChange}
-          onClose={() => setReaderChapter(null)}
-          onMarkRead={handleToggle}
+          onClose={() => setReader(null)}
+          onMarkRead={(ch, isRead) => handleToggleByName(reader.book.name, ch, isRead)}
           isRead={readerIsRead}
         />
       )}
@@ -188,37 +201,59 @@ export default function BibleReading() {
         </CardContent>
       </Card>
 
-      {/* Chapter grid for selected book */}
-      {selectedBook && (
-        <Card>
-          <CardContent className="pt-5">
-            <ChapterGrid
-              book={selectedBook}
-              readChapters={selectedReadChapters}
-              onToggle={handleToggle}
-              onRead={(ch) => setReaderChapter(ch)}
-              loading={toggling}
-            />
-          </CardContent>
-        </Card>
-      )}
+      {/* Tabs: Browse vs Year Plan */}
+      <Tabs defaultValue="browse">
+        <TabsList className="w-full">
+          <TabsTrigger value="browse" className="flex-1">Browse Books</TabsTrigger>
+          <TabsTrigger value="yearplan" className="flex-1">1-Year Plan</TabsTrigger>
+        </TabsList>
 
-      {/* Book selector */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base">Select a Book</CardTitle>
-          <p className="text-xs text-muted-foreground">
-            Tap a book to see its chapters. Green = complete, amber = in progress.
-          </p>
-        </CardHeader>
-        <CardContent>
-          <BibleBookSelector
-            selectedBook={selectedBook}
-            onSelect={(book) => { setSelectedBook(book); setReaderChapter(null); }}
-            readChaptersMap={readChaptersMap}
-          />
-        </CardContent>
-      </Card>
+        <TabsContent value="browse" className="space-y-4 mt-4">
+          {/* Chapter grid for selected book */}
+          {selectedBook && (
+            <Card>
+              <CardContent className="pt-5">
+                <ChapterGrid
+                  book={selectedBook}
+                  readChapters={selectedReadChapters}
+                  onToggle={handleToggle}
+                  onRead={(ch) => openReader(selectedBook.name, ch)}
+                  loading={toggling}
+                />
+              </CardContent>
+            </Card>
+          )}
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Select a Book</CardTitle>
+              <p className="text-xs text-muted-foreground">
+                Tap a book to see its chapters. Green = complete, amber = in progress.
+              </p>
+            </CardHeader>
+            <CardContent>
+              <BibleBookSelector
+                selectedBook={selectedBook}
+                onSelect={(book) => { setSelectedBook(book); setReader(null); }}
+                readChaptersMap={readChaptersMap}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="yearplan" className="mt-4">
+          <Card>
+            <CardContent className="pt-5">
+              <YearPlan
+                readChaptersMap={readChaptersMap}
+                onRead={openReader}
+                onMarkRead={handleToggleByName}
+                user={user}
+              />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

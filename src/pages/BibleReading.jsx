@@ -5,16 +5,23 @@ import { BookOpen, Flame, Target, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import BibleBookSelector, { ALL_BOOKS, TOTAL_CHAPTERS } from "@/components/bible/BibleBookSelector";
 import ChapterGrid from "@/components/bible/ChapterGrid";
+import BibleReader, { TRANSLATIONS } from "@/components/bible/BibleReader";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format, subDays } from "date-fns";
 
 export default function BibleReading() {
   const [user, setUser] = useState(null);
   const [selectedBook, setSelectedBook] = useState(null);
   const [toggling, setToggling] = useState(false);
+  const [translation, setTranslation] = useState("BSB");
+  const [readerChapter, setReaderChapter] = useState(null); // chapter number to read
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    base44.auth.me().then(setUser);
+    base44.auth.me().then((u) => {
+      setUser(u);
+      if (u?.preferred_translation) setTranslation(u.preferred_translation);
+    });
   }, []);
 
   const { data: progress = [] } = useQuery({
@@ -33,22 +40,18 @@ export default function BibleReading() {
     return map;
   }, [progress]);
 
-  // Total chapters read
   const totalRead = progress.length;
 
-  // Streak calculation: consecutive days with at least 1 chapter read
   const streak = useMemo(() => {
     const dates = new Set(progress.map((p) => p.read_date));
     let count = 0;
     let day = new Date();
-    // Allow today or yesterday to count as start
     while (true) {
       const key = format(day, "yyyy-MM-dd");
       if (dates.has(key)) {
         count++;
         day = subDays(day, 1);
       } else {
-        // Allow one missed day gap for today (if today has no reading yet)
         if (count === 0) {
           day = subDays(day, 1);
           const key2 = format(day, "yyyy-MM-dd");
@@ -81,9 +84,18 @@ export default function BibleReading() {
     setToggling(false);
   };
 
+  const handleTranslationChange = async (val) => {
+    setTranslation(val);
+    if (user) await base44.auth.updateMe({ preferred_translation: val });
+  };
+
   const selectedReadChapters = selectedBook
     ? readChaptersMap[selectedBook.name] || []
     : [];
+
+  const readerIsRead = readerChapter
+    ? selectedReadChapters.includes(readerChapter)
+    : false;
 
   const percentDone = Math.round((totalRead / TOTAL_CHAPTERS) * 100);
   const booksCompleted = ALL_BOOKS.filter(
@@ -92,14 +104,45 @@ export default function BibleReading() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-6 space-y-6">
+      {/* Reader overlay */}
+      {readerChapter && selectedBook && (
+        <BibleReader
+          book={selectedBook}
+          chapter={readerChapter}
+          totalChapters={selectedBook.chapters}
+          translation={translation}
+          onTranslationChange={handleTranslationChange}
+          onClose={() => setReaderChapter(null)}
+          onMarkRead={handleToggle}
+          isRead={readerIsRead}
+        />
+      )}
+
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
-          <BookOpen className="w-6 h-6 text-primary" /> Bible Reading Tracker
-        </h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Mark chapters as you read and watch your journey unfold.
-        </p>
+      <div className="flex items-start justify-between flex-wrap gap-3">
+        <div>
+          <h1 className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
+            <BookOpen className="w-6 h-6 text-primary" /> Bible Reading
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Read, mark chapters, and track your journey through Scripture.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground">Translation:</span>
+          <Select value={translation} onValueChange={handleTranslationChange}>
+            <SelectTrigger className="h-8 text-xs w-36">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {TRANSLATIONS.map((t) => (
+                <SelectItem key={t.id} value={t.id}>
+                  {t.short} — {t.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Stats */}
@@ -153,6 +196,7 @@ export default function BibleReading() {
               book={selectedBook}
               readChapters={selectedReadChapters}
               onToggle={handleToggle}
+              onRead={(ch) => setReaderChapter(ch)}
               loading={toggling}
             />
           </CardContent>
@@ -163,12 +207,14 @@ export default function BibleReading() {
       <Card>
         <CardHeader className="pb-2">
           <CardTitle className="text-base">Select a Book</CardTitle>
-          <p className="text-xs text-muted-foreground">Tap a book to mark chapters. Green = complete, amber = in progress.</p>
+          <p className="text-xs text-muted-foreground">
+            Tap a book to see its chapters. Green = complete, amber = in progress.
+          </p>
         </CardHeader>
         <CardContent>
           <BibleBookSelector
             selectedBook={selectedBook}
-            onSelect={setSelectedBook}
+            onSelect={(book) => { setSelectedBook(book); setReaderChapter(null); }}
             readChaptersMap={readChaptersMap}
           />
         </CardContent>

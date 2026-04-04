@@ -1,0 +1,80 @@
+{
+  "name": "Goal",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Owner of this goal"
+    },
+    "title": {
+      "type": "string",
+      "description": "Name of the spiritual goal or habit"
+    },
+    "description": {
+      "type": "string",
+      "description": "Details about the goal"
+    },
+    "goal_type": {
+      "type": "string",
+      "enum": [
+        "habit",
+        "milestone"
+      ],
+      "default": "habit",
+      "description": "Habit = recurring daily; Milestone = one-time achievement"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "prayer",
+        "bible_reading",
+        "fasting",
+        "worship",
+        "service",
+        "fellowship",
+        "memorization",
+        "other"
+      ],
+      "default": "other",
+      "description": "Spiritual category"
+    },
+    "target_days": {
+      "type": "number",
+      "description": "Target streak or total days for habits (e.g. 30-day challenge)"
+    },
+    "completed_dates": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "ISO date strings of days this goal was completed"
+    },
+    "is_milestone_achieved": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this one-time milestone has been achieved"
+    },
+    "milestone_achieved_date": {
+      "type": "string",
+      "description": "Date the milestone was achieved"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "color": {
+      "type": "string",
+      "description": "Hex or HSL color for chart display",
+      "default": "#a07040"
+    },
+    "icon": {
+      "type": "string",
+      "description": "Emoji icon for the goal",
+      "default": "\u2728"
+    }
+  },
+  "required": [
+    "user_email",
+    "title"
+  ]
+}

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Check, AlignRight, AlignLeft, ArrowDown, ArrowUp, Bell, BellOff } from "lucide-react";
+import { Check, AlignRight, AlignLeft, ArrowDown, ArrowUp, Bell, BellOff, Sun, Moon } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -40,6 +40,7 @@ export default function Settings() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [notificationTime, setNotificationTime] = useState("08:00");
   const [notifPermission, setNotifPermission] = useState(typeof Notification !== "undefined" ? Notification.permission : "default");
+  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
 
   useEffect(() => {
     loadSettings();
@@ -51,6 +52,10 @@ export default function Settings() {
     if (user?.nav_position) setSelectedNav(user.nav_position);
     if (user?.daily_notif_enabled !== undefined) setNotificationsEnabled(user.daily_notif_enabled);
     if (user?.daily_notif_time) setNotificationTime(user.daily_notif_time);
+    if (user?.dark_mode !== undefined) {
+      setDarkMode(user.dark_mode);
+      document.documentElement.classList.toggle("dark", user.dark_mode);
+    }
   };
 
   const handleColorSelect = (color) => {
@@ -118,7 +123,9 @@ export default function Settings() {
       nav_position: selectedNav,
       daily_notif_enabled: notificationsEnabled,
       daily_notif_time: notificationTime,
+      dark_mode: darkMode,
     });
+    document.documentElement.classList.toggle("dark", darkMode);
 
     if (notificationsEnabled && notifPermission === "granted") {
       scheduleNotification(notificationTime);
@@ -199,6 +206,33 @@ export default function Settings() {
                 )}>{pos.label}</span>
               </button>
             ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Dark / Light Mode */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            {darkMode ? <Moon className="w-5 h-5 text-primary" /> : <Sun className="w-5 h-5 text-primary" />}
+            Appearance
+          </CardTitle>
+          <CardDescription>Switch between light and dark mode</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Sun className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm font-medium">{darkMode ? "Dark Mode" : "Light Mode"}</span>
+              <Moon className="w-4 h-4 text-muted-foreground" />
+            </div>
+            <Switch
+              checked={darkMode}
+              onCheckedChange={(val) => {
+                setDarkMode(val);
+                document.documentElement.classList.toggle("dark", val);
+              }}
+            />
           </div>
         </CardContent>
       </Card>

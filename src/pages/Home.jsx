@@ -16,7 +16,7 @@ export default function Home() {
 
   const { data: posts = [], isLoading } = useQuery({
     queryKey: ["home-posts"],
-    queryFn: () => base44.entities.Post.list("-created_date", 10),
+    queryFn: () => base44.entities.Post.list("-created_date", 20),
     staleTime: 30_000,
   });
 

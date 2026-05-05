@@ -191,9 +191,8 @@ export default function useAudioRoom(sessionId, myEmail, canSpeak, speakerEmails
     return () => {
       stopMic();
       Object.keys(peers.current).forEach(closePeer);
-      // Signal disconnect
+      // Signal disconnect to peers
       if (sessionId && myEmail) {
-        // fire-and-forget
         base44.entities.AudioSignal.create({
           session_id: sessionId,
           from_email: myEmail,

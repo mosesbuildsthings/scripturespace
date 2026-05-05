@@ -30,6 +30,7 @@ import BibleReading from './pages/BibleReading';
 import Groups from './pages/Groups';
 import LeaderDashboard from './pages/LeaderDashboard';
 import AdminVerifications from './pages/AdminVerifications';
+import LeaderPremium from './pages/LeaderPremium';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -92,6 +93,7 @@ const AuthenticatedApp = () => {
         <Route path="/Groups" element={<Groups />} />
         <Route path="/LeaderDashboard" element={<LeaderDashboard />} />
         <Route path="/AdminVerifications" element={<AdminVerifications />} />
+        <Route path="/LeaderPremium" element={<LeaderPremium />} />
         <Route path="/BibleStudy" element={<BibleStudy />} />
         <Route path="/CreateBibleStudyPlan" element={<CreateBibleStudyPlan />} />
         <Route path="/BibleStudyPlanDetail" element={<BibleStudyPlanDetail />} />

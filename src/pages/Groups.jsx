@@ -44,6 +44,7 @@ export default function Groups() {
   const otherGroups = groups.filter(g => !(g.members || []).includes(user?.email) && g.leader_email !== user?.email && g.is_public);
 
   const handleJoin = async (group) => {
+    if (!user) return;
     const members = [...(group.members || [])];
     if (!members.includes(user.email)) members.push(user.email);
     await base44.entities.Group.update(group.id, { members });
@@ -51,8 +52,10 @@ export default function Groups() {
   };
 
   const handleLeave = async (group) => {
+    if (!user) return;
     const members = (group.members || []).filter(e => e !== user.email);
     await base44.entities.Group.update(group.id, { members });
+    setExpandedGroup(null);
     refresh();
   };
 
@@ -173,6 +176,7 @@ export default function Groups() {
                           className="w-full rounded-xl text-xs"
                           onClick={async () => {
                             if (!window.confirm("Delete this group permanently?")) return;
+                            setExpandedGroup(null);
                             await base44.entities.Group.delete(g.id);
                             refresh();
                           }}

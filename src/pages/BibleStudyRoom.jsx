@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -27,16 +27,18 @@ export default function BibleStudyRoom() {
     loadMessages();
 
     const unsubSession = base44.entities.BibleStudySession.subscribe((event) => {
-      if (event.data?.id === sessionId || event.id === sessionId) {
-        setSession(event.data);
+      if (event.id === sessionId || event.data?.id === sessionId) {
+        if (event.type === "delete") {
+          // Session was deleted (host ended it) — redirect all participants
+          navigate("/BibleStudy");
+          return;
+        }
+        if (event.data) setSession(event.data);
       }
     });
     const unsubChat = base44.entities.SessionChat.subscribe((event) => {
-      if (event.data?.session_id === sessionId) {
-        setMessages(prev => {
-          if (event.type === "create") return [...prev, event.data];
-          return prev;
-        });
+      if (event.type === "create" && event.data?.session_id === sessionId) {
+        setMessages(prev => [...prev, event.data]);
       }
     });
     return () => { unsubSession(); unsubChat(); };
@@ -130,9 +132,22 @@ export default function BibleStudyRoom() {
     setIsQuestion(false);
   };
 
+  const hasJoinedRef = React.useRef(false);
   useEffect(() => {
-    if (session && user && role === "listener") joinAsListener();
-  }, [session, user]);
+    if (session && user && role === "listener" && !hasJoinedRef.current) {
+      hasJoinedRef.current = true;
+      joinAsListener();
+    }
+  }, [session?.id, user?.email]);
+
+  if (!sessionId) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4 px-4 text-center">
+        <p className="text-muted-foreground">No session specified.</p>
+        <Button onClick={() => navigate("/BibleStudy")}>Back to Bible Study</Button>
+      </div>
+    );
+  }
 
   if (!session) return (
     <div className="flex items-center justify-center min-h-screen">
@@ -194,7 +209,7 @@ export default function BibleStudyRoom() {
 
       {/* Raised Hands (host only) */}
       {isHost && (session.raised_hands || []).length > 0 && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-4 space-y-2">
+        <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 space-y-2">
           <p className="text-sm font-semibold flex items-center gap-2"><Hand className="w-4 h-4 text-yellow-500" /> Raised Hands</p>
           <div className="space-y-2">
             {(session.raised_hands || []).map(email => (

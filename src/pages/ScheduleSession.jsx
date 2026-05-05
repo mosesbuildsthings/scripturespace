@@ -97,6 +97,7 @@ export default function ScheduleSession() {
       setAlarm(form.scheduled_time);
     }
 
+    setSaving(false);
     navigate(`/BibleStudyRoom?id=${session.id}`);
   };
 

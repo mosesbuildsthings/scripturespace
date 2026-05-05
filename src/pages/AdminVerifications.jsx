@@ -46,7 +46,13 @@ export default function AdminVerifications() {
     setProcessing(null);
   };
 
-  if (currentUser && !["admin"].includes(currentUser.role)) {
+  if (!currentUser) return (
+    <div className="flex justify-center py-20">
+      <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+    </div>
+  );
+
+  if (!["admin"].includes(currentUser.role)) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
         <ShieldCheck className="w-12 h-12 text-muted-foreground" />

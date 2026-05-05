@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+
+// Module-level cache to avoid repeated User lookups per post render
+const verifiedCache = {};
 import { base44 } from "@/api/base44Client";
 import { Heart, MessageCircle, Share2, MoreHorizontal, Trash2, EyeOff, ExternalLink } from "lucide-react";
 import LeaderBadge from "@/components/shared/LeaderBadge";
@@ -22,9 +25,15 @@ export default function PostCard({ post, currentUser, onUpdate, onDelete }) {
 
   React.useEffect(() => {
     if (!post.author_email) return;
+    if (verifiedCache[post.author_email] !== undefined) {
+      setAuthorVerified(verifiedCache[post.author_email]);
+      return;
+    }
     base44.entities.User.filter({ email: post.author_email }).then(res => {
       const u = res[0];
-      if (u?.is_leader || ["leader", "pastor", "admin"].includes(u?.role)) setAuthorVerified(true);
+      const isVerified = !!(u?.is_leader || ["leader", "pastor", "admin"].includes(u?.role));
+      verifiedCache[post.author_email] = isVerified;
+      setAuthorVerified(isVerified);
     });
   }, [post.author_email]);
 

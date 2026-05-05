@@ -18,7 +18,9 @@ export default function BibleStudyPlanDetail() {
     base44.auth.me().then(setUser);
     if (planId) {
       base44.entities.BibleStudyPlan.filter({ id: planId }).then(r => setPlan(r[0]));
-      base44.entities.BibleStudySession.filter({ plan_id: planId }).then(setSessions);
+      base44.entities.BibleStudySession.filter({ plan_id: planId }).then(results =>
+        setSessions(results.filter(s => s.status === "live" || s.status === "scheduled"))
+      );
     }
   }, [planId]);
 

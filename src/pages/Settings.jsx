@@ -11,18 +11,18 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 const THEME_COLORS = [
-  { name: "Sunset Orange", value: "22 95% 52%", preview: "hsl(22, 95%, 52%)" },
-  { name: "Emerald", value: "152 70% 40%", preview: "hsl(152, 70%, 40%)" },
-  { name: "Hot Pink", value: "340 80% 58%", preview: "hsl(340, 80%, 58%)" },
-  { name: "Sky Blue", value: "204 90% 50%", preview: "hsl(204, 90%, 50%)" },
-  { name: "Violet", value: "262 75% 58%", preview: "hsl(262, 75%, 58%)" },
-  { name: "Golden Yellow", value: "42 95% 52%", preview: "hsl(42, 95%, 52%)" },
-  { name: "Cyan Teal", value: "180 75% 38%", preview: "hsl(180, 75%, 38%)" },
-  { name: "Magenta", value: "290 70% 55%", preview: "hsl(290, 70%, 55%)" },
-  { name: "Coral Red", value: "10 85% 56%", preview: "hsl(10, 85%, 56%)" },
-  { name: "Lime Green", value: "130 65% 42%", preview: "hsl(130, 65%, 42%)" },
-  { name: "Royal Blue", value: "225 80% 55%", preview: "hsl(225, 80%, 55%)" },
-  { name: "Crimson", value: "350 80% 48%", preview: "hsl(350, 80%, 48%)" },
+  { name: "Amber Gold", value: "36 88% 52%", preview: "linear-gradient(135deg, hsl(36,88%,52%), hsl(44,95%,62%))" },
+  { name: "Ember Sunset", value: "22 82% 52%", preview: "linear-gradient(135deg, hsl(22,82%,52%), hsl(36,90%,62%))" },
+  { name: "Rose Quartz", value: "340 65% 55%", preview: "linear-gradient(135deg, hsl(340,65%,55%), hsl(352,72%,68%))" },
+  { name: "Crimson", value: "354 75% 48%", preview: "linear-gradient(135deg, hsl(354,75%,48%), hsl(4,80%,60%))" },
+  { name: "Cobalt Blue", value: "218 82% 52%", preview: "linear-gradient(135deg, hsl(218,82%,52%), hsl(226,88%,64%))" },
+  { name: "Ocean Teal", value: "186 72% 40%", preview: "linear-gradient(135deg, hsl(186,72%,40%), hsl(194,80%,54%))" },
+  { name: "Emerald", value: "154 62% 40%", preview: "linear-gradient(135deg, hsl(154,62%,40%), hsl(160,68%,52%))" },
+  { name: "Sage Forest", value: "145 42% 38%", preview: "linear-gradient(135deg, hsl(145,42%,38%), hsl(152,50%,50%))" },
+  { name: "Iris Violet", value: "256 65% 56%", preview: "linear-gradient(135deg, hsl(256,65%,56%), hsl(268,72%,68%))" },
+  { name: "Plum", value: "290 50% 48%", preview: "linear-gradient(135deg, hsl(290,50%,48%), hsl(300,58%,62%))" },
+  { name: "Slate Indigo", value: "228 52% 50%", preview: "linear-gradient(135deg, hsl(228,52%,50%), hsl(236,60%,62%))" },
+  { name: "Warm Copper", value: "18 68% 48%", preview: "linear-gradient(135deg, hsl(18,68%,48%), hsl(26,76%,60%))" },
 ];
 
 const NAV_POSITIONS = [
@@ -168,9 +168,9 @@ export default function Settings() {
 
   const handleColorSelect = (color) => {
     setSelectedColor(color);
-    // Preview immediately
     document.documentElement.style.setProperty("--primary", color);
     document.documentElement.style.setProperty("--ring", color);
+    document.documentElement.style.setProperty("--glow-primary", color);
   };
 
   const requestNotifPermission = async () => {
@@ -335,21 +335,26 @@ export default function Settings() {
               <button
                 key={color.value}
                 onClick={() => handleColorSelect(color.value)}
-                className={cn(
-                  "relative w-full aspect-square rounded-xl transition-all duration-200 shadow-sm hover:scale-105",
-                  selectedColor === color.value && "ring-2 ring-offset-2 ring-foreground scale-105"
-                )}
-                style={{ backgroundColor: color.preview }}
                 title={color.name}
+                className={cn(
+                  "relative w-full aspect-square rounded-xl transition-all duration-200 cursor-pointer",
+                  "shadow-[0_2px_8px_rgba(0,0,0,0.18)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.28)] hover:scale-105",
+                  selectedColor === color.value
+                    ? "ring-2 ring-offset-2 ring-foreground scale-105 shadow-[0_4px_20px_rgba(0,0,0,0.32)]"
+                    : ""
+                )}
+                style={{ background: color.preview }}
               >
+                {/* Glossy inner highlight */}
+                <span className="absolute inset-0 rounded-xl bg-gradient-to-b from-white/25 to-transparent pointer-events-none" />
                 {selectedColor === color.value && (
-                  <Check className="absolute inset-0 m-auto w-5 h-5 text-white drop-shadow" />
+                  <Check className="absolute inset-0 m-auto w-5 h-5 text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]" />
                 )}
               </button>
             ))}
           </div>
           <p className="text-xs text-muted-foreground mt-3">
-            Selected: {THEME_COLORS.find(c => c.value === selectedColor)?.name || "Custom"}
+            Selected: <span className="font-semibold text-foreground">{THEME_COLORS.find(c => c.value === selectedColor)?.name || "Custom"}</span>
           </p>
         </CardContent>
       </Card>

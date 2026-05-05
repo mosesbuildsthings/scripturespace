@@ -24,21 +24,25 @@ const NAV_ITEMS = [
 
 // Memoized nav link to avoid re-renders
 const NavLink = memo(({ item, isActive, vertical }) => (
-  <Link
-    to={item.path}
-    className={cn(
-      "flex items-center gap-3 rounded-xl font-medium transition-colors duration-150",
-      vertical
-        ? "px-4 py-2.5 text-sm"
-        : "flex-col px-3 py-2 text-xs gap-1",
-      isActive
-        ? "bg-primary text-primary-foreground"
-        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-    )}
-  >
-    <item.icon className="w-5 h-5 shrink-0" />
-    <span className={vertical ? "" : ""}>{item.label}</span>
-  </Link>
+<Link
+  to={item.path}
+  className={cn(
+    "flex items-center gap-3 rounded-xl font-medium transition-all duration-200",
+    vertical
+      ? "px-4 py-2.5 text-sm"
+      : "flex-col px-3 py-2 text-xs gap-1",
+    isActive
+      ? [
+          "text-primary-foreground",
+          "bg-gradient-to-br from-primary via-primary to-primary/80",
+          "shadow-[0_2px_12px_hsl(var(--primary)/0.45),0_0_0_1px_hsl(var(--primary)/0.2)]",
+        ].join(" ")
+      : "text-muted-foreground hover:bg-accent/70 hover:text-accent-foreground"
+  )}
+>
+  <item.icon className="w-5 h-5 shrink-0" />
+  <span>{item.label}</span>
+</Link>
 ));
 
 const SidebarNav = memo(({ currentPath, title }) => (
@@ -101,9 +105,9 @@ export default function AppLayout() {
   const path = location.pathname;
   const outletCtx = { navPosition, setNavPosition, themeColor, setThemeColor, applyThemeColor };
 
-  const sidebarClass = "hidden md:flex flex-col fixed top-0 bottom-0 w-56 bg-card/95 backdrop-blur-md border z-50";
-  const mobileNavClass = "md:hidden fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-md border-t z-50 safe-bottom";
-  const topNavClass = "fixed top-0 left-0 right-0 bg-card/95 backdrop-blur-md border-b z-50";
+  const sidebarClass = "hidden md:flex flex-col fixed top-0 bottom-0 w-56 bg-card/90 backdrop-blur-xl border border-border/60 shadow-[2px_0_24px_hsl(var(--foreground)/0.05)] z-50";
+  const mobileNavClass = "md:hidden fixed bottom-0 left-0 right-0 bg-card/90 backdrop-blur-xl border-t border-border/60 shadow-[0_-2px_20px_hsl(var(--foreground)/0.06)] z-50 safe-bottom";
+  const topNavClass = "fixed top-0 left-0 right-0 bg-card/90 backdrop-blur-xl border-b border-border/60 shadow-[0_2px_20px_hsl(var(--foreground)/0.06)] z-50";
 
   if (navPosition === "bottom") {
     return (

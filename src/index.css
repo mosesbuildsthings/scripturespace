@@ -9,74 +9,97 @@
     --font-inter: 'Inter', sans-serif;
     --font-display: 'Playfair Display', serif;
 
-    --background: 30 25% 97%;
-    --foreground: 25 20% 12%;
-    --card: 30 30% 99%;
-    --card-foreground: 25 20% 12%;
-    --popover: 30 30% 99%;
-    --popover-foreground: 25 20% 12%;
-    --primary: 25 45% 42%;
-    --primary-foreground: 40 40% 97%;
-    --secondary: 35 25% 91%;
-    --secondary-foreground: 25 20% 20%;
-    --muted: 30 15% 93%;
-    --muted-foreground: 25 10% 48%;
-    --accent: 35 40% 88%;
-    --accent-foreground: 25 30% 18%;
-    --destructive: 0 60% 50%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 30 15% 88%;
-    --input: 30 15% 88%;
-    --ring: 25 45% 42%;
-    --chart-1: 25 55% 55%;
-    --chart-2: 160 35% 45%;
-    --chart-3: 210 30% 45%;
-    --chart-4: 40 50% 55%;
-    --chart-5: 340 35% 55%;
-    --radius: 0.75rem;
-    --sidebar-background: 30 20% 96%;
-    --sidebar-foreground: 25 20% 20%;
-    --sidebar-primary: 25 45% 42%;
-    --sidebar-primary-foreground: 40 40% 97%;
-    --sidebar-accent: 35 25% 91%;
-    --sidebar-accent-foreground: 25 20% 20%;
-    --sidebar-border: 30 15% 88%;
-    --sidebar-ring: 25 45% 42%;
+    /* === LIGHT MODE — warm ivory with rich amber-gold primary === */
+    --background: 36 28% 95%;
+    --foreground: 24 22% 10%;
+    --card: 38 30% 98%;
+    --card-foreground: 24 22% 10%;
+    --popover: 38 30% 99%;
+    --popover-foreground: 24 22% 10%;
+
+    /* Warm amber-gold primary — more vibrant, still refined */
+    --primary: 32 72% 48%;
+    --primary-foreground: 38 60% 97%;
+
+    --secondary: 34 20% 88%;
+    --secondary-foreground: 24 20% 18%;
+    --muted: 34 18% 91%;
+    --muted-foreground: 26 12% 44%;
+    --accent: 36 45% 85%;
+    --accent-foreground: 24 30% 16%;
+    --destructive: 4 72% 52%;
+    --destructive-foreground: 0 0% 99%;
+    --border: 32 18% 85%;
+    --input: 32 18% 85%;
+    --ring: 32 72% 48%;
+
+    /* Charts */
+    --chart-1: 32 78% 52%;
+    --chart-2: 158 52% 42%;
+    --chart-3: 212 62% 52%;
+    --chart-4: 48 80% 55%;
+    --chart-5: 336 58% 55%;
+
+    --radius: 0.85rem;
+
+    /* Sidebar */
+    --sidebar-background: 34 25% 93%;
+    --sidebar-foreground: 24 20% 18%;
+    --sidebar-primary: 32 72% 48%;
+    --sidebar-primary-foreground: 38 60% 97%;
+    --sidebar-accent: 36 35% 87%;
+    --sidebar-accent-foreground: 24 20% 18%;
+    --sidebar-border: 32 18% 85%;
+    --sidebar-ring: 32 72% 48%;
+
+    /* Glow / glass helpers */
+    --glow-primary: 32 78% 58%;
+    --glass-bg: 38 30% 99% / 0.7;
   }
 
   .dark {
-    --background: 25 15% 8%;
-    --foreground: 30 15% 92%;
-    --card: 25 15% 11%;
-    --card-foreground: 30 15% 92%;
-    --popover: 25 15% 11%;
-    --popover-foreground: 30 15% 92%;
-    --primary: 30 50% 55%;
-    --primary-foreground: 25 15% 8%;
-    --secondary: 25 12% 18%;
-    --secondary-foreground: 30 15% 92%;
-    --muted: 25 10% 16%;
-    --muted-foreground: 30 10% 55%;
-    --accent: 30 20% 22%;
-    --accent-foreground: 30 15% 92%;
-    --destructive: 0 55% 45%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 25 10% 18%;
-    --input: 25 10% 18%;
-    --ring: 30 50% 55%;
-    --chart-1: 25 55% 55%;
-    --chart-2: 160 35% 50%;
-    --chart-3: 210 30% 50%;
-    --chart-4: 40 50% 60%;
-    --chart-5: 340 35% 60%;
-    --sidebar-background: 25 15% 10%;
-    --sidebar-foreground: 30 15% 92%;
-    --sidebar-primary: 30 50% 55%;
-    --sidebar-primary-foreground: 25 15% 8%;
-    --sidebar-accent: 25 12% 18%;
-    --sidebar-accent-foreground: 30 15% 92%;
-    --sidebar-border: 25 10% 18%;
-    --sidebar-ring: 30 50% 55%;
+    /* === DARK MODE — deep warm charcoal with rich glowing accents === */
+    --background: 22 18% 7%;
+    --foreground: 34 20% 90%;
+    --card: 22 16% 10%;
+    --card-foreground: 34 20% 90%;
+    --popover: 22 16% 11%;
+    --popover-foreground: 34 20% 90%;
+
+    /* Warm glowing gold — vivid but not neon */
+    --primary: 36 88% 58%;
+    --primary-foreground: 22 18% 7%;
+
+    --secondary: 22 14% 17%;
+    --secondary-foreground: 34 20% 88%;
+    --muted: 22 12% 14%;
+    --muted-foreground: 32 12% 52%;
+    --accent: 28 22% 20%;
+    --accent-foreground: 34 20% 90%;
+    --destructive: 4 68% 52%;
+    --destructive-foreground: 0 0% 99%;
+    --border: 22 10% 17%;
+    --input: 22 10% 17%;
+    --ring: 36 88% 58%;
+
+    /* Charts */
+    --chart-1: 36 88% 62%;
+    --chart-2: 158 58% 48%;
+    --chart-3: 212 72% 60%;
+    --chart-4: 48 88% 60%;
+    --chart-5: 336 62% 60%;
+
+    --sidebar-background: 22 16% 9%;
+    --sidebar-foreground: 34 20% 88%;
+    --sidebar-primary: 36 88% 58%;
+    --sidebar-primary-foreground: 22 18% 7%;
+    --sidebar-accent: 22 14% 16%;
+    --sidebar-accent-foreground: 34 20% 88%;
+    --sidebar-border: 22 10% 16%;
+    --sidebar-ring: 36 88% 58%;
+
+    --glow-primary: 36 90% 65%;
+    --glass-bg: 22 16% 10% / 0.75;
   }
 }
 
@@ -90,6 +113,42 @@
   }
   .safe-bottom {
     padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Glassy surface utility */
+  .glass {
+    background: hsl(var(--card) / 0.72);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    border: 1px solid hsl(var(--border) / 0.6);
+  }
+
+  /* Soft primary glow — use on selected/active states */
+  .glow-primary {
+    box-shadow:
+      0 0 0 1px hsl(var(--primary) / 0.25),
+      0 0 12px 2px hsl(var(--primary) / 0.18),
+      0 2px 8px 0 hsl(var(--primary) / 0.12);
+  }
+
+  /* Premium card shadow */
+  .shadow-card {
+    box-shadow:
+      0 1px 2px hsl(var(--foreground) / 0.04),
+      0 4px 12px hsl(var(--foreground) / 0.06),
+      0 0 0 1px hsl(var(--border) / 0.5);
+  }
+
+  /* Gradient text utility */
+  .text-gradient {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary)) 0%,
+      hsl(var(--chart-4)) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 }
 
@@ -128,5 +187,12 @@
   /* Remove default button styles on mobile */
   button {
     touch-action: manipulation;
+  }
+
+  /* Cards feel more dimensional */
+  .rounded-xl {
+    --tw-shadow:
+      0 1px 2px hsl(var(--foreground) / 0.04),
+      0 4px 14px hsl(var(--foreground) / 0.05);
   }
 }

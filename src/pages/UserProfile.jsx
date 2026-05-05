@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Edit2, Camera, MapPin, Clock, Users, BookOpen, Loader2, X, Check, MessageSquare, Heart, History, Settings } from "lucide-react";
+import LeaderBadge from "@/components/shared/LeaderBadge";
 import SendMessageDialog from "@/components/profile/SendMessageDialog";
 import MyCollection from "@/components/profile/MyCollection";
 import ReadingHistory from "@/components/profile/ReadingHistory";
@@ -27,6 +28,7 @@ const TIMEZONES = [
 export default function UserProfile() {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
+  const [profileUser, setProfileUser] = useState(null); // User entity for the viewed profile
   const [sessions, setSessions] = useState([]);
   const [editing, setEditing] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
@@ -58,6 +60,10 @@ export default function UserProfile() {
       });
       setProfile(newProfile);
     }
+
+    // Load User entity for badge
+    const userRecords = await base44.entities.User.filter({ email });
+    if (userRecords[0]) setProfileUser(userRecords[0]);
 
     const allSessions = await base44.entities.BibleStudySession.list("-created_date", 20);
     setSessions(allSessions.filter(s => (s.hosts || []).some(h => h.email === email) || (s.speakers || []).some(sp => sp.email === email)));
@@ -157,7 +163,10 @@ export default function UserProfile() {
             <span className="text-2xl font-bold text-primary">{(profile.user_name || "U")[0].toUpperCase()}</span>
           </div>
           <div className="flex-1 space-y-1">
-            <h2 className="text-lg font-bold text-foreground">{profile.user_name}</h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-lg font-bold text-foreground">{profile.user_name}</h2>
+              <LeaderBadge user={profileUser || user} />
+            </div>
             {profile.country && (
               <p className="text-sm text-muted-foreground flex items-center gap-1"><MapPin className="w-3 h-3" />{profile.country}</p>
             )}

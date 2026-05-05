@@ -1,0 +1,33 @@
+{
+  "name": "Announcement",
+  "type": "object",
+  "properties": {
+    "group_id": {
+      "type": "string"
+    },
+    "group_name": {
+      "type": "string"
+    },
+    "author_email": {
+      "type": "string"
+    },
+    "author_name": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "is_pinned": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "group_id",
+    "author_email",
+    "message"
+  ]
+}

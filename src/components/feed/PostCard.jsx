@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Heart, MessageCircle, Share2, MoreHorizontal, Trash2, EyeOff, ExternalLink } from "lucide-react";
+import LeaderBadge from "@/components/shared/LeaderBadge";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,15 @@ import CommentSection from "./CommentSection";
 export default function PostCard({ post, currentUser, onUpdate, onDelete }) {
   const [showComments, setShowComments] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
+  const [authorVerified, setAuthorVerified] = useState(false);
+
+  React.useEffect(() => {
+    if (!post.author_email) return;
+    base44.entities.User.filter({ email: post.author_email }).then(res => {
+      const u = res[0];
+      if (u?.is_leader || ["leader", "pastor", "admin"].includes(u?.role)) setAuthorVerified(true);
+    });
+  }, [post.author_email]);
 
   const likes = post.likes || [];
   const isLiked = likes.includes(currentUser?.email);
@@ -102,7 +112,10 @@ export default function PostCard({ post, currentUser, onUpdate, onDelete }) {
           </span>
         </div>
         <div>
-          <p className="text-sm font-semibold text-foreground">{post.author_name || "Anonymous"}</p>
+          <div className="flex items-center gap-1.5">
+            <p className="text-sm font-semibold text-foreground">{post.author_name || "Anonymous"}</p>
+            {authorVerified && <LeaderBadge isLeader={true} size="xs" />}
+          </div>
           <p className="text-xs text-muted-foreground">{timeAgo}</p>
         </div>
         </Link>

@@ -12,6 +12,7 @@ import Feed from './pages/Feed';
 import CreatePost from './pages/CreatePost';
 import Scripture from './pages/Scripture';
 import Settings from './pages/Settings';
+import Study from './pages/Study';
 import BibleStudy from './pages/BibleStudy';
 import CreateBibleStudyPlan from './pages/CreateBibleStudyPlan';
 import BibleStudyPlanDetail from './pages/BibleStudyPlanDetail';
@@ -23,6 +24,7 @@ import Devotional from './pages/Devotional';
 import Journal from './pages/Journal';
 import Growth from './pages/Growth';
 import BibleReading from './pages/BibleReading';
+import Groups from './pages/Groups';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -54,8 +56,10 @@ const AuthenticatedApp = () => {
         <Route path="/Home" element={<Home />} />
         <Route path="/Feed" element={<Feed />} />
         <Route path="/CreatePost" element={<CreatePost />} />
+        <Route path="/Study" element={<Study />} />
         <Route path="/Scripture" element={<Scripture />} />
         <Route path="/Settings" element={<Settings />} />
+        <Route path="/Groups" element={<Groups />} />
         <Route path="/BibleStudy" element={<BibleStudy />} />
         <Route path="/CreateBibleStudyPlan" element={<CreateBibleStudyPlan />} />
         <Route path="/BibleStudyPlanDetail" element={<BibleStudyPlanDetail />} />

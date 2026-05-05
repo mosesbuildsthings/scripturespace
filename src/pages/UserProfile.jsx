@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Edit2, Camera, MapPin, Clock, Users, BookOpen, Loader2, X, Check, MessageSquare, Heart, History } from "lucide-react";
+import { ArrowLeft, Edit2, Camera, MapPin, Clock, Users, BookOpen, Loader2, X, Check, MessageSquare, Heart, History, Settings } from "lucide-react";
 import SendMessageDialog from "@/components/profile/SendMessageDialog";
 import MyCollection from "@/components/profile/MyCollection";
 import ReadingHistory from "@/components/profile/ReadingHistory";
@@ -130,7 +130,16 @@ export default function UserProfile() {
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" className="rounded-full" onClick={() => window.history.back()}><ArrowLeft className="w-5 h-5" /></Button>
         <h1 className="text-xl font-display font-bold flex-1">Profile</h1>
-        {isOwn && !editing && <Button size="sm" variant="outline" className="rounded-full gap-2 text-xs" onClick={() => setEditing(true)}><Edit2 className="w-3 h-3" /> Edit</Button>}
+        {isOwn && !editing && (
+          <div className="flex items-center gap-2">
+            <Link to="/Settings">
+              <Button size="sm" variant="ghost" className="rounded-full gap-1.5 text-xs text-muted-foreground">
+                <Settings className="w-3.5 h-3.5" /> Settings
+              </Button>
+            </Link>
+            <Button size="sm" variant="outline" className="rounded-full gap-2 text-xs" onClick={() => setEditing(true)}><Edit2 className="w-3 h-3" /> Edit</Button>
+          </div>
+        )}
         {isOwn && editing && (
           <div className="flex gap-2">
             <Button size="sm" variant="ghost" className="rounded-full text-xs" onClick={() => setEditing(false)}>Cancel</Button>

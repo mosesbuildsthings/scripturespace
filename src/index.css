@@ -9,146 +9,172 @@
     --font-inter: 'Inter', sans-serif;
     --font-display: 'Playfair Display', serif;
 
-    /* === LIGHT MODE — warm ivory with rich amber-gold primary === */
-    --background: 36 28% 95%;
-    --foreground: 24 22% 10%;
-    --card: 38 30% 98%;
-    --card-foreground: 24 22% 10%;
-    --popover: 38 30% 99%;
-    --popover-foreground: 24 22% 10%;
+    /* ── LIGHT MODE
+       Warm-white canvas with richer depth and more saturated, intentional accents.
+       Backgrounds are layered slightly so cards lift off the page.
+       Primary is a refined amber-gold: vivid but never garish. ── */
 
-    /* Warm amber-gold primary — more vibrant, still refined */
-    --primary: 32 72% 48%;
-    --primary-foreground: 38 60% 97%;
+    --background:      36 22% 96%;
+    --foreground:      24 28% 9%;
 
-    --secondary: 34 20% 88%;
-    --secondary-foreground: 24 20% 18%;
-    --muted: 34 18% 91%;
-    --muted-foreground: 26 12% 44%;
-    --accent: 36 45% 85%;
-    --accent-foreground: 24 30% 16%;
-    --destructive: 4 72% 52%;
-    --destructive-foreground: 0 0% 99%;
-    --border: 32 18% 85%;
-    --input: 32 18% 85%;
-    --ring: 32 72% 48%;
+    --card:            38 32% 99%;
+    --card-foreground: 24 28% 9%;
 
-    /* Charts */
-    --chart-1: 32 78% 52%;
-    --chart-2: 158 52% 42%;
-    --chart-3: 212 62% 52%;
-    --chart-4: 48 80% 55%;
-    --chart-5: 336 58% 55%;
+    --popover:         38 32% 100%;
+    --popover-foreground: 24 28% 9%;
 
-    --radius: 0.85rem;
+    /* Vivid warm amber — central identity color */
+    --primary:         34 85% 50%;
+    --primary-foreground: 36 60% 97%;
 
-    /* Sidebar */
-    --sidebar-background: 34 25% 93%;
-    --sidebar-foreground: 24 20% 18%;
-    --sidebar-primary: 32 72% 48%;
-    --sidebar-primary-foreground: 38 60% 97%;
-    --sidebar-accent: 36 35% 87%;
-    --sidebar-accent-foreground: 24 20% 18%;
-    --sidebar-border: 32 18% 85%;
-    --sidebar-ring: 32 72% 48%;
+    --secondary:       34 18% 90%;
+    --secondary-foreground: 24 22% 16%;
 
-    /* Glow / glass helpers */
-    --glow-primary: 32 78% 58%;
-    --glass-bg: 38 30% 99% / 0.7;
+    --muted:           34 14% 93%;
+    --muted-foreground: 26 10% 46%;
+
+    --accent:          34 40% 88%;
+    --accent-foreground: 24 28% 14%;
+
+    --destructive:     4  76% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border:          32 16% 88%;
+    --input:           32 16% 88%;
+    --ring:            34 85% 50%;
+
+    /* Richer chart palette */
+    --chart-1: 34  88% 54%;
+    --chart-2: 158 60% 40%;
+    --chart-3: 212 70% 52%;
+    --chart-4: 48  90% 56%;
+    --chart-5: 336 62% 54%;
+
+    --radius: 0.9rem;
+
+    --sidebar-background:          34 22% 94%;
+    --sidebar-foreground:          24 22% 16%;
+    --sidebar-primary:             34 85% 50%;
+    --sidebar-primary-foreground:  36 60% 97%;
+    --sidebar-accent:              34 32% 89%;
+    --sidebar-accent-foreground:   24 22% 16%;
+    --sidebar-border:              32 16% 88%;
+    --sidebar-ring:                34 85% 50%;
+
+    --glow-primary: 34 90% 56%;
   }
 
   .dark {
-    /* === DARK MODE — deep warm charcoal with rich glowing accents === */
-    --background: 22 18% 7%;
-    --foreground: 34 20% 90%;
-    --card: 22 16% 10%;
-    --card-foreground: 34 20% 90%;
-    --popover: 22 16% 11%;
-    --popover-foreground: 34 20% 90%;
+    /* ── DARK MODE
+       Deep, warm-tinted near-black — not cold grey, not flat black.
+       Cards have barely-visible warm lift. Primary glows softly.
+       The palette feels rich, candlelit, immersive. ── */
 
-    /* Warm glowing gold — vivid but not neon */
-    --primary: 36 88% 58%;
-    --primary-foreground: 22 18% 7%;
+    --background:      22 20% 6%;
+    --foreground:      34 18% 92%;
 
-    --secondary: 22 14% 17%;
-    --secondary-foreground: 34 20% 88%;
-    --muted: 22 12% 14%;
-    --muted-foreground: 32 12% 52%;
-    --accent: 28 22% 20%;
-    --accent-foreground: 34 20% 90%;
-    --destructive: 4 68% 52%;
-    --destructive-foreground: 0 0% 99%;
-    --border: 22 10% 17%;
-    --input: 22 10% 17%;
-    --ring: 36 88% 58%;
+    --card:            22 18% 9%;
+    --card-foreground: 34 18% 92%;
 
-    /* Charts */
-    --chart-1: 36 88% 62%;
-    --chart-2: 158 58% 48%;
-    --chart-3: 212 72% 60%;
-    --chart-4: 48 88% 60%;
-    --chart-5: 336 62% 60%;
+    --popover:         22 18% 10%;
+    --popover-foreground: 34 18% 92%;
 
-    --sidebar-background: 22 16% 9%;
-    --sidebar-foreground: 34 20% 88%;
-    --sidebar-primary: 36 88% 58%;
-    --sidebar-primary-foreground: 22 18% 7%;
-    --sidebar-accent: 22 14% 16%;
-    --sidebar-accent-foreground: 34 20% 88%;
-    --sidebar-border: 22 10% 16%;
-    --sidebar-ring: 36 88% 58%;
+    /* Glowing warm gold: intense but balanced, never neon */
+    --primary:         36 92% 60%;
+    --primary-foreground: 22 20% 6%;
 
-    --glow-primary: 36 90% 65%;
-    --glass-bg: 22 16% 10% / 0.75;
+    --secondary:       22 14% 15%;
+    --secondary-foreground: 34 18% 88%;
+
+    --muted:           22 12% 12%;
+    --muted-foreground: 30 10% 50%;
+
+    --accent:          26 18% 18%;
+    --accent-foreground: 34 18% 92%;
+
+    --destructive:     4  72% 54%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border:          22 10% 15%;
+    --input:           22 10% 15%;
+    --ring:            36 92% 60%;
+
+    --chart-1: 36 92% 62%;
+    --chart-2: 158 62% 48%;
+    --chart-3: 212 76% 62%;
+    --chart-4: 48 92% 62%;
+    --chart-5: 336 66% 60%;
+
+    --sidebar-background:          22 18% 8%;
+    --sidebar-foreground:          34 18% 88%;
+    --sidebar-primary:             36 92% 60%;
+    --sidebar-primary-foreground:  22 20% 6%;
+    --sidebar-accent:              22 14% 14%;
+    --sidebar-accent-foreground:   34 18% 88%;
+    --sidebar-border:              22 10% 14%;
+    --sidebar-ring:                36 92% 60%;
+
+    --glow-primary: 36 94% 66%;
   }
 }
 
+/* ── Utility classes ── */
 @layer utilities {
   .scrollbar-none {
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
-  .scrollbar-none::-webkit-scrollbar {
-    display: none;
-  }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+
   .safe-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
 
-  /* Glassy surface utility */
+  /* Frosted-glass surface */
   .glass {
-    background: hsl(var(--card) / 0.72);
-    backdrop-filter: blur(16px) saturate(1.4);
-    -webkit-backdrop-filter: blur(16px) saturate(1.4);
-    border: 1px solid hsl(var(--border) / 0.6);
+    background: hsl(var(--card) / 0.70);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    border: 1px solid hsl(var(--border) / 0.55);
   }
 
-  /* Soft primary glow — use on selected/active states */
+  /* Soft ambient primary glow */
   .glow-primary {
     box-shadow:
-      0 0 0 1px hsl(var(--primary) / 0.25),
-      0 0 12px 2px hsl(var(--primary) / 0.18),
-      0 2px 8px 0 hsl(var(--primary) / 0.12);
+      0 0 0 1px hsl(var(--primary) / 0.22),
+      0 0 14px 3px hsl(var(--primary) / 0.16),
+      0 2px 8px 0 hsl(var(--primary) / 0.10);
   }
 
-  /* Premium card shadow */
+  /* Dimensional card shadow — more depth than default */
   .shadow-card {
     box-shadow:
-      0 1px 2px hsl(var(--foreground) / 0.04),
-      0 4px 12px hsl(var(--foreground) / 0.06),
-      0 0 0 1px hsl(var(--border) / 0.5);
+      0 1px 1px hsl(var(--foreground) / 0.04),
+      0 2px 6px hsl(var(--foreground) / 0.04),
+      0 6px 18px hsl(var(--foreground) / 0.05),
+      0 0 0 1px hsl(var(--border) / 0.45);
   }
 
-  /* Gradient text utility */
+  /* Gradient primary text */
   .text-gradient {
-    background: linear-gradient(
-      135deg,
-      hsl(var(--primary)) 0%,
-      hsl(var(--chart-4)) 100%
-    );
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--chart-4)) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+
+  /* Subtle inset highlight on cards — adds glassy lift */
+  .card-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .card-shine::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(140deg, hsl(0 0% 100% / 0.06) 0%, transparent 60%);
+    pointer-events: none;
+    border-radius: inherit;
   }
 }
 
@@ -172,27 +198,13 @@
     overscroll-behavior: none;
   }
 
-  /* Smooth scrolling for all scrollable areas */
-  * {
-    scroll-behavior: smooth;
-  }
-
-  /* Better touch scrolling on iOS */
   .overflow-y-auto,
   .overflow-y-scroll,
   main {
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Remove default button styles on mobile */
   button {
     touch-action: manipulation;
-  }
-
-  /* Cards feel more dimensional */
-  .rounded-xl {
-    --tw-shadow:
-      0 1px 2px hsl(var(--foreground) / 0.04),
-      0 4px 14px hsl(var(--foreground) / 0.05);
   }
 }

@@ -1,0 +1,46 @@
+{
+  "name": "SavedVerse",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string"
+    },
+    "book": {
+      "type": "string"
+    },
+    "chapter": {
+      "type": "number"
+    },
+    "verse_number": {
+      "type": "number"
+    },
+    "verse_text": {
+      "type": "string"
+    },
+    "reference": {
+      "type": "string",
+      "description": "e.g. John 3:16"
+    },
+    "note": {
+      "type": "string",
+      "description": "Personal note on this verse"
+    },
+    "highlight_color": {
+      "type": "string",
+      "default": "#fef08a",
+      "description": "Highlight color hex"
+    },
+    "translation": {
+      "type": "string",
+      "default": "BSB"
+    }
+  },
+  "required": [
+    "user_email",
+    "book",
+    "chapter",
+    "verse_number",
+    "verse_text",
+    "reference"
+  ]
+}

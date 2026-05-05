@@ -1,0 +1,74 @@
+{
+  "name": "Challenge",
+  "type": "object",
+  "properties": {
+    "group_id": {
+      "type": "string",
+      "description": "Group this challenge belongs to"
+    },
+    "group_name": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "created_by": {
+      "type": "string"
+    },
+    "creator_name": {
+      "type": "string"
+    },
+    "readings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "book": {
+            "type": "string"
+          },
+          "chapter": {
+            "type": "number"
+          }
+        }
+      },
+      "description": "List of book+chapter targets"
+    },
+    "participant_progress": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "user_email": {
+            "type": "string"
+          },
+          "user_name": {
+            "type": "string"
+          },
+          "completed_readings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "description": "Each participant's completed reading keys (book|chapter)"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "title",
+    "created_by",
+    "group_id"
+  ]
+}

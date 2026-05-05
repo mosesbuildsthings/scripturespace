@@ -1,0 +1,35 @@
+{
+  "name": "UserBadge",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string"
+    },
+    "badge_type": {
+      "type": "string",
+      "enum": [
+        "scripture_scholar",
+        "prayer_warrior",
+        "community_leader",
+        "bible_expert"
+      ],
+      "description": "The type of badge earned"
+    },
+    "badge_name": {
+      "type": "string",
+      "description": "Display name of the badge (e.g., 'Scripture Scholar')"
+    },
+    "threshold_met": {
+      "type": "number",
+      "description": "The metric value that triggered the badge (e.g., 50 posts)"
+    },
+    "awarded_date": {
+      "type": "string",
+      "format": "date"
+    }
+  },
+  "required": [
+    "user_email",
+    "badge_type"
+  ]
+}

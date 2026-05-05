@@ -4,6 +4,9 @@ module.exports = {
     content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
   theme: {
   	extend: {
+  		spacing: {
+  			'touch': '2.75rem', // 44px for WCAG 2.1 AAA compliance
+  		},
   		fontFamily: {
   			inter: ['var(--font-inter)'],
   			display: ['var(--font-display)'],

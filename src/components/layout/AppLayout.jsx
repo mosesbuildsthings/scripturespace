@@ -96,27 +96,32 @@ const SidebarLink = memo(({ item, isActive }) => (
   </Link>
 ));
 
-/* ─── Bottom tab item ─── */
-const BottomTab = memo(({ item, isActive }) => (
-  <Link
-    to={item.path}
+/* ─── Bottom tab item (44x44px minimum tap target) ─── */
+const BottomTab = memo(({ item, isActive, onTabSelect }) => (
+  <button
+    onClick={(e) => {
+      e.preventDefault();
+      onTabSelect(item.path);
+    }}
     className={cn(
-      "flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-xl min-w-[52px] h-[52px] transition-all duration-200 select-none",
+      "flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-xl w-11 h-11 transition-all duration-200 select-none touch-none",
       isActive
         ? "text-primary"
-        : "text-muted-foreground hover:text-foreground"
+        : "text-muted-foreground active:text-foreground"
     )}
+    aria-label={item.label}
+    aria-current={isActive ? "page" : undefined}
   >
     <div className={cn(
-      "flex items-center justify-center w-8 h-8 rounded-xl transition-all duration-200",
+      "flex items-center justify-center w-6 h-6 rounded-lg transition-all duration-200",
       isActive
         ? "bg-primary/12 shadow-[0_0_12px_hsl(var(--primary)/0.30)]"
-        : "group-hover:bg-accent/50"
+        : ""
     )}>
-      <item.icon className="w-[18px] h-[18px] select-none pointer-events-none" />
+      <item.icon className="w-5 h-5 select-none pointer-events-none" />
     </div>
-    <span className={cn("text-[10px] font-medium leading-none select-none pointer-events-none", isActive ? "text-primary" : "")}>{item.label}</span>
-  </Link>
+    <span className={cn("text-[9px] font-medium leading-tight select-none pointer-events-none", isActive ? "text-primary" : "")}>{item.label}</span>
+  </button>
 ));
 
 /* ─── Sidebar ─── */
@@ -201,16 +206,16 @@ const MobileTopBar = memo(() => (
   </div>
 ));
 
-/* ─── Mobile bottom nav ─── */
-const BottomNav = memo(({ currentPath }) => (
+/* ─── Mobile bottom nav with persistent stacks ─── */
+const BottomNav = memo(({ currentPath, onTabSelect }) => (
   <nav className={cn(
     "md:hidden fixed bottom-0 left-0 right-0 z-50 safe-bottom",
     "bg-card/85 backdrop-blur-2xl border-t border-border/50",
     "shadow-[0_-4px_24px_hsl(var(--foreground)/0.07)]"
   )}>
-    <div className="flex items-center justify-around px-2 py-1">
+    <div className="flex items-center justify-around px-1 py-0.5 overscroll-none">
       {PRIMARY_NAV.map(item => (
-        <BottomTab key={item.path} item={item} isActive={isPathActive(item.path, currentPath)} />
+        <BottomTab key={item.path} item={item} isActive={isPathActive(item.path, currentPath)} onTabSelect={onTabSelect} />
       ))}
     </div>
   </nav>
@@ -230,8 +235,17 @@ export default function AppLayout() {
   const [navPosition, setNavPosition] = useState("right");
   const [themeColor, setThemeColor] = useState(null);
   const [isLeader, setIsLeader] = useState(false);
+  const [displayPath, setDisplayPath] = useState(location.pathname);
+  const [selectedTab, setSelectedTab] = useState(location.pathname);
 
   useEffect(() => { loadPreferences(); }, []);
+
+  useEffect(() => {
+    setDisplayPath(location.pathname);
+    // Update selected tab based on current path
+    const tabRoot = PRIMARY_NAV.find(nav => location.pathname.startsWith(nav.path));
+    if (tabRoot) setSelectedTab(tabRoot.path);
+  }, [location.pathname]);
 
   const loadPreferences = useCallback(async () => {
     const user = await base44.auth.me();
@@ -253,21 +267,27 @@ export default function AppLayout() {
     document.documentElement.style.setProperty("--glow-primary", color);
   }, []);
 
-  const path = location.pathname;
+  const handleTabSelect = useCallback((tabPath) => {
+    if (selectedTab === tabPath) {
+      // Double-tap resets to root
+      setDisplayPath(tabPath);
+    }
+    setSelectedTab(tabPath);
+  }, [selectedTab]);
+
+  const path = displayPath;
   const outletCtx = { navPosition, setNavPosition, themeColor, setThemeColor, applyThemeColor, isLeader };
 
   const topBarClass = "fixed top-0 left-0 right-0 z-50 bg-card/85 backdrop-blur-2xl border-b border-border/50 shadow-[0_4px_24px_hsl(var(--foreground)/0.05)]";
 
   if (navPosition === "bottom") {
     return (
-      <div className="min-h-screen flex flex-col bg-background">
+      <div className="min-h-screen flex flex-col bg-background overscroll-none">
         <MobileTopBar />
-        <main className="flex-1 overflow-y-auto pb-[4.5rem] pt-[44px] md:pt-0">
+        <main className="flex-1 overflow-y-auto pb-[4.5rem] pt-[44px] md:pt-0" style={{ overscrollBehavior: 'none' }}>
           <Outlet context={outletCtx} />
         </main>
-        <div className={cn("fixed bottom-0 left-0 right-0 z-50 safe-bottom bg-card/85 backdrop-blur-2xl border-t border-border/50 shadow-[0_-4px_24px_hsl(var(--foreground)/0.07)]")}>
-          <TopNavBar currentPath={path} />
-        </div>
+        <BottomNav currentPath={path} onTabSelect={handleTabSelect} />
       </div>
     );
   }
@@ -304,12 +324,12 @@ export default function AppLayout() {
   // Default: right
   return (
     <div className="min-h-screen flex bg-background">
-      <main className="flex-1 overflow-y-auto md:mr-60 pb-20 md:pb-0 pt-[44px] md:pt-0">
+      <main className="flex-1 overflow-y-auto md:mr-60 pb-20 md:pb-0 pt-[44px] md:pt-0" style={{ overscrollBehavior: 'none' }}>
         <Outlet context={outletCtx} />
       </main>
       <MobileTopBar />
       <Sidebar currentPath={path} side="right" isLeader={isLeader} />
-      <BottomNav currentPath={path} />
+      <BottomNav currentPath={path} onTabSelect={handleTabSelect} />
     </div>
   );
 }

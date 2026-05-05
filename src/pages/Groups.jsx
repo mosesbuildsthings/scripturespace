@@ -162,9 +162,23 @@ export default function Groups() {
                         ))}
                       </div>
 
-                      {/* Leave button */}
+                      {/* Leave / Delete button */}
                       {!isLeader(g) && (
                         <Button size="sm" variant="destructive" className="w-full rounded-xl text-xs" onClick={() => handleLeave(g)}>Leave Group</Button>
+                      )}
+                      {isLeader(g) && (
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          className="w-full rounded-xl text-xs"
+                          onClick={async () => {
+                            if (!window.confirm("Delete this group permanently?")) return;
+                            await base44.entities.Group.delete(g.id);
+                            refresh();
+                          }}
+                        >
+                          Delete Group
+                        </Button>
                       )}
                     </div>
                   )}

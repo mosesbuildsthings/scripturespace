@@ -33,7 +33,7 @@ export default function BibleStudy() {
     p.description?.toLowerCase().includes(search.toLowerCase())
   );
 
-  const upcomingSessions = sessions.filter(s => s.status !== "ended");
+  const upcomingSessions = sessions.filter(s => s.status === "live" || s.status === "scheduled");
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">

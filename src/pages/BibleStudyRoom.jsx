@@ -111,8 +111,8 @@ export default function BibleStudyRoom() {
   };
 
   const endSession = async () => {
-    if (!window.confirm("End this session for everyone?")) return;
-    await base44.entities.BibleStudySession.update(session.id, { status: "ended" });
+    if (!window.confirm("End and delete this session for everyone?")) return;
+    await base44.entities.BibleStudySession.delete(session.id);
     navigate("/BibleStudy");
   };
 

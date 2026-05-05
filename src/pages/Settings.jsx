@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Check, AlignRight, AlignLeft, ArrowDown, ArrowUp, Bell, BellOff, Sun, Moon, LogOut, User, Globe, Search, X } from "lucide-react";
+import { Check, AlignRight, AlignLeft, ArrowDown, ArrowUp, Bell, BellOff, Sun, Moon, LogOut, User, Globe, Search, X, Crown } from "lucide-react";
 import VerificationRequestCard from "@/components/settings/VerificationRequestCard";
+import { Link } from "react-router-dom";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -585,6 +586,23 @@ export default function Settings() {
           </p>
         </CardContent>
       </Card>
+
+      {/* Leader Premium */}
+      <Link to="/LeaderPremium">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 p-5 text-white shadow-md hover:shadow-lg transition-shadow cursor-pointer">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -translate-y-6 translate-x-6 pointer-events-none" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Crown className="w-6 h-6 opacity-90" />
+              <div>
+                <p className="font-semibold text-sm">Leader / Pastor Premium</p>
+                <p className="text-xs text-amber-100">Unlock verified badge, groups & more — $7/mo</p>
+              </div>
+            </div>
+            <span className="text-xs font-bold bg-white/20 px-2.5 py-1 rounded-full">Upgrade →</span>
+          </div>
+        </div>
+      </Link>
 
       <VerificationRequestCard currentUser={currentUser} />
 

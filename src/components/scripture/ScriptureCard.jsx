@@ -34,15 +34,43 @@ const SCRIPTURES = [
   { reference: "Philippians 4:13", text: "I can do all things through him who strengthens me.", reflection: "This is not a promise of unlimited human achievement — it is a declaration that in Christ, we have access to a strength far beyond our own." },
 ];
 
+// 35 images — one per scripture, each themed to its verse/mood
 const NATURE_IMAGES = [
-  "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80",
-  "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&q=80",
-  "https://images.unsplash.com/photo-1470770903676-69b98201ea1c?w=800&q=80",
-  "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80",
-  "https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?w=800&q=80",
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80",
-  "https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=800&q=80",
-  "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800&q=80",
+  "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&q=80",  // Psalm 23 — green pastures
+  "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80",  // John 3:16 — mountain sunrise (God's love)
+  "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80",  // Proverbs 3 — forest path
+  "https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?w=800&q=80",  // Isaiah 40 — eagle sky / clouds
+  "https://images.unsplash.com/photo-1470770903676-69b98201ea1c?w=800&q=80",  // Romans 8:28 — stormy lake resolving
+  "https://images.unsplash.com/photo-1475924156734-496f6cac6ec1?w=800&q=80",  // Philippians 4 — calm misty lake
+  "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80",  // Joshua 1:9 — bold rocky summit
+  "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800&q=80",  // Jeremiah 29:11 — hopeful sunrise road
+  "https://images.unsplash.com/photo-1490750967868-88df5691cc91?w=800&q=80",  // Matthew 6:33 — wildflower field
+  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80",  // 2 Cor 5:17 — new dawn, new creation
+  "https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=800&q=80",  // Psalm 46:10 — still waterfall, be still
+  "https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?w=800&q=80",  // Galatians 5 — orchard fruit trees
+  "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&q=80",  // Hebrews 11:1 — starry night faith
+  "https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=80",  // Romans 12:2 — sunlit forest transformation
+  "https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=800&q=80",  // 1 Cor 13 — soft pink roses love
+  "https://images.unsplash.com/photo-1498429089284-41f8cf3ffd39?w=800&q=80",  // James 1 — stormy ocean trials
+  "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&q=80",  // Psalm 119 — lantern on a path
+  "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=800&q=80",  // John 14:6 — narrow winding path
+  "https://images.unsplash.com/photo-1487956382158-bb926046304a?w=800&q=80",  // Ephesians 2 — open hands grace
+  "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800&q=80",  // Psalm 34 — golden honey taste & see
+  "https://images.unsplash.com/photo-1526749837599-b4eba9fd855e?w=800&q=80",  // Matthew 11:28 — peaceful bench rest
+  "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=800&q=80",  // Lamentations 3 — morning sunrise mercies
+  "https://images.unsplash.com/photo-1516912481808-3406841bd33c?w=800&q=80",  // 1 John 4:19 — warm sunset love
+  "https://images.unsplash.com/photo-1491555103944-7c647fd857e6?w=800&q=80",  // Colossians 3:23 — craftsman hands working
+  "https://images.unsplash.com/photo-1506361797048-46a149213205?w=800&q=80",  // Psalm 27 — lighthouse salvation
+  "https://images.unsplash.com/photo-1559234945-b40b1c8bf97e?w=800&q=80",  // Micah 6:8 — village humble path
+  "https://images.unsplash.com/photo-1471922694854-ff1b63b20054?w=800&q=80",  // John 10:10 — vibrant meadow abundant life
+  "https://images.unsplash.com/photo-1503435980610-a51f3ddfee50?w=800&q=80",  // Romans 5:8 — cross on a hill
+  "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800&q=80",  // Deuteronomy 31:6 — brave cliff edge sunrise
+  "https://images.unsplash.com/photo-1504893524553-b855bce32c67?w=800&q=80",  // Philippians 4:13 — mountain climber strength
+  "https://images.unsplash.com/photo-1505765050516-f72dcac9c60e?w=800&q=80",  // Bonus — river of life
+  "https://images.unsplash.com/photo-1516912481808-3406841bd33c?w=800&q=80",  // Bonus — golden hour peace
+  "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?w=800&q=80",  // Bonus — tall trees worship
+  "https://images.unsplash.com/photo-1525598912003-663126343e1f?w=800&q=80",  // Bonus — winter stillness
+  "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=800&q=80",  // Bonus — mountain reflection
 ];
 
 function getDayIndex() {

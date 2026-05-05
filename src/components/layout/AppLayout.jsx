@@ -131,9 +131,7 @@ const Sidebar = memo(({ currentPath, side = "right", isLeader = false }) => (
     {/* Brand */}
     <div className="px-5 py-5 border-b border-border/40 shrink-0">
       <div className="flex items-center gap-2.5">
-        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-[0_2px_10px_hsl(var(--primary)/0.45)]">
-          <BookOpen className="w-4 h-4 text-primary-foreground" />
-        </div>
+        <img src="https://media.base44.com/images/public/69bade136722a0dcaf7f2a0e/480e392cd_ScriptureSpace_Icon_Only_App_256x256.png" alt="Scripture Space" className="w-8 h-8 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.15)]" />
         <span className="font-display font-bold text-base text-foreground tracking-tight">Scripture Space</span>
       </div>
     </div>
@@ -195,9 +193,7 @@ const MobileTopBar = memo(() => (
     "flex items-center justify-between px-4 py-2.5"
   )}>
     <div className="flex items-center gap-2">
-      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
-        <BookOpen className="w-3 h-3 text-primary-foreground" />
-      </div>
+      <img src="https://media.base44.com/images/public/69bade136722a0dcaf7f2a0e/480e392cd_ScriptureSpace_Icon_Only_App_256x256.png" alt="Scripture Space" className="w-6 h-6 rounded-lg shadow-sm" />
       <span className="font-display font-bold text-sm text-foreground">Scripture Space</span>
     </div>
     <ThemeToggleBtn compact />

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Check, AlignRight, AlignLeft, ArrowDown, ArrowUp, Bell, BellOff, Sun, Moon, LogOut, User, Globe } from "lucide-react";
+import { Check, AlignRight, AlignLeft, ArrowDown, ArrowUp, Bell, BellOff, Sun, Moon, LogOut, User, Globe, Search, X } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -517,40 +517,74 @@ export default function Settings() {
       </Card>
 
       {/* Language */}
-      <Card>
-        <CardHeader>
+      <Card className="border-primary/20 overflow-hidden">
+        <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center gap-2">
             <Globe className="w-5 h-5 text-primary" />
             App Language
           </CardTitle>
-          <CardDescription>Choose the language for the entire app including Bible reading</CardDescription>
+          <CardDescription>ScriptureSpace is for everyone — choose your language</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
-          <Input
-            placeholder="Search language..."
-            value={langSearch}
-            onChange={e => setLangSearch(e.target.value)}
-            className="h-9 text-sm"
-          />
-          <select
-            value={appLanguage}
-            onChange={e => setAppLanguage(e.target.value)}
-            size={6}
-            className="w-full text-sm border border-input rounded-md px-2 py-1 bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring overflow-y-auto"
-          >
-            {APP_LANGUAGES.filter(lang => lang.name.toLowerCase().includes(langSearch.toLowerCase())).map(lang => (
-              <option key={lang.code} value={lang.code}>{lang.name}</option>
-            ))}
-          </select>
-          {appLanguage && (
-            <p className="text-xs text-muted-foreground">Selected: <strong>{APP_LANGUAGES.find(l => l.code === appLanguage)?.name}</strong></p>
-          )}
-          <div className="bg-primary/5 border border-primary/20 rounded-lg px-3 py-2 space-y-1">
-            <p className="text-xs text-primary font-medium">🌍 How language works</p>
-            <p className="text-xs text-muted-foreground">
-              Changing your language will update the app interface and set the preferred Bible translation language. For full translation, your browser may also offer a translate option.
-            </p>
+          {/* Search input */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+            <Input
+              placeholder="Search any language..."
+              value={langSearch}
+              onChange={e => setLangSearch(e.target.value)}
+              className="pl-9 pr-9 h-10 text-sm rounded-xl border-primary/30 focus-visible:ring-primary/40 bg-muted/30"
+            />
+            {langSearch && (
+              <button onClick={() => setLangSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
+
+          {/* Selected badge */}
+          {appLanguage && (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">Selected:</span>
+              <span className="inline-flex items-center gap-1.5 bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full border border-primary/20">
+                <Globe className="w-3 h-3" />
+                {APP_LANGUAGES.find(l => l.code === appLanguage)?.name}
+              </span>
+            </div>
+          )}
+
+          {/* Language grid */}
+          {(() => {
+            const filtered = APP_LANGUAGES.filter(lang =>
+              lang.name.toLowerCase().includes(langSearch.toLowerCase())
+            );
+            return filtered.length === 0 ? (
+              <p className="text-center text-sm text-muted-foreground py-6">No languages found for "{langSearch}"</p>
+            ) : (
+              <div className="max-h-56 overflow-y-auto rounded-xl border border-border/60 divide-y divide-border/40 scrollbar-none">
+                {filtered.map(lang => (
+                  <button
+                    key={lang.code}
+                    onClick={() => setAppLanguage(lang.code)}
+                    className={cn(
+                      "w-full text-left px-4 py-2.5 text-sm transition-all duration-150 flex items-center justify-between group",
+                      appLanguage === lang.code
+                        ? "bg-primary/10 text-primary font-semibold"
+                        : "text-foreground hover:bg-accent/60"
+                    )}
+                  >
+                    <span>{lang.name}</span>
+                    {appLanguage === lang.code && <Check className="w-4 h-4 text-primary shrink-0" />}
+                  </button>
+                ))}
+              </div>
+            );
+          })()}
+
+          <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+            <Globe className="w-3 h-3 text-primary" />
+            🌍 Language preference is saved to your profile and applied app-wide.
+          </p>
         </CardContent>
       </Card>
 

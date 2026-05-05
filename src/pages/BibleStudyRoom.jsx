@@ -4,8 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Mic, MicOff, Hand, Send, Radio, Crown, Users, MessageCircle, ArrowLeft, Phone } from "lucide-react";
+import { Mic, MicOff, Hand, Send, Radio, Crown, Users, MessageCircle, ArrowLeft, Phone, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
+import useAudioRoom from "@/hooks/useAudioRoom";
 
 export default function BibleStudyRoom() {
   const navigate = useNavigate();
@@ -64,6 +65,18 @@ export default function BibleStudyRoom() {
 
   const role = myRole();
   const hasRaisedHand = (session?.raised_hands || []).includes(user?.email);
+
+  const isPanelistRole = role === "host" || role === "speaker";
+  const speakerEmails = [
+    ...(session?.hosts || []).map(h => h.email),
+    ...(session?.speakers || []).map(s => s.email),
+  ];
+  const { micOn, micError, toggleMic } = useAudioRoom(
+    sessionId,
+    user?.email,
+    isPanelistRole && session?.status === "live",
+    speakerEmails
+  );
 
   const raiseHand = async () => {
     if (!session || !user) return;
@@ -152,13 +165,32 @@ export default function BibleStudyRoom() {
             <Phone className="w-3 h-3 mr-1 rotate-135" /> End
           </Button>
         )}
+        {isPanelistRole && session.status === "live" && (
+          <Button
+            size="sm"
+            variant={micOn ? "default" : "outline"}
+            onClick={toggleMic}
+            className={`rounded-full text-xs gap-1 ${micOn ? "bg-red-500 hover:bg-red-600 border-0 text-white" : ""}`}
+          >
+            {micOn ? <Mic className="w-3.5 h-3.5" /> : <MicOff className="w-3.5 h-3.5" />}
+            {micOn ? "Mute" : "Unmute"}
+          </Button>
+        )}
       </div>
 
+      {/* Mic error */}
+      {micError && (
+        <div className="flex items-center gap-2 bg-destructive/10 border border-destructive/30 rounded-xl px-4 py-3 text-sm text-destructive">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>Microphone error: {micError}. Please allow microphone access and try again.</span>
+        </div>
+      )}
+
       {/* Hosts Panel */}
-      <PanelSection title="Hosts" icon={<Crown className="w-4 h-4 text-yellow-500" />} members={session.hosts || []} maxCount={3} />
+      <PanelSection title="Hosts" icon={<Crown className="w-4 h-4 text-yellow-500" />} members={session.hosts || []} maxCount={3} activeMic={micOn ? user?.email : null} />
 
       {/* Speakers Panel */}
-      <PanelSection title="Speakers" icon={<Mic className="w-4 h-4 text-primary" />} members={session.speakers || []} maxCount={9} />
+      <PanelSection title="Speakers" icon={<Mic className="w-4 h-4 text-primary" />} members={session.speakers || []} maxCount={9} activeMic={micOn ? user?.email : null} />
 
       {/* Raised Hands (host only) */}
       {isHost && (session.raised_hands || []).length > 0 && (
@@ -238,7 +270,7 @@ export default function BibleStudyRoom() {
   );
 }
 
-function PanelSection({ title, icon, members, maxCount }) {
+function PanelSection({ title, icon, members, maxCount, activeMic }) {
   return (
     <div className="bg-card rounded-2xl border p-4 space-y-3">
       <p className="text-sm font-semibold flex items-center gap-2">
@@ -250,8 +282,13 @@ function PanelSection({ title, icon, members, maxCount }) {
         <div className="flex flex-wrap gap-3">
           {members.map((m, i) => (
             <div key={i} className="flex flex-col items-center gap-1">
-              <div className="w-12 h-12 rounded-full bg-primary/15 flex items-center justify-center">
+              <div className={`w-12 h-12 rounded-full bg-primary/15 flex items-center justify-center relative ${activeMic === m.email ? "ring-2 ring-green-500 ring-offset-1" : ""}`}>
                 <span className="text-base font-bold text-primary">{(m.name || "U")[0].toUpperCase()}</span>
+                {activeMic === m.email && (
+                  <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                    <Mic className="w-2.5 h-2.5 text-white" />
+                  </span>
+                )}
               </div>
               <span className="text-xs text-center max-w-[60px] truncate">{m.name}</span>
               {m.is_muted && <MicOff className="w-3 h-3 text-muted-foreground" />}

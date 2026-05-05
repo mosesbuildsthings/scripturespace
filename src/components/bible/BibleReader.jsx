@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
-import { X, ChevronLeft, ChevronRight, Check, Loader2, BookOpen, Heart, Share2, Highlighter } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Check, Loader2, BookOpen, Heart, Share2, Highlighter, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -28,9 +29,17 @@ const BOOK_ID_MAP = {
 };
 
 export const TRANSLATIONS = [
+  { id: "NIV", name: "New International Version", short: "NIV" },
+  { id: "NKJV", name: "New King James Version", short: "NKJV" },
+  { id: "KJV", name: "King James Version", short: "KJV" },
+  { id: "ESV", name: "English Standard Version", short: "ESV" },
+  { id: "NLT", name: "New Living Translation", short: "NLT" },
+  { id: "NASB", name: "New American Standard Bible", short: "NASB" },
+  { id: "CSB", name: "Christian Standard Bible", short: "CSB" },
+  { id: "MSG", name: "The Message", short: "MSG" },
+  { id: "AMP", name: "Amplified Bible", short: "AMP" },
   { id: "BSB", name: "Berean Standard Bible", short: "BSB" },
   { id: "ENGWEBP", name: "World English Bible", short: "WEB" },
-  { id: "AAB", name: "Accessible Ancients Bible", short: "AAB" },
 ];
 
 const HIGHLIGHT_COLORS = ["#fef08a", "#bbf7d0", "#bae6fd", "#fbcfe8", "#e9d5ff"];
@@ -70,6 +79,8 @@ export default function BibleReader({ book, chapter, totalChapters, translation,
   const [savingVerse, setSavingVerse] = useState(null);
   const [selectedHighlightColor, setSelectedHighlightColor] = useState("#fef08a");
   const [sharingVerse, setSharingVerse] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
 
   const bookId = BOOK_ID_MAP[book?.name];
 
@@ -166,11 +177,32 @@ export default function BibleReader({ book, chapter, totalChapters, translation,
           <Button size="icon" variant="ghost" onClick={handleShareChapter} className="h-8 w-8 shrink-0" title="Share to Feed">
             <Share2 className="w-4 h-4 text-muted-foreground" />
           </Button>
+          <Button size="icon" variant="ghost" onClick={() => setShowSearch(s => !s)} className="h-8 w-8 shrink-0" title="Search in chapter">
+            <Search className="w-4 h-4 text-muted-foreground" />
+          </Button>
           <Button size="icon" variant="ghost" onClick={onClose} className="h-8 w-8 shrink-0">
             <X className="w-4 h-4" />
           </Button>
         </div>
       </div>
+
+      {/* Search bar */}
+      {showSearch && (
+        <div className="px-4 py-2 border-b bg-card/80">
+          <Input
+            autoFocus
+            placeholder="Search verses in this chapter..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className="h-8 text-sm"
+          />
+          {searchQuery && (
+            <p className="text-xs text-muted-foreground mt-1">
+              Showing verses matching "<strong>{searchQuery}</strong>"
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Highlight color picker bar */}
       <div className="flex items-center gap-2 px-4 py-2 border-b bg-card/50">
@@ -194,9 +226,15 @@ export default function BibleReader({ book, chapter, totalChapters, translation,
           <div className="space-y-1 text-foreground leading-8 text-base">
             {chapterData.chapter?.content?.map((item, i) => {
               if (item.type === "heading") {
+                if (searchQuery) return null;
                 return <h3 key={i} className="font-display font-bold text-primary text-lg mt-6 mb-2">{item.content?.join(" ")}</h3>;
               }
               if (item.type === "verse") {
+                // Filter by search query
+                if (searchQuery) {
+                  const verseText = extractVerseText(item.content).toLowerCase();
+                  if (!verseText.includes(searchQuery.toLowerCase())) return null;
+                }
                 const isSaved = savedVerseNums.has(item.number);
                 const isSaving = savingVerse === item.number;
                 return (

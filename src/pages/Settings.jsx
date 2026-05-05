@@ -4,7 +4,7 @@ import { useOutletContext } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Check, AlignRight, AlignLeft, ArrowDown, ArrowUp, Bell, BellOff, Sun, Moon, LogOut, User } from "lucide-react";
+import { Check, AlignRight, AlignLeft, ArrowDown, ArrowUp, Bell, BellOff, Sun, Moon, LogOut, User, Globe } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -31,6 +31,27 @@ const NAV_POSITIONS = [
   { value: "top", label: "Top", icon: ArrowUp },
 ];
 
+const APP_LANGUAGES = [
+  { code: "en", name: "English" },
+  { code: "es", name: "Español (Spanish)" },
+  { code: "fr", name: "Français (French)" },
+  { code: "pt", name: "Português (Portuguese)" },
+  { code: "de", name: "Deutsch (German)" },
+  { code: "zh", name: "中文 (Chinese)" },
+  { code: "ko", name: "한국어 (Korean)" },
+  { code: "ja", name: "日本語 (Japanese)" },
+  { code: "hi", name: "हिन्दी (Hindi)" },
+  { code: "sw", name: "Kiswahili (Swahili)" },
+  { code: "yo", name: "Yorùbá" },
+  { code: "ig", name: "Igbo" },
+  { code: "ha", name: "Hausa" },
+  { code: "ar", name: "العربية (Arabic)" },
+  { code: "ru", name: "Русский (Russian)" },
+  { code: "nl", name: "Nederlands (Dutch)" },
+  { code: "tl", name: "Filipino/Tagalog" },
+  { code: "id", name: "Bahasa Indonesia" },
+];
+
 export default function Settings() {
   const context = useOutletContext();
   const [selectedColor, setSelectedColor] = useState("25 45% 42%");
@@ -44,6 +65,7 @@ export default function Settings() {
   const [readingReminderTime, setReadingReminderTime] = useState("07:00");
   const [notifPermission, setNotifPermission] = useState(typeof Notification !== "undefined" ? Notification.permission : "default");
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [appLanguage, setAppLanguage] = useState("en");
 
   useEffect(() => {
     loadSettings();
@@ -62,6 +84,7 @@ export default function Settings() {
       setDarkMode(user.dark_mode);
       document.documentElement.classList.toggle("dark", user.dark_mode);
     }
+    if (user?.app_language) setAppLanguage(user.app_language);
   };
 
   const handleColorSelect = (color) => {
@@ -149,7 +172,10 @@ export default function Settings() {
       reading_reminder_enabled: readingReminderEnabled,
       reading_reminder_time: readingReminderTime,
       dark_mode: darkMode,
+      app_language: appLanguage,
     });
+    // Apply language to document for browser-native translation hint
+    document.documentElement.setAttribute("lang", appLanguage);
     document.documentElement.classList.toggle("dark", darkMode);
 
     if (notificationsEnabled && notifPermission === "granted") {
@@ -400,6 +426,34 @@ export default function Settings() {
               </p>
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Language */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Globe className="w-5 h-5 text-primary" />
+            App Language
+          </CardTitle>
+          <CardDescription>Choose the language for the entire app including Bible reading</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <select
+            value={appLanguage}
+            onChange={e => setAppLanguage(e.target.value)}
+            className="w-full text-sm border border-input rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+          >
+            {APP_LANGUAGES.map(lang => (
+              <option key={lang.code} value={lang.code}>{lang.name}</option>
+            ))}
+          </select>
+          <div className="bg-primary/5 border border-primary/20 rounded-lg px-3 py-2 space-y-1">
+            <p className="text-xs text-primary font-medium">🌍 How language works</p>
+            <p className="text-xs text-muted-foreground">
+              Changing your language will update the app interface and set the preferred Bible translation language. For full translation, your browser may also offer a translate option.
+            </p>
+          </div>
         </CardContent>
       </Card>
 

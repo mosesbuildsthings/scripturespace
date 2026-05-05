@@ -6,8 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Edit2, Camera, MapPin, Clock, Users, BookOpen, Loader2, X, Check, MessageSquare } from "lucide-react";
+import { ArrowLeft, Edit2, Camera, MapPin, Clock, Users, BookOpen, Loader2, X, Check, MessageSquare, Heart, History } from "lucide-react";
 import SendMessageDialog from "@/components/profile/SendMessageDialog";
+import MyCollection from "@/components/profile/MyCollection";
+import ReadingHistory from "@/components/profile/ReadingHistory";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { format } from "date-fns";
 
 const COUNTRIES = [
@@ -247,6 +250,28 @@ export default function UserProfile() {
           </Link>
         ))}
       </div>
+
+      {/* My Collection & History — only show on own profile */}
+      {isOwn && (
+        <div className="bg-card rounded-2xl border p-5">
+          <Tabs defaultValue="collection">
+            <TabsList className="w-full mb-4">
+              <TabsTrigger value="collection" className="flex-1 gap-1.5">
+                <Heart className="w-3.5 h-3.5" /> My Collection
+              </TabsTrigger>
+              <TabsTrigger value="history" className="flex-1 gap-1.5">
+                <History className="w-3.5 h-3.5" /> History
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="collection">
+              <MyCollection userEmail={user?.email} />
+            </TabsContent>
+            <TabsContent value="history">
+              <ReadingHistory userEmail={user?.email} />
+            </TabsContent>
+          </Tabs>
+        </div>
+      )}
     <SendMessageDialog open={showMessage} onClose={() => setShowMessage(false)} toProfile={profile} currentUser={user} />
     </div>
   );

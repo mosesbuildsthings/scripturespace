@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Edit2, Camera, MapPin, Clock, Users, BookOpen, Loader2, X, Check, MessageSquare, Heart, History, Settings } from "lucide-react";
 import LeaderBadge from "@/components/shared/LeaderBadge";
+import UserBadgeDisplay from "@/components/shared/UserBadgeDisplay";
 import ProfileBadges from "@/components/profile/ProfileBadges";
 import SendMessageDialog from "@/components/profile/SendMessageDialog";
 import MyCollection from "@/components/profile/MyCollection";
@@ -31,6 +32,7 @@ export default function UserProfile() {
   const [profile, setProfile] = useState(null);
   const [profileUser, setProfileUser] = useState(null); // User entity for the viewed profile
   const [sessions, setSessions] = useState([]);
+  const [badges, setBadges] = useState([]);
   const [editing, setEditing] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -65,6 +67,10 @@ export default function UserProfile() {
     // Load User entity for badge
     const userRecords = await base44.entities.User.filter({ email });
     if (userRecords[0]) setProfileUser(userRecords[0]);
+
+    // Load user achievement badges
+    const userBadges = await base44.entities.UserBadge.filter({ user_email: email });
+    setBadges(userBadges);
 
     const allSessions = await base44.entities.BibleStudySession.list("-created_date", 20);
     setSessions(allSessions.filter(s => (s.hosts || []).some(h => h.email === email) || (s.speakers || []).some(sp => sp.email === email)));
@@ -163,24 +169,25 @@ export default function UserProfile() {
           <div className="w-16 h-16 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
             <span className="text-2xl font-bold text-primary">{(profile.user_name || "U")[0].toUpperCase()}</span>
           </div>
-          <div className="flex-1 space-y-1">
-            <div className="flex items-center gap-2">
-              <h2 className="text-lg font-bold text-foreground">{profile.user_name}</h2>
-              <LeaderBadge user={profileUser || user} />
-            </div>
-            {profile.country && (
-              <p className="text-sm text-muted-foreground flex items-center gap-1"><MapPin className="w-3 h-3" />{profile.country}</p>
-            )}
-            {time && <p className="text-sm text-muted-foreground flex items-center gap-1"><Clock className="w-3 h-3" />Local time: {time}</p>}
-            <div className="flex items-center gap-3 text-sm text-muted-foreground">
-              <span><strong className="text-foreground">{(profile.followers || []).length}</strong> followers</span>
-              <span><strong className="text-foreground">{(profile.following || []).length}</strong> following</span>
-            </div>
-            <ProfileBadges
-              userEmail={viewEmail || user?.email}
-              profile={profile}
-              sessions={sessions}
-            />
+          <div className="flex-1 space-y-3">
+           <div className="flex items-center gap-2">
+             <h2 className="text-lg font-bold text-foreground">{profile.user_name}</h2>
+             <LeaderBadge user={profileUser || user} />
+           </div>
+           {profile.country && (
+             <p className="text-sm text-muted-foreground flex items-center gap-1"><MapPin className="w-3 h-3" />{profile.country}</p>
+           )}
+           {time && <p className="text-sm text-muted-foreground flex items-center gap-1"><Clock className="w-3 h-3" />Local time: {time}</p>}
+           <div className="flex items-center gap-3 text-sm text-muted-foreground">
+             <span><strong className="text-foreground">{(profile.followers || []).length}</strong> followers</span>
+             <span><strong className="text-foreground">{(profile.following || []).length}</strong> following</span>
+           </div>
+           {badges.length > 0 && <UserBadgeDisplay badges={badges} />}
+           <ProfileBadges
+             userEmail={viewEmail || user?.email}
+             profile={profile}
+             sessions={sessions}
+           />
           </div>
           {!isOwn && (
             <div className="flex gap-2 shrink-0">

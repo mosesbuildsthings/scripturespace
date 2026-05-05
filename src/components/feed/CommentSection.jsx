@@ -34,14 +34,6 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       content: newComment.trim(),
     });
 
-    // Update comment count on the post
-    const post = (await base44.entities.Post.filter({ id: postId }))[0];
-    if (post) {
-      await base44.entities.Post.update(postId, {
-        comment_count: (post.comment_count || 0) + 1,
-      });
-    }
-
     setNewComment("");
     setSubmitting(false);
     loadComments();

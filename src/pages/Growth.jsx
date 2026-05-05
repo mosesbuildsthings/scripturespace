@@ -24,12 +24,14 @@ export default function Growth() {
     queryKey: ["goals", user?.email],
     enabled: !!user,
     queryFn: () => base44.entities.Goal.filter({ user_email: user.email, is_active: true }, "-created_date", 50),
+    staleTime: 30_000,
   });
 
   const { data: journalEntries = [] } = useQuery({
     queryKey: ["journal_entries_growth", user?.email],
     enabled: !!user,
     queryFn: () => base44.entities.JournalEntry.filter({ user_email: user.email }, "-entry_date", 60),
+    staleTime: 60_000,
   });
 
   const refresh = () => queryClient.invalidateQueries({ queryKey: ["goals", user?.email] });

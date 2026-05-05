@@ -150,6 +150,8 @@ export default function PostCard({ post, currentUser, onUpdate, onDelete }) {
           <img
             src={post.image_url}
             alt="Post"
+            loading="lazy"
+            decoding="async"
             className="w-full rounded-xl object-cover max-h-96"
           />
         </div>

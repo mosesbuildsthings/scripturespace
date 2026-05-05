@@ -14,13 +14,13 @@ export default function Home() {
     base44.auth.me().then(setUser);
   }, []);
 
-  const { data: posts, isLoading } = useQuery({
+  const { data: posts = [], isLoading } = useQuery({
     queryKey: ["home-posts"],
     queryFn: () => base44.entities.Post.list("-created_date", 10),
-    initialData: [],
+    staleTime: 30_000,
   });
 
-  const visiblePosts = posts.filter(
+  const visiblePosts = (posts || []).filter(
     (p) => !(p.hidden_by || []).includes(user?.email)
   );
 

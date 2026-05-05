@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,8 +31,8 @@ export default function UserProfile() {
   const [uploadingIdx, setUploadingIdx] = useState(null);
   const [form, setForm] = useState({ country: "", timezone: "", bio: "", photos: [] });
 
-  const params = new URLSearchParams(window.location.search);
-  const viewEmail = params.get("email");
+  const [searchParams] = useSearchParams();
+  const viewEmail = searchParams.get("email");
 
   useEffect(() => {
     base44.auth.me().then(u => {

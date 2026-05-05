@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useCallback } from "react";
 import { Check, BookOpen, Calendar, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -77,17 +77,29 @@ export default function YearPlan({ readChaptersMap, onRead, onMarkRead, user }) 
   const todayDay = getDayOfYear();
   const [expandedWeek, setExpandedWeek] = useState(Math.ceil(todayDay / 7));
 
-  // Check if a day's readings are fully completed
-  const isDayComplete = (dayEntry) =>
-    dayEntry.readings.every((r) => (readChaptersMap[r.book] || []).includes(r.chapter));
+  // Build a fast lookup set: "book|chapter" => true
+  const readSet = useMemo(() => {
+    const set = new Set();
+    for (const [book, chapters] of Object.entries(readChaptersMap)) {
+      for (const ch of chapters) set.add(`${book}|${ch}`);
+    }
+    return set;
+  }, [readChaptersMap]);
 
-  const isDayPartial = (dayEntry) =>
-    dayEntry.readings.some((r) => (readChaptersMap[r.book] || []).includes(r.chapter)) &&
-    !isDayComplete(dayEntry);
+  const isChapterRead = useCallback((book, chapter) => readSet.has(`${book}|${chapter}`), [readSet]);
+
+  const isDayComplete = useCallback((dayEntry) =>
+    dayEntry.readings.every((r) => readSet.has(`${r.book}|${r.chapter}`)), [readSet]);
+
+  const isDayPartial = useCallback((dayEntry) => {
+    const some = dayEntry.readings.some((r) => readSet.has(`${r.book}|${r.chapter}`));
+    const all = dayEntry.readings.every((r) => readSet.has(`${r.book}|${r.chapter}`));
+    return some && !all;
+  }, [readSet]);
 
   const completedDays = useMemo(
     () => YEAR_PLAN.filter((d) => isDayComplete(d)).length,
-    [readChaptersMap]
+    [readSet]
   );
 
   const handleMarkDayRead = async (dayEntry) => {
@@ -160,7 +172,7 @@ export default function YearPlan({ readChaptersMap, onRead, onMarkRead, user }) 
             </div>
             <div className="flex flex-wrap gap-2">
               {todayEntry.readings.map((r) => {
-                const isRead = (readChaptersMap[r.book] || []).includes(r.chapter);
+                const isRead = isChapterRead(r.book, r.chapter);
                 return (
                   <button
                     key={`${r.book}-${r.chapter}`}
@@ -239,7 +251,7 @@ export default function YearPlan({ readChaptersMap, onRead, onMarkRead, user }) 
                           </p>
                           <div className="flex flex-wrap gap-1.5">
                             {dayEntry.readings.map((r) => {
-                              const isRead = (readChaptersMap[r.book] || []).includes(r.chapter);
+                              const isRead = isChapterRead(r.book, r.chapter);
                               return (
                                 <button
                                   key={`${r.book}-${r.chapter}`}

@@ -70,20 +70,18 @@ export default function BibleReader({ book, chapter, totalChapters, translation,
   const handleNext = () => setCurrentChapter((c) => Math.min(totalChapters, c + 1));
 
   return (
-    <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex flex-col">
+    <div className="fixed inset-0 z-50 bg-background flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b bg-card shadow-sm">
-        <div className="flex items-center gap-3">
-          <BookOpen className="w-5 h-5 text-primary" />
-          <div>
-            <p className="font-semibold text-foreground text-sm">
-              {book?.name} — Chapter {currentChapter}
-            </p>
-          </div>
+      <div className="flex items-center justify-between px-3 py-2 border-b bg-card shadow-sm shrink-0 flex-wrap gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <BookOpen className="w-4 h-4 text-primary shrink-0" />
+          <p className="font-semibold text-foreground text-sm truncate">
+            {book?.name} {currentChapter}
+          </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 shrink-0">
           <Select value={translation} onValueChange={onTranslationChange}>
-            <SelectTrigger className="h-8 text-xs w-36">
+            <SelectTrigger className="h-8 text-xs w-28">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -98,19 +96,19 @@ export default function BibleReader({ book, chapter, totalChapters, translation,
             size="sm"
             variant={isRead ? "secondary" : "default"}
             onClick={() => onMarkRead(currentChapter, isRead)}
-            className="h-8 text-xs gap-1"
+            className="h-8 text-xs gap-1 px-2"
           >
             {isRead ? <Check className="w-3 h-3" /> : null}
-            {isRead ? "Read" : "Mark Read"}
+            {isRead ? "Read ✓" : "Mark Read"}
           </Button>
-          <Button size="icon" variant="ghost" onClick={onClose} className="h-8 w-8">
+          <Button size="icon" variant="ghost" onClick={onClose} className="h-8 w-8 shrink-0">
             <X className="w-4 h-4" />
           </Button>
         </div>
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 max-w-2xl mx-auto w-full">
+      <div className="flex-1 overflow-y-auto px-4 py-6 max-w-2xl mx-auto w-full" style={{WebkitOverflowScrolling: 'touch'}}>
         {loading ? (
           <div className="flex justify-center pt-20">
             <Loader2 className="w-8 h-8 animate-spin text-primary" />

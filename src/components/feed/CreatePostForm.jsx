@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,6 +15,11 @@ export default function CreatePostForm({ currentUser, onPostCreated, inline = fa
   const [showVerseInput, setShowVerseInput] = useState(false);
   const [posting, setPosting] = useState(false);
   const navigate = useNavigate();
+
+  // Cleanup object URL on unmount to prevent memory leaks
+  React.useEffect(() => {
+    return () => { if (imagePreview) URL.revokeObjectURL(imagePreview); };
+  }, [imagePreview]);
 
   const handleImageSelect = (e) => {
     const file = e.target.files[0];

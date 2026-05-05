@@ -31,6 +31,7 @@ export default function BibleReading() {
     queryKey: ["bible-progress", user?.email],
     queryFn: () => base44.entities.BibleProgress.filter({ user_email: user.email }),
     enabled: !!user,
+    staleTime: 60_000,
   });
 
   const readChaptersMap = useMemo(() => {
@@ -45,20 +46,19 @@ export default function BibleReading() {
   const totalRead = progress.length;
 
   const streak = useMemo(() => {
+    if (!progress.length) return 0;
     const dates = new Set(progress.map((p) => p.read_date));
     let count = 0;
+    // Start from today; if today not read, start from yesterday
     let day = new Date();
-    while (true) {
+    const todayKey = format(day, "yyyy-MM-dd");
+    if (!dates.has(todayKey)) day = subDays(day, 1);
+    while (count < 366) {
       const key = format(day, "yyyy-MM-dd");
       if (dates.has(key)) {
         count++;
         day = subDays(day, 1);
       } else {
-        if (count === 0) {
-          day = subDays(day, 1);
-          const key2 = format(day, "yyyy-MM-dd");
-          if (dates.has(key2)) { count++; day = subDays(day, 1); continue; }
-        }
         break;
       }
     }

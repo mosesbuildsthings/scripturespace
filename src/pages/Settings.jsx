@@ -11,18 +11,18 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 const THEME_COLORS = [
-  { name: "Warm Earth", value: "25 45% 42%", preview: "hsl(25, 45%, 42%)" },
-  { name: "Sage Green", value: "150 25% 40%", preview: "hsl(150, 25%, 40%)" },
-  { name: "Dusty Rose", value: "350 30% 52%", preview: "hsl(350, 30%, 52%)" },
-  { name: "Ocean Blue", value: "210 35% 45%", preview: "hsl(210, 35%, 45%)" },
-  { name: "Lavender", value: "270 25% 52%", preview: "hsl(270, 25%, 52%)" },
-  { name: "Golden Amber", value: "38 55% 48%", preview: "hsl(38, 55%, 48%)" },
-  { name: "Deep Teal", value: "180 30% 38%", preview: "hsl(180, 30%, 38%)" },
-  { name: "Soft Plum", value: "290 20% 45%", preview: "hsl(290, 20%, 45%)" },
-  { name: "Terracotta", value: "15 50% 50%", preview: "hsl(15, 50%, 50%)" },
-  { name: "Forest", value: "140 30% 35%", preview: "hsl(140, 30%, 35%)" },
-  { name: "Slate", value: "220 15% 42%", preview: "hsl(220, 15%, 42%)" },
-  { name: "Burgundy", value: "340 40% 38%", preview: "hsl(340, 40%, 38%)" },
+  { name: "Sunset Orange", value: "22 95% 52%", preview: "hsl(22, 95%, 52%)" },
+  { name: "Emerald", value: "152 70% 40%", preview: "hsl(152, 70%, 40%)" },
+  { name: "Hot Pink", value: "340 80% 58%", preview: "hsl(340, 80%, 58%)" },
+  { name: "Sky Blue", value: "204 90% 50%", preview: "hsl(204, 90%, 50%)" },
+  { name: "Violet", value: "262 75% 58%", preview: "hsl(262, 75%, 58%)" },
+  { name: "Golden Yellow", value: "42 95% 52%", preview: "hsl(42, 95%, 52%)" },
+  { name: "Cyan Teal", value: "180 75% 38%", preview: "hsl(180, 75%, 38%)" },
+  { name: "Magenta", value: "290 70% 55%", preview: "hsl(290, 70%, 55%)" },
+  { name: "Coral Red", value: "10 85% 56%", preview: "hsl(10, 85%, 56%)" },
+  { name: "Lime Green", value: "130 65% 42%", preview: "hsl(130, 65%, 42%)" },
+  { name: "Royal Blue", value: "225 80% 55%", preview: "hsl(225, 80%, 55%)" },
+  { name: "Crimson", value: "350 80% 48%", preview: "hsl(350, 80%, 48%)" },
 ];
 
 const NAV_POSITIONS = [

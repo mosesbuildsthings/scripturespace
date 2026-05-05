@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Check, AlignRight, AlignLeft, ArrowDown, ArrowUp, Bell, BellOff, Sun, Moon, LogOut, User, Globe, Search, X, Crown, Trash2 } from "lucide-react";
+import { NativeSelect } from "@/components/ui/native-select";
 import VerificationRequestCard from "@/components/settings/VerificationRequestCard";
 import { Link } from "react-router-dom";
 import { Switch } from "@/components/ui/switch";
@@ -571,7 +572,7 @@ export default function Settings() {
       </Card>
 
       {/* Language */}
-      <Card className="border-primary/20 overflow-hidden">
+      <Card className="border-primary/20">
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center gap-2">
             <Globe className="w-5 h-5 text-primary" />
@@ -580,60 +581,18 @@ export default function Settings() {
           <CardDescription>ScriptureSpace is for everyone — choose your language</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
-          {/* Search input */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-            <Input
-              placeholder="Search any language..."
-              value={langSearch}
-              onChange={e => setLangSearch(e.target.value)}
-              className="pl-9 pr-9 h-10 text-sm rounded-xl border-primary/30 focus-visible:ring-primary/40 bg-muted/30"
-            />
-            {langSearch && (
-              <button onClick={() => setLangSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </div>
-
-          {/* Selected badge */}
-          {appLanguage && (
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">Selected:</span>
-              <span className="inline-flex items-center gap-1.5 bg-primary/10 text-primary text-xs font-semibold px-3 py-1 rounded-full border border-primary/20">
-                <Globe className="w-3 h-3" />
-                {APP_LANGUAGES.find(l => l.code === appLanguage)?.name}
-              </span>
-            </div>
-          )}
-
-          {/* Language grid */}
-          {(() => {
-            const filtered = APP_LANGUAGES.filter(lang =>
-              lang.name.toLowerCase().includes(langSearch.toLowerCase())
-            );
-            return filtered.length === 0 ? (
-              <p className="text-center text-sm text-muted-foreground py-6">No languages found for "{langSearch}"</p>
-            ) : (
-              <div className="max-h-56 overflow-y-auto rounded-xl border border-border/60 divide-y divide-border/40 scrollbar-none">
-                {filtered.map(lang => (
-                  <button
-                    key={lang.code}
-                    onClick={() => setAppLanguage(lang.code)}
-                    className={cn(
-                      "w-full text-left px-4 py-2.5 text-sm transition-all duration-150 flex items-center justify-between group",
-                      appLanguage === lang.code
-                        ? "bg-primary/10 text-primary font-semibold"
-                        : "text-foreground hover:bg-accent/60"
-                    )}
-                  >
-                    <span>{lang.name}</span>
-                    {appLanguage === lang.code && <Check className="w-4 h-4 text-primary shrink-0" />}
-                  </button>
-                ))}
-              </div>
-            );
-          })()}
+          {/* Native select for mobile, searchable for desktop */}
+          <NativeSelect 
+            value={appLanguage}
+            onChange={setAppLanguage}
+            label="Select language"
+          >
+            {APP_LANGUAGES.map(lang => (
+              <option key={lang.code} value={lang.code}>
+                {lang.name}
+              </option>
+            ))}
+          </NativeSelect>
 
           <p className="text-xs text-muted-foreground flex items-center gap-1.5">
             <Globe className="w-3 h-3 text-primary" />

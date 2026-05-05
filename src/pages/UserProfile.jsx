@@ -7,6 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Edit2, Camera, MapPin, Clock, Users, BookOpen, Loader2, X, Check, MessageSquare, Heart, History, Settings } from "lucide-react";
+import { NativeSelect } from "@/components/ui/native-select";
+import BackButton from "@/components/shared/BackButton";
 import LeaderBadge from "@/components/shared/LeaderBadge";
 import UserBadgeDisplay from "@/components/shared/UserBadgeDisplay";
 import ProfileBadges from "@/components/profile/ProfileBadges";
@@ -141,7 +143,7 @@ export default function UserProfile() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" className="rounded-full" onClick={() => window.history.back()}><ArrowLeft className="w-5 h-5" /></Button>
+        <BackButton variant="ghost" />
         <h1 className="text-xl font-display font-bold flex-1">Profile</h1>
         {isOwn && !editing && (
           <div className="flex items-center gap-2">
@@ -210,17 +212,27 @@ export default function UserProfile() {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1">
                 <Label className="text-xs">Country</Label>
-                <select value={form.country} onChange={e => setForm(f => ({ ...f, country: e.target.value }))} className="w-full text-sm border border-input rounded-md p-2 bg-background">
+                <NativeSelect 
+                  value={form.country} 
+                  onChange={e => setForm(f => ({ ...f, country: e }))}
+                  label="Select country"
+                  className="text-sm"
+                >
                   <option value="">Select country</option>
                   {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
-                </select>
+                </NativeSelect>
               </div>
               <div className="space-y-1">
                 <Label className="text-xs">Timezone</Label>
-                <select value={form.timezone} onChange={e => setForm(f => ({ ...f, timezone: e.target.value }))} className="w-full text-sm border border-input rounded-md p-2 bg-background">
+                <NativeSelect 
+                  value={form.timezone} 
+                  onChange={e => setForm(f => ({ ...f, timezone: e }))}
+                  label="Select timezone"
+                  className="text-sm"
+                >
                   <option value="">Select timezone</option>
                   {TIMEZONES.map(tz => <option key={tz} value={tz}>{tz}</option>)}
-                </select>
+                </NativeSelect>
               </div>
             </div>
           </div>

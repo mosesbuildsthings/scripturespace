@@ -284,7 +284,13 @@ export default function AppLayout() {
     return (
       <div className="min-h-screen flex flex-col bg-background overscroll-none">
         <MobileTopBar />
-        <main className="flex-1 overflow-y-auto pb-[4.5rem] pt-[44px] md:pt-0" style={{ overscrollBehavior: 'none' }}>
+        <main 
+          className="flex-1 overflow-y-auto pb-[calc(4.5rem+env(safe-area-inset-bottom))] pt-[calc(44px+env(safe-area-inset-top))] md:pt-0" 
+          style={{ 
+            overscrollBehavior: 'none',
+            WebkitOverflowScrolling: 'touch'
+          }}
+        >
           <Outlet context={outletCtx} />
         </main>
         <BottomNav currentPath={path} onTabSelect={handleTabSelect} />
@@ -324,7 +330,13 @@ export default function AppLayout() {
   // Default: right
   return (
     <div className="min-h-screen flex bg-background">
-      <main className="flex-1 overflow-y-auto md:mr-60 pb-20 md:pb-0 pt-[44px] md:pt-0" style={{ overscrollBehavior: 'none' }}>
+      <main 
+        className="flex-1 overflow-y-auto md:mr-60 pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0 pt-[calc(44px+env(safe-area-inset-top))] md:pt-0" 
+        style={{ 
+          overscrollBehavior: 'none',
+          WebkitOverflowScrolling: 'touch'
+        }}
+      >
         <Outlet context={outletCtx} />
       </main>
       <MobileTopBar />

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, memo } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import {
-  Home, Rss, BookOpen, Mic2, Users, UserCircle, LogOut, Settings, ChevronRight
+  Home, Rss, BookOpen, Mic2, Users, UserCircle, LogOut, Settings, ChevronRight, Crown
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { cn } from "@/lib/utils";
@@ -63,7 +63,7 @@ const BottomTab = memo(({ item, isActive }) => (
 ));
 
 /* ─── Sidebar ─── */
-const Sidebar = memo(({ currentPath, side = "right" }) => (
+const Sidebar = memo(({ currentPath, side = "right", isLeader = false }) => (
   <aside className={cn(
     "hidden md:flex flex-col fixed top-0 bottom-0 w-60 z-50",
     "bg-card/80 backdrop-blur-2xl",
@@ -91,6 +91,20 @@ const Sidebar = memo(({ currentPath, side = "right" }) => (
 
     {/* Footer actions */}
     <div className="px-3 py-4 border-t border-border/40 shrink-0 space-y-0.5">
+      {isLeader && (
+        <Link
+          to="/LeaderDashboard"
+          className={cn(
+            "flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
+            currentPath === "/LeaderDashboard"
+              ? "bg-gradient-to-r from-amber-500 to-amber-400 text-white shadow-[0_2px_12px_hsl(36,88%,50%/0.40)]"
+              : "text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
+          )}
+        >
+          <Crown className="w-[18px] h-[18px] shrink-0" />
+          Leader Dashboard
+        </Link>
+      )}
       <Link
         to="/Settings"
         className={cn(
@@ -142,12 +156,14 @@ export default function AppLayout() {
   const location = useLocation();
   const [navPosition, setNavPosition] = useState("right");
   const [themeColor, setThemeColor] = useState(null);
+  const [isLeader, setIsLeader] = useState(false);
 
   useEffect(() => { loadPreferences(); }, []);
 
   const loadPreferences = useCallback(async () => {
     const user = await base44.auth.me();
     if (user?.nav_position) setNavPosition(user.nav_position);
+    if (["admin", "leader", "pastor"].includes(user?.role)) setIsLeader(true);
     if (user?.theme_color) {
       setThemeColor(user.theme_color);
       applyThemeColor(user.theme_color);
@@ -165,7 +181,7 @@ export default function AppLayout() {
   }, []);
 
   const path = location.pathname;
-  const outletCtx = { navPosition, setNavPosition, themeColor, setThemeColor, applyThemeColor };
+  const outletCtx = { navPosition, setNavPosition, themeColor, setThemeColor, applyThemeColor, isLeader };
 
   const topBarClass = "fixed top-0 left-0 right-0 z-50 bg-card/85 backdrop-blur-2xl border-b border-border/50 shadow-[0_4px_24px_hsl(var(--foreground)/0.05)]";
 
@@ -198,7 +214,7 @@ export default function AppLayout() {
   if (navPosition === "left") {
     return (
       <div className="min-h-screen flex bg-background">
-        <Sidebar currentPath={path} side="left" />
+        <Sidebar currentPath={path} side="left" isLeader={isLeader} />
         <main className="flex-1 overflow-y-auto md:ml-60 pb-20 md:pb-0">
           <Outlet context={outletCtx} />
         </main>
@@ -213,7 +229,7 @@ export default function AppLayout() {
       <main className="flex-1 overflow-y-auto md:mr-60 pb-20 md:pb-0">
         <Outlet context={outletCtx} />
       </main>
-      <Sidebar currentPath={path} side="right" />
+      <Sidebar currentPath={path} side="right" isLeader={isLeader} />
       <BottomNav currentPath={path} />
     </div>
   );

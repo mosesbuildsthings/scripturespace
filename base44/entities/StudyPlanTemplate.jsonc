@@ -1,0 +1,35 @@
+{
+  "name": "StudyPlanTemplate",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "verses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of scripture references"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "created_by": {
+      "type": "string"
+    },
+    "creator_name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "created_by"
+  ]
+}

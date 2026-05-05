@@ -27,7 +27,18 @@ export default function CreateBibleStudyPlan() {
       // Check if coming from scripture page
       const params = new URLSearchParams(window.location.search);
       const scripture = params.get("scripture");
+      const tplTitle = params.get("title");
+      const tplDesc = params.get("description");
+      const tplVerses = params.get("verses");
       if (scripture) setForm(f => ({ ...f, origin_scripture: scripture, verses: [scripture] }));
+      if (tplTitle || tplVerses) {
+        setForm(f => ({
+          ...f,
+          title: tplTitle || f.title,
+          description: tplDesc || f.description,
+          verses: tplVerses ? tplVerses.split("\n").filter(Boolean) : f.verses,
+        }));
+      }
     });
   }, []);
 

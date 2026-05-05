@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
+import StudyPlanTemplates from "@/components/leader/StudyPlanTemplates";
 
 export default function LeaderDashboard() {
   const [user, setUser] = useState(null);
@@ -117,6 +118,13 @@ export default function LeaderDashboard() {
               {c.end_date && <Badge variant="outline" className="text-xs">{format(new Date(c.end_date), "MMM d")}</Badge>}
             </div>
           ))}
+        </CardContent>
+      </Card>
+
+      {/* Study Plan Templates */}
+      <Card>
+        <CardContent className="pt-5">
+          <StudyPlanTemplates user={user} />
         </CardContent>
       </Card>
 

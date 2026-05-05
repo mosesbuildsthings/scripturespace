@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Edit2, Camera, MapPin, Clock, Users, BookOpen, Loader2, X, Check, MessageSquare, Heart, History, Settings } from "lucide-react";
 import LeaderBadge from "@/components/shared/LeaderBadge";
+import ProfileBadges from "@/components/profile/ProfileBadges";
 import SendMessageDialog from "@/components/profile/SendMessageDialog";
 import MyCollection from "@/components/profile/MyCollection";
 import ReadingHistory from "@/components/profile/ReadingHistory";
@@ -175,6 +176,11 @@ export default function UserProfile() {
               <span><strong className="text-foreground">{(profile.followers || []).length}</strong> followers</span>
               <span><strong className="text-foreground">{(profile.following || []).length}</strong> following</span>
             </div>
+            <ProfileBadges
+              userEmail={viewEmail || user?.email}
+              profile={profile}
+              sessions={sessions}
+            />
           </div>
           {!isOwn && (
             <div className="flex gap-2 shrink-0">

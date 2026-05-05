@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
-import { Crown, Users, BookOpen, Mic2, BarChart2, Lock } from "lucide-react";
+import { Crown, Users, BookOpen, Mic2, BarChart2, Lock, ShieldCheck } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -119,6 +119,24 @@ export default function LeaderDashboard() {
           ))}
         </CardContent>
       </Card>
+
+      {/* Admin: Verification Requests */}
+      {user?.role === "admin" && (
+        <Card className="border-amber-200 dark:border-amber-800">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-amber-500" /> Verification Requests
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Link to="/AdminVerifications">
+              <Button className="w-full rounded-xl gap-2" variant="outline">
+                Review Pending Requests
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Live Sessions */}
       <Card>

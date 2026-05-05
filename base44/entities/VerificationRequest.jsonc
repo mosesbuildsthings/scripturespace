@@ -1,0 +1,41 @@
+{
+  "name": "VerificationRequest",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string"
+    },
+    "user_name": {
+      "type": "string"
+    },
+    "role_requested": {
+      "type": "string",
+      "enum": [
+        "pastor",
+        "leader"
+      ],
+      "default": "leader"
+    },
+    "church_or_org": {
+      "type": "string",
+      "description": "Name of church or organisation"
+    },
+    "message": {
+      "type": "string",
+      "description": "Brief statement from the user"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending"
+    }
+  },
+  "required": [
+    "user_email",
+    "role_requested"
+  ]
+}

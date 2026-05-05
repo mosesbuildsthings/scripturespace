@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Check, AlignRight, AlignLeft, ArrowDown, ArrowUp, Bell, BellOff, Sun, Moon, LogOut, User, Globe, Search, X } from "lucide-react";
+import VerificationRequestCard from "@/components/settings/VerificationRequestCard";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -584,6 +585,8 @@ export default function Settings() {
           </p>
         </CardContent>
       </Card>
+
+      <VerificationRequestCard currentUser={currentUser} />
 
       <Button onClick={handleSave} disabled={saving} className="w-full rounded-xl h-12 text-base">
         {saving ? "Saving..." : "Save Settings"}

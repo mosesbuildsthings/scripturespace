@@ -1,5 +1,7 @@
+import React, { useState, useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
+import { base44 } from '@/api/base44Client';
 import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
@@ -7,6 +9,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
 import AppLayout from './components/layout/AppLayout';
+import LeaderOnboarding from './components/onboarding/LeaderOnboarding';
 import Home from './pages/Home';
 import Feed from './pages/Feed';
 import CreatePost from './pages/CreatePost';
@@ -29,6 +32,27 @@ import LeaderDashboard from './pages/LeaderDashboard';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const [user, setUser] = useState(null);
+  const [checkingOnboard, setCheckingOnboard] = useState(true);
+  const [needsOnboarding, setNeedsOnboarding] = useState(false);
+
+  useEffect(() => {
+    base44.auth.isAuthenticated().then(async (authed) => {
+      if (authed) {
+        const me = await base44.auth.me();
+        setUser(me);
+        // Show onboarding if is_leader has never been set
+        if (me && me.is_leader === undefined || me && me.is_leader === null) {
+          setNeedsOnboarding(true);
+        }
+      }
+      setCheckingOnboard(false);
+    }).catch(() => setCheckingOnboard(false));
+  }, []);
+
+  const handleOnboardingComplete = (isLeader) => {
+    setNeedsOnboarding(false);
+  };
 
   if (isLoadingPublicSettings || isLoadingAuth) {
     return (
@@ -39,6 +63,10 @@ const AuthenticatedApp = () => {
         </div>
       </div>
     );
+  }
+
+  if (needsOnboarding && !checkingOnboard) {
+    return <LeaderOnboarding onComplete={handleOnboardingComplete} />;
   }
 
   if (authError) {

@@ -1,0 +1,23 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "description": "The role of the user in the app",
+      "enum": [
+        "admin",
+        "leader",
+        "pastor",
+        "user"
+      ]
+    },
+    "is_leader": {
+      "type": "boolean",
+      "description": "Whether this user is a pastor or community leader"
+    }
+  },
+  "required": [
+    "role"
+  ]
+}

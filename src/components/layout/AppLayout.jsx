@@ -163,7 +163,7 @@ export default function AppLayout() {
   const loadPreferences = useCallback(async () => {
     const user = await base44.auth.me();
     if (user?.nav_position) setNavPosition(user.nav_position);
-    if (["admin", "leader", "pastor"].includes(user?.role)) setIsLeader(true);
+    if (["admin", "leader", "pastor"].includes(user?.role) || user?.is_leader === true) setIsLeader(true);
     if (user?.theme_color) {
       setThemeColor(user.theme_color);
       applyThemeColor(user.theme_color);

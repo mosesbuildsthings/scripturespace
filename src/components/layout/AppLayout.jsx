@@ -134,7 +134,7 @@ const Sidebar = memo(({ currentPath, side = "right", isLeader = false }) => (
         <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-[0_2px_10px_hsl(var(--primary)/0.45)]">
           <BookOpen className="w-4 h-4 text-primary-foreground" />
         </div>
-        <span className="font-display font-bold text-base text-foreground tracking-tight">BibleSocial</span>
+        <span className="font-display font-bold text-base text-foreground tracking-tight">Scripture Space</span>
       </div>
     </div>
 
@@ -198,7 +198,7 @@ const MobileTopBar = memo(() => (
       <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
         <BookOpen className="w-3 h-3 text-primary-foreground" />
       </div>
-      <span className="font-display font-bold text-sm text-foreground">BibleSocial</span>
+      <span className="font-display font-bold text-sm text-foreground">Scripture Space</span>
     </div>
     <ThemeToggleBtn compact />
   </div>

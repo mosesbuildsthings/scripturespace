@@ -1,10 +1,10 @@
-# Terms of Service for BibleSocial
+# Terms of Service for Scripture Space
 
 **Last Updated:** May 5, 2026
 
 ## 1. Agreement to Terms
 
-By accessing and using BibleSocial ("Service," "we," "us," "our," or "Company"), you agree to be bound by these Terms of Service. If you do not agree, do not use the Service.
+By accessing and using Scripture Space ("Service," "we," "us," "our," or "Company"), you agree to be bound by these Terms of Service. If you do not agree, do not use the Service.
 
 ---
 
@@ -193,7 +193,7 @@ We may update these Terms at any time. Changes are effective immediately upon po
 
 For questions about these Terms, contact:
 
-**BibleSocial Support**
+**Scripture Space Support**
 Email: [support@biblesocial.com]
 Mailing Address: [Company Address]
 

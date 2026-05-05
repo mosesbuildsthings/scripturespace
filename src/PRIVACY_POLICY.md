@@ -1,10 +1,10 @@
-# Privacy Policy for BibleSocial
+# Privacy Policy for Scripture Space
 
 **Last Updated:** May 5, 2026
 
 ## 1. Introduction
 
-BibleSocial ("we," "us," "our," or "Company") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website and mobile application (the "Service").
+Scripture Space ("we," "us," "our," or "Company") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our website and mobile application (the "Service").
 
 Please read this Privacy Policy carefully. If you do not agree with our policies and practices, please do not use our Service.
 
@@ -138,7 +138,7 @@ If you access BibleSocial from outside the United States, your data may be trans
 
 For privacy-related questions or requests, contact:
 
-**BibleSocial Support**
+**Scripture Space Support**
 Email: [support@biblesocial.com]
 Mailing Address: [Company Address]
 

@@ -4,7 +4,7 @@ import { useOutletContext } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Check, AlignRight, AlignLeft, ArrowDown, ArrowUp, Bell, BellOff, Sun, Moon } from "lucide-react";
+import { Check, AlignRight, AlignLeft, ArrowDown, ArrowUp, Bell, BellOff, Sun, Moon, LogOut, User } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -36,6 +36,8 @@ export default function Settings() {
   const [selectedColor, setSelectedColor] = useState("25 45% 42%");
   const [selectedNav, setSelectedNav] = useState("right");
   const [saving, setSaving] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loggingOut, setLoggingOut] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [notificationTime, setNotificationTime] = useState("08:00");
   const [readingReminderEnabled, setReadingReminderEnabled] = useState(false);
@@ -49,6 +51,7 @@ export default function Settings() {
 
   const loadSettings = async () => {
     const user = await base44.auth.me();
+    setCurrentUser(user);
     if (user?.theme_color) setSelectedColor(user.theme_color);
     if (user?.nav_position) setSelectedNav(user.nav_position);
     if (user?.daily_notif_enabled !== undefined) setNotificationsEnabled(user.daily_notif_enabled);
@@ -168,12 +171,52 @@ export default function Settings() {
     toast.success("Settings saved! Refresh to see navigation changes.");
   };
 
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    base44.auth.logout();
+  };
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
       <div>
         <h1 className="text-2xl font-display font-bold text-foreground">Settings</h1>
         <p className="text-sm text-muted-foreground mt-1">Personalize your experience</p>
       </div>
+
+      {/* Account Card */}
+      <Card className="border-primary/20">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <User className="w-5 h-5 text-primary" />
+            Account
+          </CardTitle>
+          <CardDescription>Your signed-in account</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {currentUser && (
+            <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
+              <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
+                <span className="text-sm font-bold text-primary">
+                  {(currentUser.full_name || currentUser.email || "U")[0].toUpperCase()}
+                </span>
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-foreground truncate">{currentUser.full_name || "—"}</p>
+                <p className="text-xs text-muted-foreground truncate">{currentUser.email}</p>
+              </div>
+            </div>
+          )}
+          <Button
+            variant="destructive"
+            onClick={handleLogout}
+            disabled={loggingOut}
+            className="w-full gap-2"
+          >
+            <LogOut className="w-4 h-4" />
+            {loggingOut ? "Signing out..." : "Sign Out"}
+          </Button>
+        </CardContent>
+      </Card>
 
       {/* Theme Color */}
       <Card>

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, memo } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import {
   Home, BookOpen, Users, Settings, PlusCircle, GraduationCap,
-  UserCircle, HandHeart, NotebookPen, TrendingUp, BookMarked
+  UserCircle, HandHeart, NotebookPen, TrendingUp, BookMarked, LogOut
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { cn } from "@/lib/utils";
@@ -51,6 +51,15 @@ const SidebarNav = memo(({ currentPath, title }) => (
         <NavLink key={item.path} item={item} isActive={currentPath === item.path} vertical />
       ))}
     </nav>
+    <div className="p-2 border-t shrink-0">
+      <button
+        onClick={() => base44.auth.logout()}
+        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm rounded-xl font-medium text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors duration-150"
+      >
+        <LogOut className="w-5 h-5 shrink-0" />
+        Sign Out
+      </button>
+    </div>
   </div>
 ));
 

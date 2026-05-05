@@ -1,10 +1,67 @@
 import React, { useState, useEffect, useCallback, memo } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import {
-  Home, Rss, BookOpen, Mic2, Users, UserCircle, LogOut, Settings, ChevronRight, Crown
+  Home, Rss, BookOpen, Mic2, Users, UserCircle, LogOut, Settings, ChevronRight, Crown, Sun, Moon, Monitor
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { cn } from "@/lib/utils";
+
+/* ─── Theme toggle (cycles: system → light → dark) ─── */
+function useThemeToggle() {
+  const getMode = () => {
+    const stored = localStorage.getItem("bs_theme");
+    if (stored) return stored;
+    return "system";
+  };
+  const [mode, setMode] = useState(getMode);
+
+  const apply = (m) => {
+    const html = document.documentElement;
+    if (m === "dark") html.classList.add("dark");
+    else if (m === "light") html.classList.remove("dark");
+    else {
+      // system
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      html.classList.toggle("dark", prefersDark);
+    }
+  };
+
+  useEffect(() => { apply(mode); }, [mode]);
+
+  const toggle = async () => {
+    const next = mode === "system" ? "light" : mode === "light" ? "dark" : "system";
+    setMode(next);
+    localStorage.setItem("bs_theme", next);
+    apply(next);
+    // Persist to user profile
+    try {
+      await base44.auth.updateMe({ dark_mode: next === "dark" ? true : next === "light" ? false : undefined });
+    } catch (_) {}
+  };
+
+  return { mode, toggle };
+}
+
+const ThemeToggleBtn = memo(({ compact = false }) => {
+  const { mode, toggle } = useThemeToggle();
+  const Icon = mode === "dark" ? Moon : mode === "light" ? Sun : Monitor;
+  const label = mode === "dark" ? "Dark" : mode === "light" ? "Light" : "System";
+  return (
+    <button
+      onClick={toggle}
+      title={`Theme: ${label}`}
+      className={cn(
+        "flex items-center gap-2 rounded-xl transition-all duration-200",
+        compact
+          ? "w-8 h-8 justify-center text-muted-foreground hover:text-foreground hover:bg-accent/60"
+          : "px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/60 w-full"
+      )}
+    >
+      <Icon className="w-[18px] h-[18px] shrink-0" />
+      {!compact && <span>{label} Mode</span>}
+    </button>
+  );
+});
 
 const PRIMARY_NAV = [
   { path: "/Home",        icon: Home,      label: "Home"   },
@@ -117,6 +174,7 @@ const Sidebar = memo(({ currentPath, side = "right", isLeader = false }) => (
         <Settings className="w-[18px] h-[18px] shrink-0" />
         Settings
       </Link>
+      <ThemeToggleBtn />
       <button
         onClick={() => base44.auth.logout()}
         className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/8 transition-all duration-200"
@@ -126,6 +184,24 @@ const Sidebar = memo(({ currentPath, side = "right", isLeader = false }) => (
       </button>
     </div>
   </aside>
+));
+
+/* ─── Mobile top bar with theme toggle ─── */
+const MobileTopBar = memo(() => (
+  <div className={cn(
+    "md:hidden fixed top-0 left-0 right-0 z-50",
+    "bg-card/85 backdrop-blur-2xl border-b border-border/50",
+    "shadow-[0_2px_12px_hsl(var(--foreground)/0.05)]",
+    "flex items-center justify-between px-4 py-2.5"
+  )}>
+    <div className="flex items-center gap-2">
+      <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center">
+        <BookOpen className="w-3 h-3 text-primary-foreground" />
+      </div>
+      <span className="font-display font-bold text-sm text-foreground">BibleSocial</span>
+    </div>
+    <ThemeToggleBtn compact />
+  </div>
 ));
 
 /* ─── Mobile bottom nav ─── */
@@ -188,7 +264,8 @@ export default function AppLayout() {
   if (navPosition === "bottom") {
     return (
       <div className="min-h-screen flex flex-col bg-background">
-        <main className="flex-1 overflow-y-auto pb-[4.5rem]">
+        <MobileTopBar />
+        <main className="flex-1 overflow-y-auto pb-[4.5rem] pt-[44px] md:pt-0">
           <Outlet context={outletCtx} />
         </main>
         <div className={cn("fixed bottom-0 left-0 right-0 z-50 safe-bottom bg-card/85 backdrop-blur-2xl border-t border-border/50 shadow-[0_-4px_24px_hsl(var(--foreground)/0.07)]")}>
@@ -202,7 +279,10 @@ export default function AppLayout() {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <div className={topBarClass}>
-          <TopNavBar currentPath={path} />
+          <div className="flex items-center justify-between pr-2">
+            <TopNavBar currentPath={path} />
+            <ThemeToggleBtn compact />
+          </div>
         </div>
         <main className="flex-1 overflow-y-auto pt-[4.5rem]">
           <Outlet context={outletCtx} />
@@ -215,9 +295,10 @@ export default function AppLayout() {
     return (
       <div className="min-h-screen flex bg-background">
         <Sidebar currentPath={path} side="left" isLeader={isLeader} />
-        <main className="flex-1 overflow-y-auto md:ml-60 pb-20 md:pb-0">
+        <main className="flex-1 overflow-y-auto md:ml-60 pb-20 md:pb-0 pt-[44px] md:pt-0">
           <Outlet context={outletCtx} />
         </main>
+        <MobileTopBar />
         <BottomNav currentPath={path} />
       </div>
     );
@@ -226,9 +307,10 @@ export default function AppLayout() {
   // Default: right
   return (
     <div className="min-h-screen flex bg-background">
-      <main className="flex-1 overflow-y-auto md:mr-60 pb-20 md:pb-0">
+      <main className="flex-1 overflow-y-auto md:mr-60 pb-20 md:pb-0 pt-[44px] md:pt-0">
         <Outlet context={outletCtx} />
       </main>
+      <MobileTopBar />
       <Sidebar currentPath={path} side="right" isLeader={isLeader} />
       <BottomNav currentPath={path} />
     </div>

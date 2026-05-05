@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useOutletContext } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Check, AlignRight, AlignLeft, ArrowDown, ArrowUp, Bell, BellOff, Sun, Moon, LogOut, User, Globe } from "lucide-react";
@@ -151,6 +152,7 @@ export default function Settings() {
   const [notifPermission, setNotifPermission] = useState(typeof Notification !== "undefined" ? Notification.permission : "default");
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
   const [appLanguage, setAppLanguage] = useState("en");
+  const [langSearch, setLangSearch] = useState("");
 
   useEffect(() => {
     loadSettings();
@@ -524,15 +526,25 @@ export default function Settings() {
           <CardDescription>Choose the language for the entire app including Bible reading</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
+          <Input
+            placeholder="Search language..."
+            value={langSearch}
+            onChange={e => setLangSearch(e.target.value)}
+            className="h-9 text-sm"
+          />
           <select
             value={appLanguage}
             onChange={e => setAppLanguage(e.target.value)}
-            className="w-full text-sm border border-input rounded-md px-3 py-2 bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+            size={6}
+            className="w-full text-sm border border-input rounded-md px-2 py-1 bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-ring overflow-y-auto"
           >
-            {APP_LANGUAGES.map(lang => (
+            {APP_LANGUAGES.filter(lang => lang.name.toLowerCase().includes(langSearch.toLowerCase())).map(lang => (
               <option key={lang.code} value={lang.code}>{lang.name}</option>
             ))}
           </select>
+          {appLanguage && (
+            <p className="text-xs text-muted-foreground">Selected: <strong>{APP_LANGUAGES.find(l => l.code === appLanguage)?.name}</strong></p>
+          )}
           <div className="bg-primary/5 border border-primary/20 rounded-lg px-3 py-2 space-y-1">
             <p className="text-xs text-primary font-medium">🌍 How language works</p>
             <p className="text-xs text-muted-foreground">

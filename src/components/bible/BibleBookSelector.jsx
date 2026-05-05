@@ -46,24 +46,24 @@ export default function BibleBookSelector({ selectedBook, onSelect, readChapters
               const partial = readCount > 0 && !done;
               return (
                 <button
-                  key={book.name}
-                  onClick={() => onSelect(book)}
-                  className={cn(
-                    "px-3 py-1.5 rounded-lg text-xs font-medium border transition-all",
-                    selectedBook?.name === book.name
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : done
-                      ? "bg-green-100 text-green-800 border-green-300 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700"
-                      : partial
-                      ? "bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-900/20 dark:text-amber-300 dark:border-amber-700"
-                      : "bg-card text-muted-foreground border-border hover:border-primary/40"
-                  )}
-                >
-                  {book.name}
-                  {readCount > 0 && (
-                    <span className="ml-1 opacity-70">{readCount}/{book.chapters}</span>
-                  )}
-                </button>
+                   key={book.name}
+                   onClick={() => onSelect(book)}
+                   className={cn(
+                     "px-3 py-2.5 rounded-lg text-xs font-medium border transition-all min-h-[44px] flex items-center justify-center select-none",
+                     selectedBook?.name === book.name
+                       ? "bg-primary text-primary-foreground border-primary"
+                       : done
+                       ? "bg-green-100 text-green-800 border-green-300 dark:bg-green-900/30 dark:text-green-300 dark:border-green-700"
+                       : partial
+                       ? "bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-900/20 dark:text-amber-300 dark:border-amber-700"
+                       : "bg-card text-muted-foreground border-border hover:border-primary/40"
+                   )}
+                 >
+                   <span>{book.name}</span>
+                   {readCount > 0 && (
+                     <span className="ml-1 opacity-70">{readCount}/{book.chapters}</span>
+                   )}
+                 </button>
               );
             })}
           </div>

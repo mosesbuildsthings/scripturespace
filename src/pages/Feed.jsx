@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import PostCard from "@/components/feed/PostCard";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader2, PenLine } from "lucide-react";
+import { Loader2, PenLine, RefreshCw } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export default function Feed() {
   const [user, setUser] = useState(null);
+  const [isPulling, setIsPulling] = useState(false);
+  const [pullDistance, setPullDistance] = useState(0);
+  const pullStartRef = useRef(0);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -27,8 +30,54 @@ export default function Feed() {
 
   const refresh = () => queryClient.invalidateQueries({ queryKey: ["feed-posts"] });
 
+  const handlePullStart = (e) => {
+    if (window.scrollY === 0) {
+      pullStartRef.current = e.touches?.[0]?.clientY || 0;
+    }
+  };
+
+  const handlePullMove = (e) => {
+    if (pullStartRef.current === 0 || window.scrollY !== 0) return;
+    const distance = (e.touches?.[0]?.clientY || 0) - pullStartRef.current;
+    if (distance > 0) {
+      setPullDistance(Math.min(distance, 80));
+    }
+  };
+
+  const handlePullEnd = async () => {
+    if (pullDistance > 60) {
+      setIsPulling(true);
+      await refresh();
+      setIsPulling(false);
+    }
+    setPullDistance(0);
+    pullStartRef.current = 0;
+  };
+
+  useEffect(() => {
+    document.addEventListener("touchstart", handlePullStart);
+    document.addEventListener("touchmove", handlePullMove);
+    document.addEventListener("touchend", handlePullEnd);
+    return () => {
+      document.removeEventListener("touchstart", handlePullStart);
+      document.removeEventListener("touchmove", handlePullMove);
+      document.removeEventListener("touchend", handlePullEnd);
+    };
+  }, [pullDistance]);
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
+      {/* Pull-to-refresh indicator */}
+      {pullDistance > 0 && (
+        <div className="fixed top-[44px] left-0 right-0 flex justify-center z-40 pointer-events-none">
+          <div className={cn(
+            "flex items-center justify-center w-10 h-10 rounded-full bg-primary text-primary-foreground shadow-lg transition-all",
+            isPulling && "animate-spin"
+          )}>
+            <RefreshCw className="w-5 h-5" />
+          </div>
+        </div>
+      )}
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

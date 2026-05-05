@@ -43,12 +43,18 @@ export default function PostCard({ post, currentUser, onUpdate, onDelete }) {
 
   const handleLike = async () => {
     if (isLiking) return;
-    setIsLiking(true);
     const newLikes = isLiked
       ? likes.filter((e) => e !== currentUser?.email)
       : [...likes, currentUser?.email];
-    await base44.entities.Post.update(post.id, { likes: newLikes });
-    onUpdate();
+    // Optimistic update
+    setIsLiking(true);
+    post.likes = newLikes; // Update UI immediately
+    try {
+      await base44.entities.Post.update(post.id, { likes: newLikes });
+      onUpdate();
+    } catch {
+      post.likes = likes; // Revert on error
+    }
     setIsLiking(false);
   };
 
@@ -193,35 +199,35 @@ export default function PostCard({ post, currentUser, onUpdate, onDelete }) {
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-around px-2 py-1">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleLike}
-          className={cn(
-            "flex-1 gap-2 text-sm",
-            isLiked ? "text-red-500 hover:text-red-600" : "text-muted-foreground"
-          )}
-        >
-          <Heart className={cn("w-4 h-4", isLiked && "fill-current")} />
-          Like
-        </Button>
+      <div className="flex items-center justify-around px-2 py-1 select-none">
+         <Button
+           variant="ghost"
+           size="sm"
+           onClick={handleLike}
+           className={cn(
+             "flex-1 gap-2 text-sm select-none",
+             isLiked ? "text-red-500 hover:text-red-600" : "text-muted-foreground"
+           )}
+         >
+           <Heart className={cn("w-4 h-4 select-none pointer-events-none", isLiked && "fill-current")} />
+           Like
+         </Button>
         <Button
           variant="ghost"
           size="sm"
           onClick={() => setShowComments(!showComments)}
-          className="flex-1 gap-2 text-sm text-muted-foreground"
+          className="flex-1 gap-2 text-sm text-muted-foreground select-none"
         >
-          <MessageCircle className="w-4 h-4" />
+          <MessageCircle className="w-4 h-4 select-none pointer-events-none" />
           Comment
         </Button>
         <Button
           variant="ghost"
           size="sm"
           onClick={handleShare}
-          className="flex-1 gap-2 text-sm text-muted-foreground"
+          className="flex-1 gap-2 text-sm text-muted-foreground select-none"
         >
-          <Share2 className="w-4 h-4" />
+          <Share2 className="w-4 h-4 select-none pointer-events-none" />
           Share
         </Button>
       </div>

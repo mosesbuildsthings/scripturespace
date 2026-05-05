@@ -25,12 +25,18 @@ export default function PrayerRequestCard({ request, currentUser, onUpdate }) {
 
   const handlePray = async () => {
     if (loading) return;
-    setLoading(true);
     const updated = isPraying
       ? prayingUsers.filter(e => e !== currentUser?.email)
       : [...prayingUsers, currentUser?.email];
-    await base44.entities.PrayerRequest.update(request.id, { praying_users: updated });
-    onUpdate();
+    // Optimistic update
+    setLoading(true);
+    request.praying_users = updated;
+    try {
+      await base44.entities.PrayerRequest.update(request.id, { praying_users: updated });
+      onUpdate();
+    } catch {
+      request.praying_users = prayingUsers; // Revert on error
+    }
     setLoading(false);
   };
 
@@ -78,7 +84,7 @@ export default function PrayerRequestCard({ request, currentUser, onUpdate }) {
       <p className="text-sm text-foreground/80 leading-relaxed">{request.content}</p>
 
       {/* Pray Button */}
-      <div className="flex items-center justify-between pt-1 border-t">
+      <div className="flex items-center justify-between pt-1 border-t select-none">
         <p className="text-xs text-muted-foreground">
           {prayingUsers.length > 0
             ? `${prayingUsers.length} ${prayingUsers.length === 1 ? "person is" : "people are"} praying`
@@ -87,11 +93,11 @@ export default function PrayerRequestCard({ request, currentUser, onUpdate }) {
         <Button
           size="sm"
           variant={isPraying ? "default" : "outline"}
-          className={cn("rounded-full gap-2 text-xs", isPraying && "bg-primary")}
+          className={cn("rounded-full gap-2 text-xs select-none", isPraying && "bg-primary")}
           onClick={handlePray}
           disabled={loading}
         >
-          <HandHeart className="w-3.5 h-3.5" />
+          <HandHeart className="w-3.5 h-3.5 select-none pointer-events-none" />
           {isPraying ? "Praying 🙏" : "Pray"}
         </Button>
       </div>

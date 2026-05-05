@@ -3,10 +3,11 @@ import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { base44 } from '@/api/base44Client';
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import AppLayout from './components/layout/AppLayout';
 import LeaderOnboarding from './components/onboarding/LeaderOnboarding';
@@ -34,6 +35,7 @@ import LeaderPremium from './pages/LeaderPremium';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const location = useLocation();
   const [user, setUser] = useState(null);
   const [checkingOnboard, setCheckingOnboard] = useState(true);
   const [needsOnboarding, setNeedsOnboarding] = useState(false);
@@ -81,33 +83,119 @@ const AuthenticatedApp = () => {
   }
 
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/Home" replace />} />
-      <Route element={<AppLayout />}>
-        <Route path="/Home" element={<Home />} />
-        <Route path="/Feed" element={<Feed />} />
-        <Route path="/CreatePost" element={<CreatePost />} />
-        <Route path="/Study" element={<Study />} />
-        <Route path="/Scripture" element={<Scripture />} />
-        <Route path="/Settings" element={<Settings />} />
-        <Route path="/Groups" element={<Groups />} />
-        <Route path="/LeaderDashboard" element={<LeaderDashboard />} />
-        <Route path="/AdminVerifications" element={<AdminVerifications />} />
-        <Route path="/LeaderPremium" element={<LeaderPremium />} />
-        <Route path="/BibleStudy" element={<BibleStudy />} />
-        <Route path="/CreateBibleStudyPlan" element={<CreateBibleStudyPlan />} />
-        <Route path="/BibleStudyPlanDetail" element={<BibleStudyPlanDetail />} />
-        <Route path="/ScheduleSession" element={<ScheduleSession />} />
-        <Route path="/BibleStudyRoom" element={<BibleStudyRoom />} />
-        <Route path="/UserProfile" element={<UserProfile />} />
-        <Route path="/PrayerBoard" element={<PrayerBoard />} />
-        <Route path="/Devotional" element={<Devotional />} />
-        <Route path="/Journal" element={<Journal />} />
-        <Route path="/Growth" element={<Growth />} />
-        <Route path="/BibleReading" element={<BibleReading />} />
-      </Route>
-      <Route path="*" element={<PageNotFound />} />
-    </Routes>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<Navigate to="/Home" replace />} />
+        <Route element={<AppLayout />}>
+          <Route path="/Home" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <Home />
+            </motion.div>
+          } />
+          <Route path="/Feed" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <Feed />
+            </motion.div>
+          } />
+          <Route path="/CreatePost" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <CreatePost />
+            </motion.div>
+          } />
+          <Route path="/Study" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <Study />
+            </motion.div>
+          } />
+          <Route path="/Scripture" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <Scripture />
+            </motion.div>
+          } />
+          <Route path="/Settings" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <Settings />
+            </motion.div>
+          } />
+          <Route path="/Groups" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <Groups />
+            </motion.div>
+          } />
+          <Route path="/LeaderDashboard" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <LeaderDashboard />
+            </motion.div>
+          } />
+          <Route path="/AdminVerifications" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <AdminVerifications />
+            </motion.div>
+          } />
+          <Route path="/LeaderPremium" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <LeaderPremium />
+            </motion.div>
+          } />
+          <Route path="/BibleStudy" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <BibleStudy />
+            </motion.div>
+          } />
+          <Route path="/CreateBibleStudyPlan" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <CreateBibleStudyPlan />
+            </motion.div>
+          } />
+          <Route path="/BibleStudyPlanDetail" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <BibleStudyPlanDetail />
+            </motion.div>
+          } />
+          <Route path="/ScheduleSession" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <ScheduleSession />
+            </motion.div>
+          } />
+          <Route path="/BibleStudyRoom" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <BibleStudyRoom />
+            </motion.div>
+          } />
+          <Route path="/UserProfile" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <UserProfile />
+            </motion.div>
+          } />
+          <Route path="/PrayerBoard" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <PrayerBoard />
+            </motion.div>
+          } />
+          <Route path="/Devotional" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <Devotional />
+            </motion.div>
+          } />
+          <Route path="/Journal" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <Journal />
+            </motion.div>
+          } />
+          <Route path="/Growth" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <Growth />
+            </motion.div>
+          } />
+          <Route path="/BibleReading" element={
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+              <BibleReading />
+            </motion.div>
+          } />
+        </Route>
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+    </AnimatePresence>
   );
 };
 

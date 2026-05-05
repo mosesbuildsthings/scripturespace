@@ -101,7 +101,7 @@ const BottomTab = memo(({ item, isActive }) => (
   <Link
     to={item.path}
     className={cn(
-      "flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-xl min-w-[52px] transition-all duration-200",
+      "flex flex-col items-center justify-center gap-1 px-2 py-2 rounded-xl min-w-[52px] h-[52px] transition-all duration-200 select-none",
       isActive
         ? "text-primary"
         : "text-muted-foreground hover:text-foreground"
@@ -113,9 +113,9 @@ const BottomTab = memo(({ item, isActive }) => (
         ? "bg-primary/12 shadow-[0_0_12px_hsl(var(--primary)/0.30)]"
         : "group-hover:bg-accent/50"
     )}>
-      <item.icon className="w-[18px] h-[18px]" />
+      <item.icon className="w-[18px] h-[18px] select-none pointer-events-none" />
     </div>
-    <span className={cn("text-[10px] font-medium leading-none", isActive ? "text-primary" : "")}>{item.label}</span>
+    <span className={cn("text-[10px] font-medium leading-none select-none pointer-events-none", isActive ? "text-primary" : "")}>{item.label}</span>
   </Link>
 ));
 
@@ -175,7 +175,7 @@ const Sidebar = memo(({ currentPath, side = "right", isLeader = false }) => (
       <ThemeToggleBtn />
       <button
         onClick={() => base44.auth.logout()}
-        className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/8 transition-all duration-200"
+        className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/8 transition-all duration-200 select-none"
       >
         <LogOut className="w-[18px] h-[18px] shrink-0" />
         Sign Out
@@ -190,7 +190,8 @@ const MobileTopBar = memo(() => (
     "md:hidden fixed top-0 left-0 right-0 z-50",
     "bg-card/85 backdrop-blur-2xl border-b border-border/50",
     "shadow-[0_2px_12px_hsl(var(--foreground)/0.05)]",
-    "flex items-center justify-between px-4 py-2.5"
+    "flex items-center justify-between px-4 py-2.5",
+    "pt-[env(safe-area-inset-top)]"
   )}>
     <div className="flex items-center gap-2">
       <img src="https://media.base44.com/images/public/69bade136722a0dcaf7f2a0e/480e392cd_ScriptureSpace_Icon_Only_App_256x256.png" alt="Scripture Space" className="w-6 h-6 rounded-lg shadow-sm" />

@@ -37,16 +37,29 @@ export default function GoalCard({ goal, onUpdate, onDelete }) {
     const updated = doneToday
       ? completedDates.filter(d => d !== today)
       : [...completedDates, today];
-    await base44.entities.Goal.update(goal.id, { completed_dates: updated });
-    onUpdate();
+    // Optimistic update
+    goal.completed_dates = updated;
+    try {
+      await base44.entities.Goal.update(goal.id, { completed_dates: updated });
+      onUpdate();
+    } catch {
+      goal.completed_dates = completedDates; // Revert on error
+    }
   };
 
   const achieveMilestone = async () => {
-    await base44.entities.Goal.update(goal.id, {
-      is_milestone_achieved: true,
-      milestone_achieved_date: today,
-    });
-    onUpdate();
+    // Optimistic update
+    goal.is_milestone_achieved = true;
+    goal.milestone_achieved_date = today;
+    try {
+      await base44.entities.Goal.update(goal.id, {
+        is_milestone_achieved: true,
+        milestone_achieved_date: today,
+      });
+      onUpdate();
+    } catch {
+      goal.is_milestone_achieved = false; // Revert on error
+    }
   };
 
   const handleDelete = async () => {
@@ -102,13 +115,13 @@ export default function GoalCard({ goal, onUpdate, onDelete }) {
       {isHabit && (
         <button
           onClick={toggleToday}
-          className={`w-full flex items-center justify-center gap-2 py-2 rounded-xl text-sm font-medium transition-all ${
+          className={`w-full flex items-center justify-center gap-2 py-2 rounded-xl text-sm font-medium transition-all select-none min-h-[44px] ${
             doneToday
               ? "bg-primary/10 text-primary border border-primary/30"
               : "bg-secondary text-secondary-foreground hover:bg-accent"
           }`}
         >
-          {doneToday ? <CheckCircle2 className="w-4 h-4" /> : <Circle className="w-4 h-4" />}
+          {doneToday ? <CheckCircle2 className="w-4 h-4 select-none pointer-events-none" /> : <Circle className="w-4 h-4 select-none pointer-events-none" />}
           {doneToday ? "Done today ✓" : "Mark done for today"}
         </button>
       )}
@@ -118,13 +131,13 @@ export default function GoalCard({ goal, onUpdate, onDelete }) {
         <button
           onClick={achieveMilestone}
           disabled={goal.is_milestone_achieved}
-          className={`w-full flex items-center justify-center gap-2 py-2 rounded-xl text-sm font-medium transition-all ${
+          className={`w-full flex items-center justify-center gap-2 py-2 rounded-xl text-sm font-medium transition-all select-none min-h-[44px] ${
             goal.is_milestone_achieved
               ? "bg-green-50 text-green-700 border border-green-200 cursor-default"
               : "bg-secondary text-secondary-foreground hover:bg-accent"
           }`}
         >
-          <Trophy className="w-4 h-4" />
+          <Trophy className="w-4 h-4 select-none pointer-events-none" />
           {goal.is_milestone_achieved
             ? `Achieved on ${goal.milestone_achieved_date ? format(new Date(goal.milestone_achieved_date), "MMM d") : ""}` 
             : "Mark as achieved"}

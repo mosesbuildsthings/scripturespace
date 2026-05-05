@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Check, AlignRight, AlignLeft, ArrowDown, ArrowUp, Bell, BellOff, Sun, Moon, LogOut, User, Globe, Search, X, Crown } from "lucide-react";
+import { Check, AlignRight, AlignLeft, ArrowDown, ArrowUp, Bell, BellOff, Sun, Moon, LogOut, User, Globe, Search, X, Crown, Trash2 } from "lucide-react";
 import VerificationRequestCard from "@/components/settings/VerificationRequestCard";
 import { Link } from "react-router-dom";
 import { Switch } from "@/components/ui/switch";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -283,6 +284,17 @@ export default function Settings() {
     base44.auth.logout();
   };
 
+  const handleDeleteAccount = async () => {
+    try {
+      // Note: This requires a backend function to actually delete the account
+      // For now, we'll just log out and show a message
+      toast.error("Account deletion is not yet available. Please contact support@scripturespace.app");
+      // In production, this would call: await base44.functions.invoke('deleteAccount', {})
+    } catch (error) {
+      toast.error("Failed to delete account: " + error.message);
+    }
+  };
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
       <div>
@@ -292,38 +304,81 @@ export default function Settings() {
 
       {/* Account Card */}
       <Card className="border-primary/20">
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <User className="w-5 h-5 text-primary" />
-            Account
-          </CardTitle>
-          <CardDescription>Your signed-in account</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {currentUser && (
-            <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
-              <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
-                <span className="text-sm font-bold text-primary">
-                  {(currentUser.full_name || currentUser.email || "U")[0].toUpperCase()}
-                </span>
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm font-semibold text-foreground truncate">{currentUser.full_name || "—"}</p>
-                <p className="text-xs text-muted-foreground truncate">{currentUser.email}</p>
-              </div>
-            </div>
-          )}
-          <Button
-            variant="destructive"
-            onClick={handleLogout}
-            disabled={loggingOut}
-            className="w-full gap-2"
-          >
-            <LogOut className="w-4 h-4" />
-            {loggingOut ? "Signing out..." : "Sign Out"}
-          </Button>
-        </CardContent>
-      </Card>
+         <CardHeader>
+           <CardTitle className="text-lg flex items-center gap-2">
+             <User className="w-5 h-5 text-primary" />
+             Account
+           </CardTitle>
+           <CardDescription>Your signed-in account</CardDescription>
+         </CardHeader>
+         <CardContent className="space-y-4">
+           {currentUser && (
+             <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
+               <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
+                 <span className="text-sm font-bold text-primary">
+                   {(currentUser.full_name || currentUser.email || "U")[0].toUpperCase()}
+                 </span>
+               </div>
+               <div className="min-w-0">
+                 <p className="text-sm font-semibold text-foreground truncate">{currentUser.full_name || "—"}</p>
+                 <p className="text-xs text-muted-foreground truncate">{currentUser.email}</p>
+               </div>
+             </div>
+           )}
+           <Button
+             variant="destructive"
+             onClick={handleLogout}
+             disabled={loggingOut}
+             className="w-full gap-2"
+           >
+             <LogOut className="w-4 h-4" />
+             {loggingOut ? "Signing out..." : "Sign Out"}
+           </Button>
+         </CardContent>
+       </Card>
+
+       {/* Delete Account Card */}
+       <Card className="border-destructive/20 bg-destructive/5">
+         <CardHeader>
+           <CardTitle className="text-lg flex items-center gap-2">
+             <Trash2 className="w-5 h-5 text-destructive" />
+             Delete Account
+           </CardTitle>
+           <CardDescription>Permanently delete your account and all data</CardDescription>
+         </CardHeader>
+         <CardContent>
+           <p className="text-sm text-muted-foreground mb-4">
+             This action cannot be undone. All your posts, journals, goals, and profile data will be permanently deleted.
+           </p>
+           <AlertDialog>
+             <AlertDialogTrigger asChild>
+               <Button variant="destructive" className="w-full gap-2">
+                 <Trash2 className="w-4 h-4" />
+                 Delete My Account
+               </Button>
+             </AlertDialogTrigger>
+             <AlertDialogContent>
+               <AlertDialogHeader>
+                 <AlertDialogTitle>Delete Account?</AlertDialogTitle>
+                 <AlertDialogDescription>
+                   This will permanently delete your account and all associated data. This action cannot be reversed.
+                   <br /><br />
+                   <strong>All your posts, journals, goals, badges, and settings will be lost.</strong>
+                 </AlertDialogDescription>
+               </AlertDialogHeader>
+               <div className="flex gap-2 pt-4">
+                 <AlertDialogCancel>Cancel</AlertDialogCancel>
+                 <AlertDialogAction
+                   onClick={handleDeleteAccount}
+                   className="bg-destructive hover:bg-destructive/90"
+                 >
+                   Delete Permanently
+                 </AlertDialogAction>
+               </div>
+             </AlertDialogContent>
+           </AlertDialog>
+         </CardContent>
+       </Card>
 
       {/* Theme Color */}
       <Card>

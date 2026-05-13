@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { HandHeart, Trash2 } from "lucide-react";
+import { HandHeart, Trash2, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -18,9 +18,12 @@ const CATEGORY_COLORS = {
 
 export default function PrayerRequestCard({ request, currentUser, onUpdate }) {
   const [loading, setLoading] = useState(false);
+  const [bookmarkLoading, setBookmarkLoading] = useState(false);
 
   const prayingUsers = request.praying_users || [];
+  const bookmarkedBy = request.bookmarked_by || [];
   const isPraying = prayingUsers.includes(currentUser?.email);
+  const isBookmarked = bookmarkedBy.includes(currentUser?.email);
   const isOwner = request.author_email === currentUser?.email;
 
   const handlePray = async () => {
@@ -43,6 +46,17 @@ export default function PrayerRequestCard({ request, currentUser, onUpdate }) {
   const handleDelete = async () => {
     await base44.entities.PrayerRequest.delete(request.id);
     onUpdate();
+  };
+
+  const handleBookmark = async () => {
+    if (bookmarkLoading || !currentUser) return;
+    setBookmarkLoading(true);
+    const updated = isBookmarked
+      ? bookmarkedBy.filter(e => e !== currentUser.email)
+      : [...bookmarkedBy, currentUser.email];
+    await base44.entities.PrayerRequest.update(request.id, { bookmarked_by: updated });
+    onUpdate();
+    setBookmarkLoading(false);
   };
 
   const authorLabel = request.is_anonymous ? "Anonymous" : (request.author_name || "Community Member");
@@ -83,23 +97,35 @@ export default function PrayerRequestCard({ request, currentUser, onUpdate }) {
       )}
       <p className="text-sm text-foreground/80 leading-relaxed">{request.content}</p>
 
-      {/* Pray Button */}
+      {/* Actions */}
       <div className="flex items-center justify-between pt-1 border-t select-none">
         <p className="text-xs text-muted-foreground">
           {prayingUsers.length > 0
             ? `${prayingUsers.length} ${prayingUsers.length === 1 ? "person is" : "people are"} praying`
             : "Be the first to pray"}
         </p>
-        <Button
-          size="sm"
-          variant={isPraying ? "default" : "outline"}
-          className={cn("rounded-full gap-2 text-xs select-none", isPraying && "bg-primary")}
-          onClick={handlePray}
-          disabled={loading}
-        >
-          <HandHeart className="w-3.5 h-3.5 select-none pointer-events-none" />
-          {isPraying ? "Praying 🙏" : "Pray"}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            variant="ghost"
+            className={cn("rounded-full h-8 w-8 p-0 select-none", isBookmarked ? "text-primary" : "text-muted-foreground")}
+            onClick={handleBookmark}
+            disabled={bookmarkLoading || !currentUser}
+            title={isBookmarked ? "Remove bookmark" : "Bookmark"}
+          >
+            <Bookmark className={cn("w-3.5 h-3.5 pointer-events-none", isBookmarked && "fill-current")} />
+          </Button>
+          <Button
+            size="sm"
+            variant={isPraying ? "default" : "outline"}
+            className={cn("rounded-full gap-2 text-xs select-none", isPraying && "bg-primary")}
+            onClick={handlePray}
+            disabled={loading}
+          >
+            <HandHeart className="w-3.5 h-3.5 select-none pointer-events-none" />
+            {isPraying ? "Praying 🙏" : "Pray"}
+          </Button>
+        </div>
       </div>
     </div>
   );

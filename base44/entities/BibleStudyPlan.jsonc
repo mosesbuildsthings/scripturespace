@@ -1,0 +1,64 @@
+{
+  "name": "BibleStudyPlan",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "verses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "is_public": {
+      "type": "boolean",
+      "default": true
+    },
+    "created_by": {
+      "type": "string"
+    },
+    "creator_name": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string"
+    },
+    "origin_scripture": {
+      "type": "string"
+    },
+    "followers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "is_archived": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the owner has archived/completed this plan"
+    },
+    "archived_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the plan was archived"
+    },
+    "completion_notes": {
+      "type": "string",
+      "description": "Owner's reflection notes on completing the plan"
+    }
+  },
+  "required": [
+    "title",
+    "created_by"
+  ]
+}

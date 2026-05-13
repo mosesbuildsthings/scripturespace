@@ -25,10 +25,16 @@
       },
       "description": "Array of emails of users who have clicked Praying"
     },
+    "bookmarked_by": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of emails of users who bookmarked this prayer request"
+    },
     "is_anonymous": {
       "type": "boolean",
-      "default": false,
-      "description": "Whether to hide the author's name"
+      "default": false
     },
     "category": {
       "type": "string",

@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { HandHeart, Plus } from "lucide-react";
+import { HandHeart, Plus, Bookmark } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import PrayerRequestCard from "@/components/prayer/PrayerRequestCard";
 import NewPrayerRequestForm from "@/components/prayer/NewPrayerRequestForm";
 
@@ -29,6 +30,11 @@ export default function PrayerBoard() {
     ? requests
     : requests.filter(r => r.category === activeCategory);
 
+  const bookmarked = requests.filter(r => (r.bookmarked_by || []).includes(user?.email));
+  const filteredBookmarked = activeCategory === "all"
+    ? bookmarked
+    : bookmarked.filter(r => r.category === activeCategory);
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
       {/* Header */}
@@ -37,20 +43,13 @@ export default function PrayerBoard() {
           <h1 className="text-2xl font-display font-bold text-foreground flex items-center gap-2">
             <HandHeart className="w-6 h-6 text-primary" /> Prayer Board
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Lift each other up in prayer
-          </p>
+          <p className="text-sm text-muted-foreground mt-1">Lift each other up in prayer</p>
         </div>
-        <Button
-          size="sm"
-          className="rounded-full gap-2 shrink-0"
-          onClick={() => setShowForm(v => !v)}
-        >
+        <Button size="sm" className="rounded-full gap-2 shrink-0" onClick={() => setShowForm(v => !v)}>
           <Plus className="w-4 h-4" /> Request Prayer
         </Button>
       </div>
 
-      {/* New Request Form */}
       {showForm && (
         <NewPrayerRequestForm
           currentUser={user}
@@ -59,46 +58,81 @@ export default function PrayerBoard() {
         />
       )}
 
-      {/* Category Filter */}
-      <div className="flex gap-2 flex-wrap">
-        {CATEGORIES.map(cat => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={`px-3 py-1 rounded-full text-xs font-medium capitalize transition-colors ${
-              activeCategory === cat
-                ? "bg-primary text-primary-foreground"
-                : "bg-secondary text-secondary-foreground hover:bg-accent"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
+      <Tabs defaultValue="all">
+        <TabsList className="w-full">
+          <TabsTrigger value="all" className="flex-1">All Requests</TabsTrigger>
+          <TabsTrigger value="bookmarked" className="flex-1 gap-1">
+            <Bookmark className="w-3 h-3" /> Bookmarked
+            {bookmarked.length > 0 && <span className="ml-1 bg-primary text-primary-foreground rounded-full text-[10px] px-1.5">{bookmarked.length}</span>}
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Prayer Requests */}
-      {isLoading ? (
-        <div className="flex justify-center py-16">
-          <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-        </div>
-      ) : filtered.length === 0 ? (
-        <div className="text-center py-16 space-y-2">
-          <HandHeart className="w-10 h-10 text-muted-foreground/40 mx-auto" />
-          <p className="text-muted-foreground text-sm">No prayer requests yet.</p>
-          <p className="text-xs text-muted-foreground">Be the first to share one with the community.</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {filtered.map(request => (
-            <PrayerRequestCard
-              key={request.id}
-              request={request}
-              currentUser={user}
-              onUpdate={refresh}
-            />
-          ))}
-        </div>
-      )}
+        <TabsContent value="all" className="space-y-4 mt-4">
+          {/* Category Filter */}
+          <div className="flex gap-2 flex-wrap">
+            {CATEGORIES.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-3 py-1 rounded-full text-xs font-medium capitalize transition-colors ${
+                  activeCategory === cat
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-secondary-foreground hover:bg-accent"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {isLoading ? (
+            <div className="flex justify-center py-16">
+              <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="text-center py-16 space-y-2">
+              <HandHeart className="w-10 h-10 text-muted-foreground/40 mx-auto" />
+              <p className="text-muted-foreground text-sm">No prayer requests yet.</p>
+              <p className="text-xs text-muted-foreground">Be the first to share one with the community.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {filtered.map(r => <PrayerRequestCard key={r.id} request={r} currentUser={user} onUpdate={refresh} />)}
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="bookmarked" className="space-y-4 mt-4">
+          {/* Category Filter */}
+          <div className="flex gap-2 flex-wrap">
+            {CATEGORIES.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-3 py-1 rounded-full text-xs font-medium capitalize transition-colors ${
+                  activeCategory === cat
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-secondary-foreground hover:bg-accent"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {filteredBookmarked.length === 0 ? (
+            <div className="text-center py-16 space-y-2">
+              <Bookmark className="w-10 h-10 text-muted-foreground/40 mx-auto" />
+              <p className="text-muted-foreground text-sm">No bookmarked prayer requests.</p>
+              <p className="text-xs text-muted-foreground">Tap the bookmark icon on any request to save it here.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {filteredBookmarked.map(r => <PrayerRequestCard key={r.id} request={r} currentUser={user} onUpdate={refresh} />)}
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

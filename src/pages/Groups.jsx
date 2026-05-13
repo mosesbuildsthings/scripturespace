@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Users, Plus, Trophy, BookOpen, ChevronDown, ChevronUp, Check, X, Loader2 } from "lucide-react";
+import { Users, Plus, Trophy, BookOpen, ChevronDown, ChevronUp, Check, X, Loader2, Link2, Share2, Copy } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,7 +24,23 @@ export default function Groups() {
   const [form, setForm] = useState({ name: "", description: "", category: "small_group", is_public: true });
   const qc = useQueryClient();
 
+  const [copiedId, setCopiedId] = useState(null);
+
   useEffect(() => { base44.auth.me().then(setUser); }, []);
+
+  // Handle join via invite link
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const joinCode = params.get("join");
+    if (joinCode && user) {
+      const target = groups.find(g => g.invite_code === joinCode);
+      if (target && !(target.members || []).includes(user.email)) {
+        handleJoin(target).then(() => {
+          window.history.replaceState({}, "", "/Groups");
+        });
+      }
+    }
+  }, [user, groups]);
 
   const { data: groups = [], isLoading } = useQuery({
     queryKey: ["groups"],
@@ -76,6 +92,31 @@ export default function Groups() {
 
   const groupChallenges = (groupId) => challenges.filter(c => c.group_id === groupId && c.is_active);
   const isLeader = (group) => group.leader_email === user?.email;
+
+  const getInviteLink = async (group) => {
+    let code = group.invite_code;
+    if (!code) {
+      code = Math.random().toString(36).substring(2, 10).toUpperCase();
+      await base44.entities.Group.update(group.id, { invite_code: code });
+      refresh();
+    }
+    return `${window.location.origin}/Groups?join=${code}`;
+  };
+
+  const handleCopyInvite = async (group) => {
+    const url = await getInviteLink(group);
+    await navigator.clipboard.writeText(url);
+  };
+
+  const handleShareInvite = async (group) => {
+    const url = await getInviteLink(group);
+    const text = `Join my Bible study group "${group.name}" on Scripture Space!`;
+    if (navigator.share) {
+      navigator.share({ title: group.name, text, url });
+    } else {
+      await navigator.clipboard.writeText(url);
+    }
+  };
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
@@ -146,6 +187,34 @@ export default function Groups() {
                   {expanded && (
                     <div className="px-4 pb-4 space-y-4 border-t pt-4">
                       {g.description && <p className="text-sm text-muted-foreground">{g.description}</p>}
+
+                      {/* Invite Link */}
+                      <div className="bg-muted/60 rounded-xl p-3 space-y-2">
+                        <p className="text-xs font-semibold text-foreground flex items-center gap-1.5"><Link2 className="w-3.5 h-3.5 text-primary" /> Invite Friends</p>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex-1 rounded-full text-xs gap-1.5"
+                            onClick={async () => {
+                              await handleCopyInvite(g);
+                              setCopiedId(g.id);
+                              setTimeout(() => setCopiedId(null), 2000);
+                            }}
+                          >
+                            {copiedId === g.id ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
+                            {copiedId === g.id ? "Copied!" : "Copy Link"}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="default"
+                            className="flex-1 rounded-full text-xs gap-1.5"
+                            onClick={() => handleShareInvite(g)}
+                          >
+                            <Share2 className="w-3.5 h-3.5" /> Share
+                          </Button>
+                        </div>
+                      </div>
 
                       {/* Announcements Section */}
                       <div className="space-y-2">

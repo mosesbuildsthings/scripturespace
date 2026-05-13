@@ -14,7 +14,7 @@ export default function TermsOfService() {
         <h1 className="text-3xl font-display font-bold text-foreground mb-2">Terms of Service</h1>
         <p className="text-sm text-muted-foreground mb-8">Last Updated: May 5, 2026</p>
 
-        <div className="space-y-6 text-foreground">
+        <div className="space-y-6 text-foreground select-text cursor-text">
 
           <section>
             <h2 className="text-xl font-semibold mb-2">1. Agreement to Terms</h2>

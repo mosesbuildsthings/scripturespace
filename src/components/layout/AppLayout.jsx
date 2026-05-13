@@ -288,7 +288,8 @@ export default function AppLayout() {
           className="flex-1 overflow-y-auto pb-[calc(4.5rem+env(safe-area-inset-bottom))] pt-[calc(44px+env(safe-area-inset-top))] md:pt-0" 
           style={{ 
             overscrollBehavior: 'none',
-            WebkitOverflowScrolling: 'touch'
+            WebkitOverflowScrolling: 'touch',
+            scrollBehavior: 'smooth',
           }}
         >
           <Outlet context={outletCtx} />
@@ -307,7 +308,7 @@ export default function AppLayout() {
             <ThemeToggleBtn compact />
           </div>
         </div>
-        <main className="flex-1 overflow-y-auto pt-[4.5rem]">
+        <main className="flex-1 overflow-y-auto pt-[4.5rem]" style={{ scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' }}>
           <Outlet context={outletCtx} />
         </main>
       </div>
@@ -318,7 +319,7 @@ export default function AppLayout() {
     return (
       <div className="min-h-screen flex bg-background">
         <Sidebar currentPath={path} side="left" isLeader={isLeader} />
-        <main className="flex-1 overflow-y-auto md:ml-60 pb-20 md:pb-0 pt-[44px] md:pt-0">
+        <main className="flex-1 overflow-y-auto md:ml-60 pb-20 md:pb-0 pt-[44px] md:pt-0" style={{ scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' }}>
           <Outlet context={outletCtx} />
         </main>
         <MobileTopBar />
@@ -334,7 +335,8 @@ export default function AppLayout() {
         className="flex-1 overflow-y-auto md:mr-60 pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0 pt-[calc(44px+env(safe-area-inset-top))] md:pt-0" 
         style={{ 
           overscrollBehavior: 'none',
-          WebkitOverflowScrolling: 'touch'
+          WebkitOverflowScrolling: 'touch',
+          scrollBehavior: 'smooth',
         }}
       >
         <Outlet context={outletCtx} />

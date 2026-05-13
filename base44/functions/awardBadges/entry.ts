@@ -4,8 +4,11 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
-    // Fetch all users
-    const users = await base44.asServiceRole.entities.User.list();
+    // Fetch all users and all Bible study plans once (reused per user)
+    const [users, allPlans] = await Promise.all([
+      base44.asServiceRole.entities.User.list(),
+      base44.asServiceRole.entities.BibleStudyPlan.list(),
+    ]);
 
     for (const user of users) {
       // Count user posts
@@ -153,6 +156,70 @@ Deno.serve(async (req) => {
           body: `Hi ${user.full_name || 'Friend'},\n\nYou've completed 100 days of Bible reading on Scripture Space. That's a remarkable milestone!\n\nThe Word Keeper badge is now on your profile.\n\n— The Scripture Space Team`
         });
         console.log(`Awarded Word Keeper to ${user.email} (total days: ${totalReadingDays})`);
+      }
+
+      // ── Bible Study Plan Completion Logic ──
+      // A plan is "completed" when the user has BibleProgress entries for every
+      // book+chapter referenced in the plan's verses array (format: "Book Chapter").
+      // Only check plans the user follows or created.
+      const userPlans = allPlans.filter(plan =>
+        plan.created_by === user.email ||
+        (plan.followers || []).includes(user.email)
+      );
+
+      // Build a set of "Book|Chapter" keys the user has read
+      const readKeys = new Set(bibleProgress.map(p => `${p.book}|${p.chapter}`));
+
+      let completedPlanCount = 0;
+      for (const plan of userPlans) {
+        if (!plan.verses || plan.verses.length === 0) continue;
+        // Each verse entry is a reference like "John 3:16" or "Genesis 1" — extract book+chapter
+        const planKeys = plan.verses.map(v => {
+          const parts = v.trim().split(' ');
+          // Handle multi-word book names: "1 Corinthians 13:1" → book="1 Corinthians", chapter=13
+          const lastPart = parts[parts.length - 1];
+          const chapterNum = parseInt(lastPart.split(':')[0]);
+          const book = parts.slice(0, parts.length - 1).join(' ');
+          return isNaN(chapterNum) ? null : `${book}|${chapterNum}`;
+        }).filter(Boolean);
+
+        if (planKeys.length > 0 && planKeys.every(key => readKeys.has(key))) {
+          completedPlanCount++;
+        }
+      }
+
+      // Award Scripture Scholar upgrade: completed 1+ plan (if not already scripture_scholar)
+      if (completedPlanCount >= 1 && !badgeTypes.includes('scripture_scholar')) {
+        await base44.asServiceRole.entities.UserBadge.create({
+          user_email: user.email,
+          badge_type: 'scripture_scholar',
+          badge_name: 'Scripture Scholar',
+          threshold_met: completedPlanCount,
+          awarded_date: new Date().toISOString().split('T')[0]
+        });
+        await base44.asServiceRole.integrations.Core.SendEmail({
+          to: user.email,
+          subject: "🎓 You completed a Bible Study Plan!",
+          body: `Hi ${user.full_name || 'Friend'},\n\nYou've completed your first Bible study plan on Scripture Space — you're a true Scripture Scholar!\n\nThis badge has been added to your profile. Keep studying the Word.\n\n— The Scripture Space Team`
+        });
+        console.log(`Awarded Scripture Scholar to ${user.email} (completed ${completedPlanCount} plan(s))`);
+      }
+
+      // Award Bible Expert: completed 3+ plans
+      if (completedPlanCount >= 3 && !badgeTypes.includes('bible_expert')) {
+        await base44.asServiceRole.entities.UserBadge.create({
+          user_email: user.email,
+          badge_type: 'bible_expert',
+          badge_name: 'Bible Expert',
+          threshold_met: completedPlanCount,
+          awarded_date: new Date().toISOString().split('T')[0]
+        });
+        await base44.asServiceRole.integrations.Core.SendEmail({
+          to: user.email,
+          subject: "📚 Bible Expert badge unlocked — 3 plans complete!",
+          body: `Hi ${user.full_name || 'Friend'},\n\nYou've now completed 3 Bible study plans on Scripture Space. Your dedication to the Word is extraordinary!\n\nThe Bible Expert badge is now on your profile.\n\n— The Scripture Space Team`
+        });
+        console.log(`Awarded Bible Expert to ${user.email} (completed ${completedPlanCount} plans)`);
       }
     }
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { BookOpen, Crown, Users, Loader2 } from "lucide-react";
+import { Crown, Users, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -24,10 +24,12 @@ export default function LeaderOnboarding({ onComplete }) {
     <div className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center px-6">
       {/* Logo */}
       <div className="mb-8 flex flex-col items-center gap-3">
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-[0_4px_24px_hsl(var(--primary)/0.45)]">
-          <BookOpen className="w-7 h-7 text-primary-foreground" />
-        </div>
-        <h1 className="font-display font-bold text-2xl text-foreground">Welcome to BibleSocial</h1>
+        <img
+          src="https://media.base44.com/images/public/69bade136722a0dcaf7f2a0e/54a85d371_android-icon-play-store-512x512.png"
+          alt="ScriptureSpace"
+          className="w-16 h-16 rounded-2xl shadow-[0_4px_24px_hsl(var(--primary)/0.35)]"
+        />
+        <h1 className="font-display font-bold text-2xl text-foreground">Welcome to ScriptureSpace</h1>
         <p className="text-muted-foreground text-sm text-center max-w-xs">
           Before you dive in, tell us a little about yourself so we can set up the right experience for you.
         </p>

@@ -147,6 +147,7 @@ export default function Settings() {
   const [readingReminderTime, setReadingReminderTime] = useState("07:00");
   const [notifPermission, setNotifPermission] = useState(typeof Notification !== "undefined" ? Notification.permission : "default");
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
+  const [showBadges, setShowBadges] = useState(true);
   const [appLanguage, setAppLanguage] = useState("en");
   const [langSearch, setLangSearch] = useState("");
 
@@ -167,6 +168,7 @@ export default function Settings() {
       setDarkMode(user.dark_mode);
       document.documentElement.classList.toggle("dark", user.dark_mode);
     }
+    if (user?.show_badges !== undefined) setShowBadges(user.show_badges);
     if (user?.app_language) setAppLanguage(user.app_language);
   };
 
@@ -255,6 +257,7 @@ export default function Settings() {
       reading_reminder_enabled: readingReminderEnabled,
       reading_reminder_time: readingReminderTime,
       dark_mode: darkMode,
+      show_badges: showBadges,
       app_language: appLanguage,
     });
     // Apply language to document for browser-native translation hint
@@ -477,6 +480,33 @@ export default function Settings() {
           <p className="text-xs text-muted-foreground mt-3">
             Currently: <strong>{darkMode ? "Dark" : "Light"}</strong> — toggle to switch, then Save to persist.
           </p>
+        </CardContent>
+      </Card>
+
+      {/* Badge Display Toggle */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <span className="text-lg">🏅</span>
+            Achievement Badges
+          </CardTitle>
+          <CardDescription>Show or hide your earned badges on your profile</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <Label className="text-sm font-medium">Show badges on my profile</Label>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Badges include reading streaks, prayer warrior, community leader and more.
+              </p>
+            </div>
+            <Switch checked={showBadges} onCheckedChange={setShowBadges} />
+          </div>
+          {!showBadges && (
+            <p className="text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
+              🙈 Your badges will be hidden from your profile. You'll still earn them — they'll reappear if you turn this on.
+            </p>
+          )}
         </CardContent>
       </Card>
 

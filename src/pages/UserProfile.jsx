@@ -35,6 +35,7 @@ export default function UserProfile() {
   const [profileUser, setProfileUser] = useState(null); // User entity for the viewed profile
   const [sessions, setSessions] = useState([]);
   const [badges, setBadges] = useState([]);
+  const [showBadges, setShowBadges] = useState(true);
   const [editing, setEditing] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -47,6 +48,7 @@ export default function UserProfile() {
   useEffect(() => {
     base44.auth.me().then(u => {
       setUser(u);
+      if (u?.show_badges !== undefined) setShowBadges(u.show_badges);
       loadProfile(u, viewEmail || u?.email);
     });
   }, [viewEmail]);
@@ -184,12 +186,14 @@ export default function UserProfile() {
              <span><strong className="text-foreground">{(profile.followers || []).length}</strong> followers</span>
              <span><strong className="text-foreground">{(profile.following || []).length}</strong> following</span>
            </div>
-           {badges.length > 0 && <UserBadgeDisplay badges={badges} />}
-           <ProfileBadges
-             userEmail={viewEmail || user?.email}
-             profile={profile}
-             sessions={sessions}
-           />
+           {showBadges && badges.length > 0 && <UserBadgeDisplay badges={badges} />}
+           {showBadges && (
+             <ProfileBadges
+               userEmail={viewEmail || user?.email}
+               profile={profile}
+               sessions={sessions}
+             />
+           )}
           </div>
           {!isOwn && (
             <div className="flex gap-2 shrink-0">

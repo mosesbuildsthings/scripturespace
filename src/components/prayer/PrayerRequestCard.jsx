@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { HandHeart, Trash2, Bookmark } from "lucide-react";
+import { HandHeart, Trash2, Bookmark, NotebookPen, ChevronDown, ChevronUp, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 
@@ -19,6 +20,9 @@ const CATEGORY_COLORS = {
 export default function PrayerRequestCard({ request, currentUser, onUpdate }) {
   const [loading, setLoading] = useState(false);
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
+  const [showNotes, setShowNotes] = useState(false);
+  const [notes, setNotes] = useState(request.private_notes || "");
+  const [notesSaving, setNotesSaving] = useState(false);
 
   const prayingUsers = request.praying_users || [];
   const bookmarkedBy = request.bookmarked_by || [];
@@ -57,6 +61,13 @@ export default function PrayerRequestCard({ request, currentUser, onUpdate }) {
     await base44.entities.PrayerRequest.update(request.id, { bookmarked_by: updated });
     onUpdate();
     setBookmarkLoading(false);
+  };
+
+  const handleSaveNotes = async () => {
+    setNotesSaving(true);
+    await base44.entities.PrayerRequest.update(request.id, { private_notes: notes });
+    onUpdate();
+    setNotesSaving(false);
   };
 
   const authorLabel = request.is_anonymous ? "Anonymous" : (request.author_name || "Community Member");
@@ -105,6 +116,17 @@ export default function PrayerRequestCard({ request, currentUser, onUpdate }) {
             : "Be the first to pray"}
         </p>
         <div className="flex items-center gap-2">
+          {isOwner && (
+            <Button
+              size="sm"
+              variant="ghost"
+              className={cn("rounded-full h-8 w-8 p-0 select-none", showNotes ? "text-primary" : "text-muted-foreground")}
+              onClick={() => setShowNotes(v => !v)}
+              title="Private notes — how did God answer this prayer?"
+            >
+              <NotebookPen className="w-3.5 h-3.5 pointer-events-none" />
+            </Button>
+          )}
           <Button
             size="sm"
             variant="ghost"
@@ -127,6 +149,25 @@ export default function PrayerRequestCard({ request, currentUser, onUpdate }) {
           </Button>
         </div>
       </div>
+
+      {/* Private Notes (owner only) */}
+      {isOwner && showNotes && (
+        <div className="pt-2 border-t space-y-2">
+          <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+            <NotebookPen className="w-3 h-3 text-primary" /> How did God answer this prayer?
+            <span className="font-normal">(private, only visible to you)</span>
+          </p>
+          <Textarea
+            value={notes}
+            onChange={e => setNotes(e.target.value)}
+            placeholder="Document how you saw God work through this request…"
+            className="resize-none h-20 text-sm"
+          />
+          <Button size="sm" className="rounded-full gap-1.5 text-xs" onClick={handleSaveNotes} disabled={notesSaving}>
+            <Save className="w-3 h-3" /> {notesSaving ? "Saving…" : "Save Note"}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

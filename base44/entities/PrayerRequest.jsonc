@@ -32,6 +32,10 @@
       },
       "description": "Array of emails of users who bookmarked this prayer request"
     },
+    "private_notes": {
+      "type": "string",
+      "description": "Private notes by the owner documenting how God answered this prayer over time"
+    },
     "is_anonymous": {
       "type": "boolean",
       "default": false

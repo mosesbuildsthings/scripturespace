@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import ChallengeCard from "@/components/groups/ChallengeCard";
 import CreateChallengeForm from "@/components/groups/CreateChallengeForm";
 import GroupAnnouncementsPanel from "@/components/groups/GroupAnnouncementsPanel";
+import GroupChatPanel from "@/components/groups/GroupChatPanel";
 
 const GROUP_CATEGORIES = ["church", "small_group", "youth", "womens", "mens", "bible_study", "prayer", "other"];
 
@@ -220,6 +221,9 @@ export default function Groups() {
                       <div className="space-y-2">
                         <GroupAnnouncementsPanel group={g} user={user} isLeader={isLeader(g)} />
                       </div>
+
+                      {/* Group Chat */}
+                      <GroupChatPanel group={g} user={user} />
 
                       {/* Challenges Section */}
                       <div className="space-y-2">

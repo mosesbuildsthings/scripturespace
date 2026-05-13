@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { TrendingUp, Plus, Target, Trophy, Flame, BarChart2 } from "lucide-react";
+import { TrendingUp, Plus, Target, Trophy, Flame, BarChart2, CalendarDays } from "lucide-react";
 import GoalCard from "@/components/growth/GoalCard";
 import NewGoalForm from "@/components/growth/NewGoalForm";
 import GrowthCharts from "@/components/growth/GrowthCharts";
+import StudyCalendar from "@/components/growth/StudyCalendar";
+import SessionProgressChart from "@/components/growth/SessionProgressChart";
 
-const TABS = ["goals", "charts"];
-const TAB_LABELS = { goals: "My Goals", charts: "Growth Charts" };
+const TABS = ["goals", "charts", "calendar", "progress"];
+const TAB_LABELS = { goals: "My Goals", charts: "Growth Charts", calendar: "Calendar", progress: "Progress" };
 
 export default function Growth() {
   const [user, setUser] = useState(null);
@@ -33,6 +35,34 @@ export default function Growth() {
     queryFn: () => base44.entities.JournalEntry.filter({ user_email: user.email }, "-entry_date", 60),
     staleTime: 60_000,
   });
+
+  // Bible study sessions the user attended (as host or listener)
+  const { data: allSessions = [] } = useQuery({
+    queryKey: ["study_sessions_growth", user?.email],
+    enabled: !!user,
+    queryFn: () => base44.entities.BibleStudySession.filter({ status: "ended" }, "-scheduled_time", 100),
+    staleTime: 60_000,
+  });
+
+  // Prayer requests with private notes (answered prayers)
+  const { data: myPrayers = [] } = useQuery({
+    queryKey: ["my_prayers_growth", user?.email],
+    enabled: !!user,
+    queryFn: () => base44.entities.PrayerRequest.filter({ author_email: user.email }, "-created_date", 100),
+    staleTime: 60_000,
+  });
+
+  // Dates user participated in a session
+  const sessionDates = allSessions
+    .filter(s =>
+      (s.hosts || []).some(h => h.email === user?.email) ||
+      (s.listeners || []).some(l => l.email === user?.email) ||
+      (s.speakers || []).some(sp => sp.email === user?.email)
+    )
+    .map(s => s.scheduled_time?.slice(0, 10))
+    .filter(Boolean);
+
+  const answeredPrayerCount = myPrayers.filter(p => p.private_notes && p.private_notes.trim().length > 0).length;
 
   const refresh = () => queryClient.invalidateQueries({ queryKey: ["goals", user?.email] });
 
@@ -95,19 +125,22 @@ export default function Growth() {
       )}
 
       {/* Tabs */}
-      <div className="flex gap-2">
-        {TABS.map(tab => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors flex items-center gap-1.5 ${
-              activeTab === tab ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground hover:bg-accent"
-            }`}
-          >
-            {tab === "goals" ? <Target className="w-3.5 h-3.5" /> : <BarChart2 className="w-3.5 h-3.5" />}
-            {TAB_LABELS[tab]}
-          </button>
-        ))}
+      <div className="flex gap-2 flex-wrap">
+        {TABS.map(tab => {
+          const icons = { goals: <Target className="w-3.5 h-3.5" />, charts: <BarChart2 className="w-3.5 h-3.5" />, calendar: <CalendarDays className="w-3.5 h-3.5" />, progress: <TrendingUp className="w-3.5 h-3.5" /> };
+          return (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                activeTab === tab ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground hover:bg-accent"
+              }`}
+            >
+              {icons[tab]}
+              {TAB_LABELS[tab]}
+            </button>
+          );
+        })}
       </div>
 
       {/* Tab Content */}
@@ -151,6 +184,14 @@ export default function Growth() {
 
       {activeTab === "charts" && (
         <GrowthCharts goals={goals} journalEntries={journalEntries} />
+      )}
+
+      {activeTab === "calendar" && (
+        <StudyCalendar sessionDates={sessionDates} />
+      )}
+
+      {activeTab === "progress" && (
+        <SessionProgressChart sessionDates={sessionDates} answeredPrayerCount={answeredPrayerCount} />
       )}
     </div>
   );

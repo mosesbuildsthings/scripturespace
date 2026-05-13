@@ -1,0 +1,26 @@
+{
+  "name": "ScriptureSpace",
+  "short_name": "ScriptureSpace",
+  "description": "A community-centered Bible app for Scripture engagement, reflection, and spiritual growth.",
+  "theme_color": "#0F3B2E",
+  "background_color": "#F8F5EC",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/maskable-icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

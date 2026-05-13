@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 
 export default function TermsOfService() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background select-text" style={{ WebkitUserSelect: 'text', userSelect: 'text' }}>
       <div className="max-w-3xl mx-auto px-4 py-8">
         <Link to="/Settings" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-6">
           <ArrowLeft className="w-4 h-4" />

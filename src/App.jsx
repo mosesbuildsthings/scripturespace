@@ -32,6 +32,8 @@ import Groups from './pages/Groups';
 import LeaderDashboard from './pages/LeaderDashboard';
 import AdminVerifications from './pages/AdminVerifications';
 import LeaderPremium from './pages/LeaderPremium';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -193,6 +195,8 @@ const AuthenticatedApp = () => {
             </motion.div>
           } />
         </Route>
+        <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
+        <Route path="/TermsOfService" element={<TermsOfService />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </AnimatePresence>

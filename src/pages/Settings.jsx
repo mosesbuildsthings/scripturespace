@@ -622,9 +622,9 @@ export default function Settings() {
 
       {/* Legal links — required for store compliance */}
       <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground pb-4">
-        <a href="/PRIVACY_POLICY.md" target="_blank" rel="noopener noreferrer" className="hover:text-foreground underline underline-offset-2">Privacy Policy</a>
+        <Link to="/PrivacyPolicy" className="hover:text-foreground underline underline-offset-2">Privacy Policy</Link>
         <span>·</span>
-        <a href="/TERMS_OF_SERVICE.md" target="_blank" rel="noopener noreferrer" className="hover:text-foreground underline underline-offset-2">Terms of Service</a>
+        <Link to="/TermsOfService" className="hover:text-foreground underline underline-offset-2">Terms of Service</Link>
         <span>·</span>
         <a href="mailto:support@scripturespace.app" className="hover:text-foreground underline underline-offset-2">Support</a>
       </div>

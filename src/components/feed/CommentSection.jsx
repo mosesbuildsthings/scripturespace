@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, Loader2 } from "lucide-react";
+import { parseScriptureText } from "@/components/shared/ScripturePopup";
 import { format } from "date-fns";
 
 export default function CommentSection({ postId, currentUser, onCommentAdded }) {
@@ -76,7 +77,7 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
               </div>
               <div className="bg-background rounded-2xl px-3 py-2 flex-1">
                 <p className="text-xs font-semibold text-foreground">{comment.author_name}</p>
-                <p className="text-sm text-foreground/90">{comment.content}</p>
+                <p className="text-sm text-foreground/90">{parseScriptureText(comment.content)}</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   {comment.created_date ? format(new Date(comment.created_date), "MMM d, h:mm a") : ""}
                 </p>

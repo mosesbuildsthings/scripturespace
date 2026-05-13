@@ -17,6 +17,7 @@ import {
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import CommentSection from "./CommentSection";
+import { parseScriptureText } from "@/components/shared/ScripturePopup";
 
 export default function PostCard({ post, currentUser, onUpdate, onDelete }) {
   const [showComments, setShowComments] = useState(false);
@@ -164,11 +165,13 @@ export default function PostCard({ post, currentUser, onUpdate, onDelete }) {
 
       {/* Content */}
       <div className="px-5 pb-3">
-        <p className="text-sm leading-relaxed text-foreground whitespace-pre-wrap">{post.content}</p>
+        <p className="text-sm leading-relaxed text-foreground whitespace-pre-wrap">{parseScriptureText(post.content)}</p>
         {post.verse_reference && (
-          <Badge variant="secondary" className="mt-2 text-xs">
-            📖 {post.verse_reference}
-          </Badge>
+          <span className="mt-2 inline-block">
+            <span className="relative inline-block">
+              {parseScriptureText(post.verse_reference)}
+            </span>
+          </span>
         )}
       </div>
 

@@ -100,9 +100,9 @@ export default function PrivacyPolicy() {
           <section>
             <h2 className="text-xl font-semibold mb-2">6. Your Rights</h2>
             <ul className="list-disc pl-5 text-muted-foreground space-y-1">
-              <li><strong>Access:</strong> Request a copy of your personal data by emailing support@scripturespace.app</li>
+              <li><strong>Access:</strong> Request a copy of your personal data by emailing scripture.space@protonmail.com</li>
               <li><strong>Delete:</strong> Delete your account via Settings. Data removed within 30 days.</li>
-              <li><strong>Export:</strong> Request your data in portable format by emailing support@scripturespace.app</li>
+              <li><strong>Export:</strong> Request your data in portable format by emailing scripture.space@protonmail.com</li>
               <li><strong>Correct:</strong> Update your profile information directly in the app via Settings</li>
             </ul>
           </section>
@@ -119,7 +119,7 @@ export default function PrivacyPolicy() {
 
           <section>
             <h2 className="text-xl font-semibold mb-2">9. Contact Us</h2>
-            <p className="text-muted-foreground">For privacy-related questions or requests, email: <strong>support@scripturespace.app</strong></p>
+            <p className="text-muted-foreground">For privacy-related questions or requests, email: <strong>scripture.space@protonmail.com</strong></p>
           </section>
 
           <section>

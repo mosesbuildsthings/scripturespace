@@ -89,7 +89,7 @@ export default function TermsOfService() {
 
           <section>
             <h2 className="text-xl font-semibold mb-2">9. Governing Law & Disputes</h2>
-            <p className="text-muted-foreground">Any dispute arising from these Terms shall be resolved through binding arbitration. You may opt out of arbitration by emailing support@scripturespace.app within 30 days of first use.</p>
+            <p className="text-muted-foreground">Any dispute arising from these Terms shall be resolved through binding arbitration. You may opt out of arbitration by emailing scripture.space@protonmail.com within 30 days of first use.</p>
           </section>
 
           <section>
@@ -99,7 +99,7 @@ export default function TermsOfService() {
 
           <section>
             <h2 className="text-xl font-semibold mb-2">11. Contact Us</h2>
-            <p className="text-muted-foreground">For questions about these Terms, email: <strong>support@scripturespace.app</strong></p>
+            <p className="text-muted-foreground">For questions about these Terms, email: <strong>scripture.space@protonmail.com</strong></p>
           </section>
 
         </div>

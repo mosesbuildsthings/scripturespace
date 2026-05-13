@@ -626,7 +626,7 @@ export default function Settings() {
         <span>·</span>
         <Link to="/TermsOfService" className="hover:text-foreground underline underline-offset-2">Terms of Service</Link>
         <span>·</span>
-        <a href="mailto:support@scripturespace.app" className="hover:text-foreground underline underline-offset-2">Support</a>
+        <a href="mailto:scripture.space@protonmail.com" className="hover:text-foreground underline underline-offset-2">Support</a>
       </div>
     </div>
   );

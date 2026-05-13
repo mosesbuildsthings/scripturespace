@@ -35,6 +35,17 @@ export default function CommentSection({ postId, currentUser, onCommentAdded }) 
       content: newComment.trim(),
     });
 
+    // Fire notification email (non-blocking)
+    base44.functions.invoke("sendNotificationEmail", {
+      type: "comment_on_post",
+      payload: {
+        post_id: postId,
+        commenter_name: currentUser?.full_name || "Someone",
+        commenter_email: currentUser?.email,
+        comment_content: newComment.trim(),
+      },
+    }).catch(() => {});
+
     setNewComment("");
     setSubmitting(false);
     loadComments();

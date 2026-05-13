@@ -11,17 +11,20 @@
         "scripture_scholar",
         "prayer_warrior",
         "community_leader",
-        "bible_expert"
+        "bible_expert",
+        "faithful_reader",
+        "devoted_disciple",
+        "word_keeper"
       ],
       "description": "The type of badge earned"
     },
     "badge_name": {
       "type": "string",
-      "description": "Display name of the badge (e.g., 'Scripture Scholar')"
+      "description": "Display name of the badge"
     },
     "threshold_met": {
       "type": "number",
-      "description": "The metric value that triggered the badge (e.g., 50 posts)"
+      "description": "The metric value that triggered the badge (e.g., 7-day streak)"
     },
     "awarded_date": {
       "type": "string",

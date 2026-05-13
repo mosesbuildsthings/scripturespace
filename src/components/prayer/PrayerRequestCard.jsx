@@ -40,6 +40,20 @@ export default function PrayerRequestCard({ request, currentUser, onUpdate }) {
     request.praying_users = updated;
     try {
       await base44.entities.PrayerRequest.update(request.id, { praying_users: updated });
+
+      // Notify the prayer author when someone new starts praying (not the owner themselves)
+      if (!isPraying && currentUser?.email !== request.author_email) {
+        base44.functions.invoke("sendNotificationEmail", {
+          type: "reply_to_prayer",
+          payload: {
+            prayer_id: request.id,
+            commenter_name: currentUser?.full_name || "Someone",
+            commenter_email: currentUser?.email,
+            comment_content: `${currentUser?.full_name || "Someone"} is now praying for your request.`,
+          },
+        }).catch(() => {});
+      }
+
       onUpdate();
     } catch {
       request.praying_users = prayingUsers; // Revert on error

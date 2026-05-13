@@ -288,11 +288,21 @@ export default function Settings() {
     base44.auth.logout();
   };
 
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
   const handleDeleteAccount = async () => {
-    // Account deletion requires a backend data-wipe function — not yet implemented.
-    // Redirect user to contact support for a manual deletion per GDPR/CCPA right-to-erasure.
-    window.open("mailto:support@scripturespace.app?subject=Account%20Deletion%20Request", "_blank");
-    toast.info("A deletion request email has been opened. Our team will process it within 30 days.");
+    if (deleteConfirmText !== "DELETE") return;
+    setDeleting(true);
+    try {
+      await base44.functions.invoke("deleteAccount", {});
+      toast.success("Your account and all data have been permanently deleted.");
+      setTimeout(() => base44.auth.logout(), 1500);
+    } catch (err) {
+      toast.error("Deletion failed. Please try again or contact support.");
+      setDeleting(false);
+    }
   };
 
   return (
@@ -346,34 +356,59 @@ export default function Settings() {
            </CardTitle>
            <CardDescription>Permanently delete your account and all data</CardDescription>
          </CardHeader>
-         <CardContent>
-           <p className="text-sm text-muted-foreground mb-4">
-             This action cannot be undone. All your posts, journals, goals, and profile data will be permanently deleted.
-           </p>
-           <AlertDialog>
+         <CardContent className="space-y-4">
+           <div className="bg-destructive/8 border border-destructive/20 rounded-xl p-3 space-y-1">
+             <p className="text-sm font-semibold text-destructive">⚠️ This cannot be undone</p>
+             <p className="text-xs text-muted-foreground">The following will be permanently and immediately deleted:</p>
+             <ul className="text-xs text-muted-foreground list-disc list-inside space-y-0.5 mt-1">
+               <li>All your posts, comments & likes</li>
+               <li>Journal entries & spiritual goals</li>
+               <li>Bible reading progress & saved verses</li>
+               <li>Prayer requests & earned badges</li>
+               <li>Profile, photos & account settings</li>
+             </ul>
+           </div>
+           <AlertDialog open={deleteDialogOpen} onOpenChange={(open) => {
+             setDeleteDialogOpen(open);
+             if (!open) setDeleteConfirmText("");
+           }}>
              <AlertDialogTrigger asChild>
-               <Button variant="destructive" className="w-full gap-2">
+               <Button variant="destructive" className="w-full gap-2" onClick={() => setDeleteDialogOpen(true)}>
                  <Trash2 className="w-4 h-4" />
                  Delete My Account
                </Button>
              </AlertDialogTrigger>
              <AlertDialogContent>
                <AlertDialogHeader>
-                 <AlertDialogTitle>Request Account Deletion</AlertDialogTitle>
-                 <AlertDialogDescription>
-                   This will open an email to our support team to permanently delete your account and all associated data. We will process your request within 30 days per our Privacy Policy.
-                   <br /><br />
-                   <strong>All your posts, journals, goals, badges, and settings will be permanently removed.</strong>
+                 <AlertDialogTitle className="text-destructive flex items-center gap-2">
+                   <Trash2 className="w-5 h-5" /> Permanently Delete Account
+                 </AlertDialogTitle>
+                 <AlertDialogDescription asChild>
+                   <div className="space-y-3 text-sm">
+                     <p>This will <strong>immediately and permanently</strong> delete your account and all associated data. There is no recovery.</p>
+                     <p className="text-muted-foreground">To confirm, type <strong className="text-foreground font-mono">DELETE</strong> in the box below:</p>
+                     <Input
+                       value={deleteConfirmText}
+                       onChange={e => setDeleteConfirmText(e.target.value.toUpperCase())}
+                       placeholder="Type DELETE to confirm"
+                       className="font-mono border-destructive/40 focus-visible:ring-destructive"
+                       autoComplete="off"
+                     />
+                   </div>
                  </AlertDialogDescription>
                </AlertDialogHeader>
-               <div className="flex gap-2 pt-4">
-                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                 <AlertDialogAction
+               <div className="flex gap-2 pt-2">
+                 <AlertDialogCancel onClick={() => { setDeleteConfirmText(""); setDeleteDialogOpen(false); }}>
+                   Cancel
+                 </AlertDialogCancel>
+                 <Button
+                   variant="destructive"
+                   disabled={deleteConfirmText !== "DELETE" || deleting}
                    onClick={handleDeleteAccount}
-                   className="bg-destructive hover:bg-destructive/90"
+                   className="flex-1 gap-2"
                  >
-                   Send Deletion Request
-                 </AlertDialogAction>
+                   {deleting ? <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Deleting...</> : "Permanently Delete"}
+                 </Button>
                </div>
              </AlertDialogContent>
            </AlertDialog>

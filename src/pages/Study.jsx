@@ -26,8 +26,18 @@ export default function Study() {
     <div className="max-w-3xl mx-auto">
       <Tabs value={tab} onValueChange={setTab} className="w-full">
 
-        {/* Sticky header */}
-        <div className="sticky top-0 z-20 bg-background/90 backdrop-blur-xl border-b border-border/50 px-4 pt-5 pb-3">
+        {/* Sticky header — -webkit-sticky for iOS WebView + GPU layer for flicker-free scroll */}
+        <div
+          className="sticky top-0 z-20 bg-background/90 backdrop-blur-xl border-b border-border/50 px-4 pt-5 pb-3"
+          style={{
+            position: '-webkit-sticky',
+            WebkitTransform: 'translateZ(0)',
+            transform: 'translateZ(0)',
+            willChange: 'transform',
+            WebkitBackfaceVisibility: 'hidden',
+            backfaceVisibility: 'hidden',
+          }}
+        >
           <h1 className="text-2xl font-display font-bold text-foreground mb-3">Study</h1>
           <TabsList className="w-full overflow-x-auto flex gap-1 h-auto p-1 bg-muted/60 rounded-2xl scrollbar-none">
             {TABS.map(t => (

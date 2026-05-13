@@ -57,5 +57,16 @@
   "required": [
     "content",
     "author_email"
-  ]
+  ],
+  "rls": {
+    "delete": {
+      "data.author_email": "{{user.email}}"
+    },
+    "update": {
+      "data.author_email": "{{user.email}}"
+    },
+    "write": {
+      "data.author_email": "{{user.email}}"
+    }
+  }
 }

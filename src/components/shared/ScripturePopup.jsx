@@ -23,8 +23,14 @@ const BOOK_ALIASES = {
   Jas: "James", Pet: "Peter", Rev: "Revelation",
 };
 
+// Simple in-memory cache to avoid re-fetching the same passage
+const verseCache = {};
+
 async function fetchVerses(book, chapter, verseStart, verseEnd) {
   const end = verseEnd || verseStart;
+  const cacheKey = `${book}-${chapter}-${verseStart}-${end}`;
+  if (verseCache[cacheKey]) return verseCache[cacheKey];
+
   const prevVerse = verseStart > 1 ? verseStart - 1 : null;
   const nextVerse = end + 1;
 
@@ -55,7 +61,9 @@ Only include the verses listed. No extra text.`;
       }
     }
   });
-  return result.verses || [];
+  const verses = result?.verses || [];
+  verseCache[cacheKey] = verses;
+  return verses;
 }
 
 function ScriptureTooltip({ reference, book, chapter, verseStart, verseEnd, onClose }) {
@@ -64,10 +72,13 @@ function ScriptureTooltip({ reference, book, chapter, verseStart, verseEnd, onCl
   const ref = useRef(null);
 
   useEffect(() => {
-    fetchVerses(book, chapter, verseStart, verseEnd).then(v => {
-      setVerses(v);
-      setLoading(false);
-    });
+    let cancelled = false;
+    setLoading(true);
+    setVerses([]);
+    fetchVerses(book, chapter, verseStart, verseEnd)
+      .then(v => { if (!cancelled) { setVerses(v); setLoading(false); } })
+      .catch(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
   }, [book, chapter, verseStart, verseEnd]);
 
   useEffect(() => {
@@ -86,7 +97,7 @@ function ScriptureTooltip({ reference, book, chapter, verseStart, verseEnd, onCl
     <div
       ref={ref}
       className="absolute z-50 w-80 bg-card border shadow-xl rounded-2xl p-4 space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-150"
-      style={{ bottom: "calc(100% + 8px)", left: "50%", transform: "translateX(-50%)" }}
+      style={{ bottom: "calc(100% + 8px)", left: "50%", transform: "translateX(-50%)", maxWidth: "calc(100vw - 2rem)" }}
     >
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -104,6 +115,8 @@ function ScriptureTooltip({ reference, book, chapter, verseStart, verseEnd, onCl
         <div className="flex justify-center py-4">
           <Loader2 className="w-5 h-5 animate-spin text-primary" />
         </div>
+      ) : verses.length === 0 ? (
+        <p className="text-xs text-muted-foreground text-center py-2">Could not load this passage.</p>
       ) : (
         <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
           {prevVerseData && (

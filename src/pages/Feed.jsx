@@ -55,15 +55,15 @@ export default function Feed() {
   };
 
   useEffect(() => {
-    document.addEventListener("touchstart", handlePullStart);
-    document.addEventListener("touchmove", handlePullMove);
+    document.addEventListener("touchstart", handlePullStart, { passive: true });
+    document.addEventListener("touchmove", handlePullMove, { passive: true });
     document.addEventListener("touchend", handlePullEnd);
     return () => {
       document.removeEventListener("touchstart", handlePullStart);
       document.removeEventListener("touchmove", handlePullMove);
       document.removeEventListener("touchend", handlePullEnd);
     };
-  }, [pullDistance]);
+  }, [pullDistance]); // pullDistance intentionally in dep-array — handlers close over it
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">

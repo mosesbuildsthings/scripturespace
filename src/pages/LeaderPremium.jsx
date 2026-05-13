@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Crown, Check, ArrowLeft, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 const FEATURES = [
   "✅ Verified Leader / Pastor badge on your profile",
@@ -44,9 +45,11 @@ export default function LeaderPremium() {
     setLoading(false);
   };
 
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+
   const handleCancel = async () => {
-    if (!window.confirm("Are you sure you want to cancel your subscription?")) return;
     setLoading(true);
+    setShowCancelDialog(false);
     await base44.functions.invoke("cancelSubscription", {
       subscription_id: subscription.subscription_id,
       user_email: user?.email,
@@ -96,9 +99,27 @@ export default function LeaderPremium() {
               <p className="text-xs text-green-600 dark:text-green-500">You have Leader Premium access.</p>
             </div>
           </div>
-          <Button variant="outline" className="w-full text-destructive border-destructive/30" onClick={handleCancel} disabled={loading}>
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Cancel Subscription"}
-          </Button>
+          <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" className="w-full text-destructive border-destructive/30" disabled={loading}>
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Cancel Subscription"}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Cancel subscription?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Your Leader Premium access will remain active until the end of the current billing period, then it will be removed. This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <div className="flex gap-2 pt-4">
+                <AlertDialogCancel>Keep Subscription</AlertDialogCancel>
+                <AlertDialogAction className="bg-destructive hover:bg-destructive/90" onClick={handleCancel}>
+                  Yes, Cancel
+                </AlertDialogAction>
+              </div>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       ) : (
         <Button

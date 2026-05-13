@@ -23,6 +23,8 @@ export default function PostCard({ post, currentUser, onUpdate, onDelete }) {
   const [showComments, setShowComments] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
   const [authorVerified, setAuthorVerified] = useState(false);
+  // Local optimistic likes so we don't mutate the prop object
+  const [optimisticLikes, setOptimisticLikes] = useState(null);
 
   React.useEffect(() => {
     if (!post.author_email) return;
@@ -38,23 +40,22 @@ export default function PostCard({ post, currentUser, onUpdate, onDelete }) {
     });
   }, [post.author_email]);
 
-  const likes = post.likes || [];
+  const likes = optimisticLikes ?? (post.likes || []);
   const isLiked = likes.includes(currentUser?.email);
   const isOwner = post.author_email === currentUser?.email;
 
   const handleLike = async () => {
-    if (isLiking) return;
+    if (isLiking || !currentUser) return;
     const newLikes = isLiked
-      ? likes.filter((e) => e !== currentUser?.email)
-      : [...likes, currentUser?.email];
-    // Optimistic update
+      ? likes.filter((e) => e !== currentUser.email)
+      : [...likes, currentUser.email];
     setIsLiking(true);
-    post.likes = newLikes; // Update UI immediately
+    setOptimisticLikes(newLikes);
     try {
       await base44.entities.Post.update(post.id, { likes: newLikes });
       onUpdate();
     } catch {
-      post.likes = likes; // Revert on error
+      setOptimisticLikes(null); // Revert on error
     }
     setIsLiking(false);
   };

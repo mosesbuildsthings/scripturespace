@@ -286,14 +286,10 @@ export default function Settings() {
   };
 
   const handleDeleteAccount = async () => {
-    try {
-      // Note: This requires a backend function to actually delete the account
-      // For now, we'll just log out and show a message
-      toast.error("Account deletion is not yet available. Please contact support@scripturespace.app");
-      // In production, this would call: await base44.functions.invoke('deleteAccount', {})
-    } catch (error) {
-      toast.error("Failed to delete account: " + error.message);
-    }
+    // Account deletion requires a backend data-wipe function — not yet implemented.
+    // Redirect user to contact support for a manual deletion per GDPR/CCPA right-to-erasure.
+    window.open("mailto:support@scripturespace.app?subject=Account%20Deletion%20Request", "_blank");
+    toast.info("A deletion request email has been opened. Our team will process it within 30 days.");
   };
 
   return (
@@ -360,11 +356,11 @@ export default function Settings() {
              </AlertDialogTrigger>
              <AlertDialogContent>
                <AlertDialogHeader>
-                 <AlertDialogTitle>Delete Account?</AlertDialogTitle>
+                 <AlertDialogTitle>Request Account Deletion</AlertDialogTitle>
                  <AlertDialogDescription>
-                   This will permanently delete your account and all associated data. This action cannot be reversed.
+                   This will open an email to our support team to permanently delete your account and all associated data. We will process your request within 30 days per our Privacy Policy.
                    <br /><br />
-                   <strong>All your posts, journals, goals, badges, and settings will be lost.</strong>
+                   <strong>All your posts, journals, goals, badges, and settings will be permanently removed.</strong>
                  </AlertDialogDescription>
                </AlertDialogHeader>
                <div className="flex gap-2 pt-4">
@@ -373,7 +369,7 @@ export default function Settings() {
                    onClick={handleDeleteAccount}
                    className="bg-destructive hover:bg-destructive/90"
                  >
-                   Delete Permanently
+                   Send Deletion Request
                  </AlertDialogAction>
                </div>
              </AlertDialogContent>
@@ -623,6 +619,15 @@ export default function Settings() {
       <Button onClick={handleSave} disabled={saving} className="w-full rounded-xl h-12 text-base">
         {saving ? "Saving..." : "Save Settings"}
       </Button>
+
+      {/* Legal links — required for store compliance */}
+      <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground pb-4">
+        <a href="/PRIVACY_POLICY.md" target="_blank" rel="noopener noreferrer" className="hover:text-foreground underline underline-offset-2">Privacy Policy</a>
+        <span>·</span>
+        <a href="/TERMS_OF_SERVICE.md" target="_blank" rel="noopener noreferrer" className="hover:text-foreground underline underline-offset-2">Terms of Service</a>
+        <span>·</span>
+        <a href="mailto:support@scripturespace.app" className="hover:text-foreground underline underline-offset-2">Support</a>
+      </div>
     </div>
   );
 }

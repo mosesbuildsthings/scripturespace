@@ -31,11 +31,12 @@ export default function Study() {
           className="sticky top-0 z-20 bg-background/90 backdrop-blur-xl border-b border-border/50 px-4 pt-5 pb-3"
           style={{
             position: '-webkit-sticky',
-            WebkitTransform: 'translateZ(0)',
-            transform: 'translateZ(0)',
+            WebkitTransform: 'translate3d(0,0,0)',
+            transform: 'translate3d(0,0,0)',
             willChange: 'transform',
             WebkitBackfaceVisibility: 'hidden',
             backfaceVisibility: 'hidden',
+            isolation: 'isolate',
           }}
         >
           <h1 className="text-2xl font-display font-bold text-foreground mb-3">Study</h1>

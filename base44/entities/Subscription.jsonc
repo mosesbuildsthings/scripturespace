@@ -1,0 +1,35 @@
+{
+  "name": "Subscription",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string"
+    },
+    "checkout_id": {
+      "type": "string",
+      "description": "Wix checkout session ID \u2014 used to link webhook to user"
+    },
+    "subscription_id": {
+      "type": "string",
+      "description": "Wix subscription contract ID from order_approved webhook"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "active",
+        "canceled",
+        "ended"
+      ],
+      "default": "pending"
+    },
+    "plan": {
+      "type": "string",
+      "default": "leader_premium"
+    }
+  },
+  "required": [
+    "user_email",
+    "checkout_id"
+  ]
+}

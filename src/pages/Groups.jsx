@@ -29,20 +29,6 @@ export default function Groups() {
 
   useEffect(() => { base44.auth.me().then(setUser); }, []);
 
-  // Handle join via invite link
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const joinCode = params.get("join");
-    if (joinCode && user) {
-      const target = groups.find(g => g.invite_code === joinCode);
-      if (target && !(target.members || []).includes(user.email)) {
-        handleJoin(target).then(() => {
-          window.history.replaceState({}, "", "/Groups");
-        });
-      }
-    }
-  }, [user, groups]);
-
   const { data: groups = [], isLoading } = useQuery({
     queryKey: ["groups"],
     queryFn: () => base44.entities.Group.list("-created_date", 50),
@@ -56,6 +42,20 @@ export default function Groups() {
   });
 
   const refresh = () => { qc.invalidateQueries({ queryKey: ["groups"] }); qc.invalidateQueries({ queryKey: ["challenges"] }); };
+
+  // Handle join via invite link — runs after groups data is available
+  useEffect(() => {
+    if (!user || !groups.length) return;
+    const params = new URLSearchParams(window.location.search);
+    const joinCode = params.get("join");
+    if (!joinCode) return;
+    const target = groups.find(g => g.invite_code === joinCode);
+    if (target && !(target.members || []).includes(user.email)) {
+      handleJoin(target).then(() => {
+        window.history.replaceState({}, "", "/Groups");
+      });
+    }
+  }, [user, groups]);
 
   const myGroups = groups.filter(g => (g.members || []).includes(user?.email) || g.leader_email === user?.email);
   const otherGroups = groups.filter(g => !(g.members || []).includes(user?.email) && g.leader_email !== user?.email && g.is_public);

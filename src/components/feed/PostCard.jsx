@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 
+import { base44 } from "@/api/base44Client";
+
 // Module-level cache to avoid repeated User lookups per post render
 const verifiedCache = {};
-import { base44 } from "@/api/base44Client";
 import { Heart, MessageCircle, Share2, MoreHorizontal, Trash2, EyeOff, ExternalLink } from "lucide-react";
 import LeaderBadge from "@/components/shared/LeaderBadge";
 import { Link } from "react-router-dom";

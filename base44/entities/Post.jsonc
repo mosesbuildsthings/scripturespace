@@ -1,0 +1,67 @@
+{
+  "name": "Post",
+  "type": "object",
+  "properties": {
+    "author_name": {
+      "type": "string",
+      "description": "Display name of the post author"
+    },
+    "author_email": {
+      "type": "string",
+      "description": "Email of the post author"
+    },
+    "content": {
+      "type": "string",
+      "description": "Text content of the post"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Optional image attached to the post"
+    },
+    "verse_reference": {
+      "type": "string",
+      "description": "Optional Bible verse reference shared in the post"
+    },
+    "likes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of emails of users who liked this post"
+    },
+    "comment_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of comments on this post"
+    },
+    "share_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of times this post was shared"
+    },
+    "is_shared": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this post is a shared/reposted post"
+    },
+    "original_post_id": {
+      "type": "string",
+      "description": "ID of the original post if this is a share"
+    },
+    "original_author_name": {
+      "type": "string",
+      "description": "Name of the original author if this is a share"
+    },
+    "hidden_by": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of emails of users who hid this post"
+    }
+  },
+  "required": [
+    "content",
+    "author_email"
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "name": "UserProfile",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string"
+    },
+    "user_name": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "timezone": {
+      "type": "string"
+    },
+    "bio": {
+      "type": "string"
+    },
+    "photos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Up to 6 photo URLs"
+    },
+    "following": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Emails of users this user follows"
+    },
+    "followers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Emails of users following this user"
+    }
+  },
+  "required": [
+    "user_email"
+  ]
+}

@@ -187,7 +187,6 @@
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
-    overscroll-behavior: none;
   }
 
   body {
@@ -195,7 +194,6 @@
     font-family: var(--font-inter);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overscroll-behavior: none;
     /* Mobile WebView optimizations */
     -webkit-user-select: text;
     user-select: text;
@@ -217,20 +215,12 @@
   .overflow-y-scroll,
   main {
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior: none;
-  }
-
-  button {
-    touch-action: manipulation;
-    /* Ensure 44x44px minimum tap target */
-    min-height: 2.75rem;
-    min-width: 2.75rem;
-    -webkit-user-select: none;
-    user-select: none;
   }
 
   button, a, [role="button"] {
-    /* Disable double-tap zoom delay on mobile */
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
     -webkit-touch-callout: none;
   }
 }

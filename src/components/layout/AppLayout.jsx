@@ -104,7 +104,7 @@ const BottomTab = memo(({ item, isActive, onTabSelect }) => (
       onTabSelect(item.path);
     }}
     className={cn(
-      "flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-xl w-11 h-11 transition-all duration-200 select-none touch-none",
+      "flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-xl w-11 h-11 transition-all duration-200 select-none",
       isActive
         ? "text-primary"
         : "text-muted-foreground active:text-foreground"
@@ -286,11 +286,7 @@ export default function AppLayout() {
         <MobileTopBar />
         <main 
           className="flex-1 overflow-y-auto pb-[calc(4.5rem+env(safe-area-inset-bottom))] pt-[calc(44px+env(safe-area-inset-top))] md:pt-0" 
-          style={{ 
-            overscrollBehavior: 'none',
-            WebkitOverflowScrolling: 'touch',
-            scrollBehavior: 'smooth',
-          }}
+          style={{ WebkitOverflowScrolling: 'touch' }}
         >
           <Outlet context={outletCtx} />
         </main>
@@ -333,11 +329,7 @@ export default function AppLayout() {
     <div className="min-h-screen flex bg-background">
       <main 
         className="flex-1 overflow-y-auto md:mr-60 pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0 pt-[calc(44px+env(safe-area-inset-top))] md:pt-0" 
-        style={{ 
-          overscrollBehavior: 'none',
-          WebkitOverflowScrolling: 'touch',
-          scrollBehavior: 'smooth',
-        }}
+        style={{ WebkitOverflowScrolling: 'touch' }}
       >
         <Outlet context={outletCtx} />
       </main>

@@ -57,12 +57,39 @@ export default function ScriptureCard({ onReferenceLoaded }) {
 
   const [imageUrl, setImageUrl] = useState(() => localStorage.getItem(cacheKey) || null);
   const [imageLoading, setImageLoading] = useState(!localStorage.getItem(cacheKey));
+  const [imageFailed, setImageFailed] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const imgRef = useRef(null);
 
   useEffect(() => {
     if (onReferenceLoaded && scripture?.reference) onReferenceLoaded(scripture.reference);
   }, []);
+
+  const generateImage = async () => {
+    setImageLoading(true);
+    setImageFailed(false);
+    try {
+      const result = await base44.integrations.Core.GenerateImage({
+        prompt: `${scripture.imagePrompt}. Spiritual, uplifting, beautiful, high quality digital art, no text, no people, cinematic lighting.`,
+      });
+      const url = result?.url || result;
+      if (url && typeof url === "string") {
+        localStorage.setItem(cacheKey, url);
+        setImageUrl(url);
+      } else {
+        setImageFailed(true);
+      }
+    } catch (err) {
+      console.error("Scripture image generation failed:", err);
+      setImageFailed(true);
+    }
+    setImageLoading(false);
+  };
+
+  const handleRetry = () => {
+    localStorage.removeItem(cacheKey);
+    generateImage();
+  };
 
   useEffect(() => {
     // Clear old cached images (keys from previous days)
@@ -78,17 +105,7 @@ export default function ScriptureCard({ onReferenceLoaded }) {
       return;
     }
 
-    // Generate a new AI image for today
-    setImageLoading(true);
-    base44.integrations.Core.GenerateImage({
-      prompt: `${scripture.imagePrompt}. Spiritual, uplifting, beautiful, high quality digital art, no text, no people, cinematic lighting.`,
-    }).then(({ url }) => {
-      localStorage.setItem(cacheKey, url);
-      setImageUrl(url);
-      setImageLoading(false);
-    }).catch(() => {
-      setImageLoading(false);
-    });
+    generateImage();
   }, [cacheKey]);
 
   const handleDownload = async () => {
@@ -174,8 +191,13 @@ export default function ScriptureCard({ onReferenceLoaded }) {
         ) : imageUrl ? (
           <img ref={imgRef} src={imageUrl} alt="Scripture of the day" className="w-full h-full object-cover" crossOrigin="anonymous" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-muted/30">
+          <div className="w-full h-full flex flex-col items-center justify-center gap-3 bg-muted/30">
             <ImageIcon className="w-10 h-10 text-muted-foreground/40" />
+            {imageFailed && (
+              <button onClick={handleRetry} className="text-xs text-primary underline">
+                Tap to retry
+              </button>
+            )}
           </div>
         )}
         <div className="absolute top-4 left-4 bg-card/80 backdrop-blur-sm rounded-xl px-4 py-2">

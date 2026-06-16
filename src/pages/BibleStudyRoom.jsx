@@ -49,8 +49,9 @@ export default function BibleStudyRoom() {
   }, [messages]);
 
   const loadSession = async () => {
-    const results = await base44.entities.BibleStudySession.filter({ id: sessionId });
-    setSession(results[0]);
+    const results = await base44.entities.BibleStudySession.list("-created_date", 100);
+    const found = results.find(s => s.id === sessionId);
+    setSession(found || null);
   };
 
   const loadMessages = async () => {

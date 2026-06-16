@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, memo } from "react";
-import { Outlet, Link, useLocation } from "react-router-dom";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Home, Rss, BookOpen, Mic2, Users, UserCircle, LogOut, Settings, ChevronRight, Crown, Sun, Moon, Monitor
 } from "lucide-react";
@@ -101,7 +101,7 @@ const BottomTab = memo(({ item, isActive, onTabSelect }) => (
   <button
     onClick={(e) => {
       e.preventDefault();
-      onTabSelect(item.path);
+      if (onTabSelect) onTabSelect(item.path);
     }}
     className={cn(
       "flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-xl w-11 h-11 transition-all duration-200 select-none",
@@ -222,16 +222,17 @@ const BottomNav = memo(({ currentPath, onTabSelect }) => (
 ));
 
 /* ─── Top nav bar (for top/bottom layout settings) ─── */
-const TopNavBar = memo(({ currentPath }) => (
+const TopNavBar = memo(({ currentPath, onTabSelect }) => (
   <nav className="flex items-center justify-around px-2 py-1 overflow-x-auto scrollbar-none">
     {PRIMARY_NAV.map(item => (
-      <BottomTab key={item.path} item={item} isActive={isPathActive(item.path, currentPath)} />
+      <BottomTab key={item.path} item={item} isActive={isPathActive(item.path, currentPath)} onTabSelect={onTabSelect} />
     ))}
   </nav>
 ));
 
 export default function AppLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [navPosition, setNavPosition] = useState("right");
   const [themeColor, setThemeColor] = useState(null);
   const [isLeader, setIsLeader] = useState(false);
@@ -268,12 +269,10 @@ export default function AppLayout() {
   }, []);
 
   const handleTabSelect = useCallback((tabPath) => {
-    if (selectedTab === tabPath) {
-      // Double-tap resets to root
-      setDisplayPath(tabPath);
-    }
     setSelectedTab(tabPath);
-  }, [selectedTab]);
+    setDisplayPath(tabPath);
+    navigate(tabPath);
+  }, [navigate]);
 
   const path = displayPath;
   const outletCtx = { navPosition, setNavPosition, themeColor, setThemeColor, applyThemeColor, isLeader };
@@ -300,7 +299,7 @@ export default function AppLayout() {
       <div className="min-h-screen flex flex-col bg-background">
         <div className={topBarClass}>
           <div className="flex items-center justify-between pr-2">
-            <TopNavBar currentPath={path} />
+            <TopNavBar currentPath={path} onTabSelect={handleTabSelect} />
             <ThemeToggleBtn compact />
           </div>
         </div>
@@ -319,7 +318,7 @@ export default function AppLayout() {
           <Outlet context={outletCtx} />
         </main>
         <MobileTopBar />
-        <BottomNav currentPath={path} />
+        <BottomNav currentPath={path} onTabSelect={handleTabSelect} />
       </div>
     );
   }

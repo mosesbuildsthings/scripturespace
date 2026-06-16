@@ -149,7 +149,7 @@ export default function ScriptureCard({ onReferenceLoaded }) {
       // App watermark
       ctx.fillStyle = "rgba(255,255,255,0.5)";
       ctx.font = "18px sans-serif";
-      ctx.fillText("BibleSocial", 60, 1040);
+      ctx.fillText("ScriptureSpace", 60, 1040);
 
       // Trigger download
       const link = document.createElement("a");

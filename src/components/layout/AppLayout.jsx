@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback, memo } from "react";
-import { Outlet, Link, useLocation } from "react-router-dom";
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Home, Rss, BookOpen, Mic2, Users, UserCircle, LogOut, Settings, ChevronRight, Crown, Sun, Moon, Monitor
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { cn } from "@/lib/utils";
+import { useTabStack } from "@/hooks/useTabStack";
 
 /* ─── Theme toggle (cycles: system → light → dark) ─── */
 function useThemeToggle() {
@@ -97,9 +98,9 @@ const SidebarLink = memo(({ item, isActive }) => (
 ));
 
 /* ─── Bottom tab item (44x44px minimum tap target) ─── */
-const BottomTab = memo(({ item, isActive }) => (
-  <Link
-    to={item.path}
+const BottomTab = memo(({ item, isActive, onPress }) => (
+  <button
+    onClick={() => onPress(item.path)}
     className={cn(
       "flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-xl w-11 h-11 transition-all duration-200 select-none",
       isActive
@@ -118,7 +119,7 @@ const BottomTab = memo(({ item, isActive }) => (
       <item.icon className="w-5 h-5 select-none pointer-events-none" />
     </div>
     <span className={cn("text-[9px] font-medium leading-tight select-none pointer-events-none", isActive ? "text-primary" : "")}>{item.label}</span>
-  </Link>
+  </button>
 ));
 
 /* ─── Sidebar ─── */
@@ -203,8 +204,8 @@ const MobileTopBar = memo(() => (
   </div>
 ));
 
-/* ─── Mobile bottom nav with persistent stacks ─── */
-const BottomNav = memo(({ currentPath }) => (
+/* ─── Mobile bottom nav with tab stack support ─── */
+const BottomNav = memo(({ currentPath, onTabPress }) => (
   <nav className={cn(
     "md:hidden fixed bottom-0 left-0 right-0 z-50 safe-bottom",
     "bg-card/85 backdrop-blur-2xl border-t border-border/50",
@@ -212,23 +213,25 @@ const BottomNav = memo(({ currentPath }) => (
   )}>
     <div className="flex items-center justify-around px-1 py-0.5 overscroll-none">
       {PRIMARY_NAV.map(item => (
-        <BottomTab key={item.path} item={item} isActive={isPathActive(item.path, currentPath)} />
+        <BottomTab key={item.path} item={item} isActive={isPathActive(item.path, currentPath)} onPress={onTabPress} />
       ))}
     </div>
   </nav>
 ));
 
 /* ─── Top nav bar (for top/bottom layout settings) ─── */
-const TopNavBar = memo(({ currentPath }) => (
+const TopNavBar = memo(({ currentPath, onTabPress }) => (
   <nav className="flex items-center justify-around px-2 py-1 overflow-x-auto scrollbar-none">
     {PRIMARY_NAV.map(item => (
-      <BottomTab key={item.path} item={item} isActive={isPathActive(item.path, currentPath)} />
+      <BottomTab key={item.path} item={item} isActive={isPathActive(item.path, currentPath)} onPress={onTabPress} />
     ))}
   </nav>
 ));
 
 export default function AppLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { activeTab, selectTab } = useTabStack();
   const [navPosition, setNavPosition] = useState("right");
   const [themeColor, setThemeColor] = useState(null);
   const [isLeader, setIsLeader] = useState(false);
@@ -255,6 +258,20 @@ export default function AppLayout() {
     document.documentElement.style.setProperty("--glow-primary", color);
   }, []);
 
+  // Tab press: re-selecting the active tab resets it to root; otherwise navigate to the tab root
+  const handleTabPress = useCallback((tabPath) => {
+    const isAlreadyActive = location.pathname === tabPath || 
+      (tabPath !== "/Home" && location.pathname.startsWith(tabPath));
+    selectTab(tabPath);
+    if (isAlreadyActive) {
+      // Re-tap: scroll to top and reset to tab root
+      navigate(tabPath, { replace: true });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      navigate(tabPath);
+    }
+  }, [location.pathname, selectTab, navigate]);
+
   const path = location.pathname;
   const outletCtx = { navPosition, setNavPosition, themeColor, setThemeColor, applyThemeColor, isLeader };
 
@@ -270,7 +287,7 @@ export default function AppLayout() {
         >
           <Outlet context={outletCtx} />
         </main>
-        <BottomNav currentPath={path} />
+        <BottomNav currentPath={path} onTabPress={handleTabPress} />
       </div>
     );
   }
@@ -280,7 +297,7 @@ export default function AppLayout() {
       <div className="min-h-screen flex flex-col bg-background">
         <div className={topBarClass}>
           <div className="flex items-center justify-between pr-2">
-            <TopNavBar currentPath={path} />
+            <TopNavBar currentPath={path} onTabPress={handleTabPress} />
             <ThemeToggleBtn compact />
           </div>
         </div>
@@ -299,7 +316,7 @@ export default function AppLayout() {
           <Outlet context={outletCtx} />
         </main>
         <MobileTopBar />
-        <BottomNav currentPath={path} />
+        <BottomNav currentPath={path} onTabPress={handleTabPress} />
       </div>
     );
   }
@@ -315,7 +332,7 @@ export default function AppLayout() {
       </main>
       <MobileTopBar />
       <Sidebar currentPath={path} side="right" isLeader={isLeader} />
-      <BottomNav currentPath={path} />
+      <BottomNav currentPath={path} onTabPress={handleTabPress} />
     </div>
   );
 }

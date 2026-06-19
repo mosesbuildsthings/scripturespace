@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Loader2, CalendarPlus, Bell } from "lucide-react";
-import { format } from "date-fns";
+import { Loader2, CalendarPlus } from "lucide-react";
+import BackButton from "@/components/shared/BackButton";
 
 export default function ScheduleSession() {
   const navigate = useNavigate();
@@ -104,7 +104,7 @@ export default function ScheduleSession() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" className="rounded-full" onClick={() => navigate(-1)}><ArrowLeft className="w-5 h-5" /></Button>
+        <BackButton showOnDesktop />
         <h1 className="text-xl font-display font-bold">Schedule Session</h1>
       </div>
       {planTitle && <p className="text-sm text-muted-foreground -mt-4 ml-14">Plan: <strong>{planTitle}</strong></p>}

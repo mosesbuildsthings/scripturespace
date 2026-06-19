@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import CreatePostForm from "@/components/feed/CreatePostForm";
-import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import BackButton from "@/components/shared/BackButton";
 
 export default function CreatePost() {
   const [user, setUser] = useState(null);
@@ -15,11 +13,7 @@ export default function CreatePost() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-4">
       <div className="flex items-center gap-3">
-        <Link to="/Feed">
-          <Button variant="ghost" size="icon" className="rounded-full">
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-        </Link>
+        <BackButton showOnDesktop />
         <h1 className="text-xl font-display font-bold text-foreground">Create Post</h1>
       </div>
 

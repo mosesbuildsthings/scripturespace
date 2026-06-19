@@ -4,9 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Mic, MicOff, Hand, Send, Radio, Crown, Users, MessageCircle, ArrowLeft, Phone, AlertCircle } from "lucide-react";
+import { Mic, MicOff, Hand, Send, Radio, Crown, Users, MessageCircle, Phone, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
 import useAudioRoom from "@/hooks/useAudioRoom";
+import BackButton from "@/components/shared/BackButton";
 
 export default function BibleStudyRoom() {
   const navigate = useNavigate();
@@ -163,7 +164,7 @@ export default function BibleStudyRoom() {
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-4">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" className="rounded-full" onClick={() => navigate("/BibleStudy")}><ArrowLeft className="w-5 h-5" /></Button>
+        <BackButton showOnDesktop onBack={() => navigate("/BibleStudy")} />
         <div className="flex-1">
           <div className="flex items-center gap-2">
             {session.status === "live" && <span className="flex items-center gap-1 text-xs font-bold text-red-500"><Radio className="w-3 h-3 animate-pulse" /> LIVE</span>}

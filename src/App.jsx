@@ -4,6 +4,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { base44 } from '@/api/base44Client';
 import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -83,7 +84,32 @@ const AuthenticatedApp = () => {
     }
   }
 
+  // Tab roots never slide — only child/detail pages get a slide-in
+  const TAB_ROOTS = ["/Home", "/Feed", "/Study", "/BibleStudy", "/Groups", "/UserProfile", "/Settings"];
+  const isTabRoot = TAB_ROOTS.includes(location.pathname);
+
+  const slideVariants = {
+    initial: { x: "100%", opacity: 0 },
+    animate: { x: 0, opacity: 1 },
+    exit:    { x: "-30%", opacity: 0 },
+  };
+  const tabVariants = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit:    { opacity: 0 },
+  };
+
   return (
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={location.pathname}
+        variants={isTabRoot ? tabVariants : slideVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        transition={{ duration: 0.18, ease: "easeOut" }}
+        style={{ width: "100%", minHeight: "100%" }}
+      >
     <Routes location={location}>
       <Route path="/" element={<Navigate to="/Home" replace />} />
       <Route element={<AppLayout />}>
@@ -113,6 +139,8 @@ const AuthenticatedApp = () => {
       <Route path="/TermsOfService" element={<TermsOfService />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 

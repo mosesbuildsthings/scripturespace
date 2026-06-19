@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, memo } from "react";
-import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, Link, useLocation } from "react-router-dom";
 import {
   Home, Rss, BookOpen, Mic2, Users, UserCircle, LogOut, Settings, ChevronRight, Crown, Sun, Moon, Monitor
 } from "lucide-react";
@@ -97,9 +97,9 @@ const SidebarLink = memo(({ item, isActive }) => (
 ));
 
 /* ─── Bottom tab item (44x44px minimum tap target) ─── */
-const BottomTab = memo(({ item, isActive, onTabSelect }) => (
-  <button
-    onClick={() => onTabSelect && onTabSelect(item.path)}
+const BottomTab = memo(({ item, isActive }) => (
+  <Link
+    to={item.path}
     className={cn(
       "flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-xl w-11 h-11 transition-all duration-200 select-none",
       isActive
@@ -118,7 +118,7 @@ const BottomTab = memo(({ item, isActive, onTabSelect }) => (
       <item.icon className="w-5 h-5 select-none pointer-events-none" />
     </div>
     <span className={cn("text-[9px] font-medium leading-tight select-none pointer-events-none", isActive ? "text-primary" : "")}>{item.label}</span>
-  </button>
+  </Link>
 ));
 
 /* ─── Sidebar ─── */
@@ -204,7 +204,7 @@ const MobileTopBar = memo(() => (
 ));
 
 /* ─── Mobile bottom nav with persistent stacks ─── */
-const BottomNav = memo(({ currentPath, onTabSelect }) => (
+const BottomNav = memo(({ currentPath }) => (
   <nav className={cn(
     "md:hidden fixed bottom-0 left-0 right-0 z-50 safe-bottom",
     "bg-card/85 backdrop-blur-2xl border-t border-border/50",
@@ -212,24 +212,23 @@ const BottomNav = memo(({ currentPath, onTabSelect }) => (
   )}>
     <div className="flex items-center justify-around px-1 py-0.5 overscroll-none">
       {PRIMARY_NAV.map(item => (
-        <BottomTab key={item.path} item={item} isActive={isPathActive(item.path, currentPath)} onTabSelect={onTabSelect} />
+        <BottomTab key={item.path} item={item} isActive={isPathActive(item.path, currentPath)} />
       ))}
     </div>
   </nav>
 ));
 
 /* ─── Top nav bar (for top/bottom layout settings) ─── */
-const TopNavBar = memo(({ currentPath, onTabSelect }) => (
+const TopNavBar = memo(({ currentPath }) => (
   <nav className="flex items-center justify-around px-2 py-1 overflow-x-auto scrollbar-none">
     {PRIMARY_NAV.map(item => (
-      <BottomTab key={item.path} item={item} isActive={isPathActive(item.path, currentPath)} onTabSelect={onTabSelect} />
+      <BottomTab key={item.path} item={item} isActive={isPathActive(item.path, currentPath)} />
     ))}
   </nav>
 ));
 
 export default function AppLayout() {
   const location = useLocation();
-  const navigate = useNavigate();
   const [navPosition, setNavPosition] = useState("right");
   const [themeColor, setThemeColor] = useState(null);
   const [isLeader, setIsLeader] = useState(false);
@@ -256,10 +255,6 @@ export default function AppLayout() {
     document.documentElement.style.setProperty("--glow-primary", color);
   }, []);
 
-  const handleTabSelect = useCallback((tabPath) => {
-    navigate(tabPath);
-  }, [navigate]);
-
   const path = location.pathname;
   const outletCtx = { navPosition, setNavPosition, themeColor, setThemeColor, applyThemeColor, isLeader };
 
@@ -275,7 +270,7 @@ export default function AppLayout() {
         >
           <Outlet context={outletCtx} />
         </main>
-        <BottomNav currentPath={path} onTabSelect={handleTabSelect} />
+        <BottomNav currentPath={path} />
       </div>
     );
   }
@@ -285,7 +280,7 @@ export default function AppLayout() {
       <div className="min-h-screen flex flex-col bg-background">
         <div className={topBarClass}>
           <div className="flex items-center justify-between pr-2">
-            <TopNavBar currentPath={path} onTabSelect={handleTabSelect} />
+            <TopNavBar currentPath={path} />
             <ThemeToggleBtn compact />
           </div>
         </div>
@@ -304,7 +299,7 @@ export default function AppLayout() {
           <Outlet context={outletCtx} />
         </main>
         <MobileTopBar />
-        <BottomNav currentPath={path} onTabSelect={handleTabSelect} />
+        <BottomNav currentPath={path} />
       </div>
     );
   }
@@ -320,7 +315,7 @@ export default function AppLayout() {
       </main>
       <MobileTopBar />
       <Sidebar currentPath={path} side="right" isLeader={isLeader} />
-      <BottomNav currentPath={path} onTabSelect={handleTabSelect} />
+      <BottomNav currentPath={path} />
     </div>
   );
 }

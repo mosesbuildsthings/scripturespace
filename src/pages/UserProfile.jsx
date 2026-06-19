@@ -42,6 +42,7 @@ export default function UserProfile() {
   const [uploadingIdx, setUploadingIdx] = useState(null);
   const [form, setForm] = useState({ country: "", timezone: "", bio: "", photos: [] });
 
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const viewEmail = searchParams.get("email");
 
@@ -145,7 +146,17 @@ export default function UserProfile() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
       <div className="flex items-center gap-3">
-        <BackButton variant="ghost" />
+        {viewEmail && viewEmail !== user?.email ? (
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center justify-center rounded-full w-9 h-9 text-muted-foreground hover:text-foreground hover:bg-accent/60 transition-colors"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+        ) : (
+          <BackButton variant="ghost" />
+        )}
         <h1 className="text-xl font-display font-bold flex-1">Profile</h1>
         {isOwn && !editing && (
           <div className="flex items-center gap-2">

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { NativeSelect } from "@/components/ui/native-select";
 import { cn } from "@/lib/utils";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import ChallengeCard from "@/components/groups/ChallengeCard";
@@ -109,7 +109,20 @@ export default function Groups() {
 
   const handleCopyInvite = async (group) => {
     const url = await getInviteLink(group);
-    await navigator.clipboard.writeText(url);
+    await copyToClipboard(url);
+  };
+
+  const copyToClipboard = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const input = document.createElement("input");
+      input.value = text;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      document.body.removeChild(input);
+    }
   };
 
   const handleShareInvite = async (group) => {
@@ -118,7 +131,7 @@ export default function Groups() {
     if (navigator.share) {
       navigator.share({ title: group.name, text, url });
     } else {
-      await navigator.clipboard.writeText(url);
+      await copyToClipboard(url);
     }
   };
 
@@ -154,10 +167,9 @@ export default function Groups() {
                 <Textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="What is this group about?" className="mt-1 h-16 resize-none" />
               </div>
               <div><Label className="text-xs">Category</Label>
-                <Select value={form.category} onValueChange={v => setForm({ ...form, category: v })}>
-                  <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
-                  <SelectContent>{GROUP_CATEGORIES.map(c => <SelectItem key={c} value={c}>{c.replace("_", " ")}</SelectItem>)}</SelectContent>
-                </Select>
+                <NativeSelect value={form.category} onChange={v => setForm({ ...form, category: v })} label="Category" className="mt-1">
+                  {GROUP_CATEGORIES.map(c => <option key={c} value={c}>{c.replace("_", " ")}</option>)}
+                </NativeSelect>
               </div>
               <div className="flex gap-2 pt-1">
                 <Button type="submit" disabled={creating || !form.name} className="flex-1">{creating ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create Group"}</Button>

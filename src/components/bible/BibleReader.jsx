@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { X, ChevronLeft, ChevronRight, Check, Loader2, BookOpen, Heart, Share2, Highlighter, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { NativeSelect } from "@/components/ui/native-select";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -165,12 +165,9 @@ export default function BibleReader({ book, chapter, totalChapters, translation,
           <p className="font-semibold text-foreground text-sm truncate">{book?.name} {currentChapter}</p>
         </div>
         <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
-          <Select value={translation} onValueChange={onTranslationChange}>
-            <SelectTrigger className="h-8 text-xs w-28"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              {TRANSLATIONS.map(t => <SelectItem key={t.id} value={t.id}>{t.short} — {t.name}</SelectItem>)}
-            </SelectContent>
-          </Select>
+          <NativeSelect value={translation} onChange={onTranslationChange} label="Translation" className="h-8 text-xs w-28">
+            {TRANSLATIONS.map(t => <option key={t.id} value={t.id}>{t.short} — {t.name}</option>)}
+          </NativeSelect>
           <Button size="sm" variant={isRead ? "secondary" : "default"} onClick={() => onMarkRead(currentChapter, isRead)} className="h-8 text-xs gap-1 px-2">
             {isRead && <Check className="w-3 h-3" />}{isRead ? "Read ✓" : "Mark Read"}
           </Button>

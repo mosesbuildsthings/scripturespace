@@ -8,7 +8,7 @@ import BibleBookSelector, { ALL_BOOKS, TOTAL_CHAPTERS } from "@/components/bible
 import ChapterGrid from "@/components/bible/ChapterGrid";
 import BibleReader, { TRANSLATIONS } from "@/components/bible/BibleReader";
 import YearPlan from "@/components/bible/YearPlan";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { NativeSelect } from "@/components/ui/native-select";
 import { format, subDays } from "date-fns";
 
 export default function BibleReading() {
@@ -143,18 +143,11 @@ export default function BibleReading() {
         </div>
         <div className="flex items-center gap-2">
           <span className="text-xs text-muted-foreground">Translation:</span>
-          <Select value={translation} onValueChange={handleTranslationChange}>
-            <SelectTrigger className="h-8 text-xs w-36">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {TRANSLATIONS.map((t) => (
-                <SelectItem key={t.id} value={t.id}>
-                  {t.short} — {t.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <NativeSelect value={translation} onChange={handleTranslationChange} label="Translation" className="h-8 text-xs w-36">
+            {TRANSLATIONS.map((t) => (
+              <option key={t.id} value={t.id}>{t.short} — {t.name}</option>
+            ))}
+          </NativeSelect>
         </div>
       </div>
 

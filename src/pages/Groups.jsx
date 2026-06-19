@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import ChallengeCard from "@/components/groups/ChallengeCard";
 import CreateChallengeForm from "@/components/groups/CreateChallengeForm";
 import GroupAnnouncementsPanel from "@/components/groups/GroupAnnouncementsPanel";
@@ -42,6 +43,8 @@ export default function Groups() {
   });
 
   const refresh = () => { qc.invalidateQueries({ queryKey: ["groups"] }); qc.invalidateQueries({ queryKey: ["challenges"] }); };
+
+  const { isRefreshing, pullDistance } = usePullToRefresh(refresh);
 
   // Handle join via invite link — runs after groups data is available
   useEffect(() => {
@@ -121,6 +124,11 @@ export default function Groups() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+      {(pullDistance > 0 || isRefreshing) && (
+        <div className="flex justify-center items-center overflow-hidden" style={{ height: isRefreshing ? 40 : pullDistance, opacity: isRefreshing ? 1 : pullDistance / 80 }}>
+          <Loader2 className={`w-5 h-5 text-primary ${isRefreshing ? "animate-spin" : ""}`} />
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-display font-bold text-foreground flex items-center gap-2">

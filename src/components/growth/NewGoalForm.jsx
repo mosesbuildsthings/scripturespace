@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { NativeSelect } from "@/components/ui/native-select";
 import { Loader2 } from "lucide-react";
 
 const CATEGORIES = [
@@ -97,9 +98,9 @@ export default function NewGoalForm({ user, onCreated, onCancel }) {
 
       <div className="space-y-1">
         <Label className="text-xs">Category</Label>
-        <select value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))} className="w-full text-sm border border-input rounded-md p-2 bg-background">
+        <NativeSelect value={form.category} onChange={v => setForm(f => ({ ...f, category: v }))} label="Category">
           {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
-        </select>
+        </NativeSelect>
       </div>
 
       {form.goal_type === "habit" && (

@@ -217,8 +217,22 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  button, a, [role="button"], [role="tab"] {
+  button, a, [role="button"], [role="tab"], nav {
     touch-action: manipulation;
     -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Icons are decorative — never selectable */
+  svg {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Keep readable content selectable: post content, comments, Bible verses */
+  p, h1, h2, h3, h4, h5, h6, blockquote, li, .selectable {
+    -webkit-user-select: text;
+    user-select: text;
   }
 }

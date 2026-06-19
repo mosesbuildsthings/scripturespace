@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { NativeSelect } from "@/components/ui/native-select";
 import { Loader2 } from "lucide-react";
 
 const ENTRY_TYPES = [
@@ -52,13 +53,13 @@ export default function NewJournalEntryForm({ user, onCreated, onCancel }) {
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1">
           <Label className="text-xs">Entry Type</Label>
-          <select
+          <NativeSelect
             value={form.entry_type}
-            onChange={e => setForm(f => ({ ...f, entry_type: e.target.value }))}
-            className="w-full text-sm border border-input rounded-md p-2 bg-background"
+            onChange={v => setForm(f => ({ ...f, entry_type: v }))}
+            label="Entry Type"
           >
             {ENTRY_TYPES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
-          </select>
+          </NativeSelect>
         </div>
         <div className="space-y-1">
           <Label className="text-xs">Date</Label>

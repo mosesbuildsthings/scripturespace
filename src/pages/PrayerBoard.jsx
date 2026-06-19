@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { HandHeart, Plus, Bookmark } from "lucide-react";
+import { HandHeart, Plus, Bookmark, Loader2 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import PrayerRequestCard from "@/components/prayer/PrayerRequestCard";
 import NewPrayerRequestForm from "@/components/prayer/NewPrayerRequestForm";
 
@@ -26,6 +27,8 @@ export default function PrayerBoard() {
 
   const refresh = () => queryClient.invalidateQueries({ queryKey: ["prayer_requests"] });
 
+  const { isRefreshing, pullDistance } = usePullToRefresh(refresh);
+
   const filtered = activeCategory === "all"
     ? requests
     : requests.filter(r => r.category === activeCategory);
@@ -37,6 +40,11 @@ export default function PrayerBoard() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+      {(pullDistance > 0 || isRefreshing) && (
+        <div className="flex justify-center items-center overflow-hidden" style={{ height: isRefreshing ? 40 : pullDistance, opacity: isRefreshing ? 1 : pullDistance / 80 }}>
+          <Loader2 className={`w-5 h-5 text-primary ${isRefreshing ? "animate-spin" : ""}`} />
+        </div>
+      )}
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div>

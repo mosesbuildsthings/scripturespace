@@ -197,18 +197,6 @@
     /* Mobile WebView optimizations */
     -webkit-user-select: text;
     user-select: text;
-    /* Subtle leathery texture background */
-    background-image: 
-      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" result="noise" seed="2"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="1"/></filter><rect width="300" height="300" fill="%23F8F5EC"/><circle cx="30" cy="50" r="0.8" fill="%230F3B2E" opacity="0.008" filter="url(%23noise)"/><circle cx="100" cy="120" r="1" fill="%230F3B2E" opacity="0.006" filter="url(%23noise)"/><circle cx="180" cy="80" r="0.7" fill="%230F3B2E" opacity="0.007" filter="url(%23noise)"/><circle cx="260" cy="250" r="0.9" fill="%230F3B2E" opacity="0.006" filter="url(%23noise)"/><circle cx="70" cy="280" r="0.6" fill="%230F3B2E" opacity="0.008" filter="url(%23noise)"/><circle cx="220" cy="150" r="0.8" fill="%230F3B2E" opacity="0.007" filter="url(%23noise)"/></svg>');
-    background-size: 300px 300px;
-    background-attachment: fixed;
-  }
-
-  body.dark {
-    background-image: 
-      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" result="noise" seed="2"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="1"/></filter><rect width="300" height="300" fill="%23061F18"/><circle cx="30" cy="50" r="0.8" fill="%23A8C5A6" opacity="0.008" filter="url(%23noise)"/><circle cx="100" cy="120" r="1" fill="%23A8C5A6" opacity="0.006" filter="url(%23noise)"/><circle cx="180" cy="80" r="0.7" fill="%23A8C5A6" opacity="0.007" filter="url(%23noise)"/><circle cx="260" cy="250" r="0.9" fill="%23A8C5A6" opacity="0.006" filter="url(%23noise)"/><circle cx="70" cy="280" r="0.6" fill="%23A8C5A6" opacity="0.008" filter="url(%23noise)"/><circle cx="220" cy="150" r="0.8" fill="%23A8C5A6" opacity="0.007" filter="url(%23noise)"/></svg>');
-    background-size: 300px 300px;
-    background-attachment: fixed;
   }
 
   .overflow-y-auto,

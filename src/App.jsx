@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { base44 } from '@/api/base44Client';
@@ -9,31 +9,34 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
+// Always eager — needed on first load
 import AppLayout from './components/layout/AppLayout';
 import LeaderOnboarding from './components/onboarding/LeaderOnboarding';
 import Home from './pages/Home';
-import Feed from './pages/Feed';
-import CreatePost from './pages/CreatePost';
-import Scripture from './pages/Scripture';
-import Settings from './pages/Settings';
-import Study from './pages/Study';
-import BibleStudy from './pages/BibleStudy';
-import CreateBibleStudyPlan from './pages/CreateBibleStudyPlan';
-import BibleStudyPlanDetail from './pages/BibleStudyPlanDetail';
-import ScheduleSession from './pages/ScheduleSession';
-import BibleStudyRoom from './pages/BibleStudyRoom';
-import UserProfile from './pages/UserProfile';
-import PrayerBoard from './pages/PrayerBoard';
-import Devotional from './pages/Devotional';
-import Journal from './pages/Journal';
-import Growth from './pages/Growth';
-import BibleReading from './pages/BibleReading';
-import Groups from './pages/Groups';
-import LeaderDashboard from './pages/LeaderDashboard';
-import AdminVerifications from './pages/AdminVerifications';
-import LeaderPremium from './pages/LeaderPremium';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import TermsOfService from './pages/TermsOfService';
+
+// Lazy-load all other pages — only fetched when navigated to
+const Feed               = lazy(() => import('./pages/Feed'));
+const CreatePost         = lazy(() => import('./pages/CreatePost'));
+const Scripture          = lazy(() => import('./pages/Scripture'));
+const Settings           = lazy(() => import('./pages/Settings'));
+const Study              = lazy(() => import('./pages/Study'));
+const BibleStudy         = lazy(() => import('./pages/BibleStudy'));
+const CreateBibleStudyPlan  = lazy(() => import('./pages/CreateBibleStudyPlan'));
+const BibleStudyPlanDetail  = lazy(() => import('./pages/BibleStudyPlanDetail'));
+const ScheduleSession    = lazy(() => import('./pages/ScheduleSession'));
+const BibleStudyRoom     = lazy(() => import('./pages/BibleStudyRoom'));
+const UserProfile        = lazy(() => import('./pages/UserProfile'));
+const PrayerBoard        = lazy(() => import('./pages/PrayerBoard'));
+const Devotional         = lazy(() => import('./pages/Devotional'));
+const Journal            = lazy(() => import('./pages/Journal'));
+const Growth             = lazy(() => import('./pages/Growth'));
+const BibleReading       = lazy(() => import('./pages/BibleReading'));
+const Groups             = lazy(() => import('./pages/Groups'));
+const LeaderDashboard    = lazy(() => import('./pages/LeaderDashboard'));
+const AdminVerifications = lazy(() => import('./pages/AdminVerifications'));
+const LeaderPremium      = lazy(() => import('./pages/LeaderPremium'));
+const PrivacyPolicy      = lazy(() => import('./pages/PrivacyPolicy'));
+const TermsOfService     = lazy(() => import('./pages/TermsOfService'));
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -99,17 +102,24 @@ const AuthenticatedApp = () => {
     exit:    { opacity: 0 },
   };
 
+  const PageLoader = () => (
+    <div className="flex items-center justify-center py-20">
+      <div className="w-7 h-7 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+    </div>
+  );
+
   return (
-    <AnimatePresence mode="wait" initial={false}>
+    <AnimatePresence mode="popLayout" initial={false}>
       <motion.div
         key={location.pathname}
         variants={isTabRoot ? tabVariants : slideVariants}
         initial="initial"
         animate="animate"
         exit="exit"
-        transition={{ duration: 0.18, ease: "easeOut" }}
+        transition={{ duration: 0.15, ease: "easeOut" }}
         style={{ width: "100%", minHeight: "100%" }}
       >
+    <Suspense fallback={<PageLoader />}>
     <Routes location={location}>
       <Route path="/" element={<Navigate to="/Home" replace />} />
       <Route element={<AppLayout />}>
@@ -139,6 +149,7 @@ const AuthenticatedApp = () => {
       <Route path="/TermsOfService" element={<TermsOfService />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
+    </Suspense>
       </motion.div>
     </AnimatePresence>
   );

@@ -98,14 +98,9 @@ export default function ScriptureCard({ onReferenceLoaded }) {
         localStorage.removeItem(key);
       }
     }
-
-    if (localStorage.getItem(cacheKey)) {
-      setImageUrl(localStorage.getItem(cacheKey));
-      setImageLoading(false);
-      return;
-    }
-
-    generateImage();
+    // imageUrl is already initialised from localStorage in useState — only generate if missing
+    if (!imageUrl) generateImage();
+    else setImageLoading(false);
   }, [cacheKey]);
 
   const handleDownload = async () => {

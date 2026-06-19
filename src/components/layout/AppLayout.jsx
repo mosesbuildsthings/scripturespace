@@ -99,10 +99,7 @@ const SidebarLink = memo(({ item, isActive }) => (
 /* ─── Bottom tab item (44x44px minimum tap target) ─── */
 const BottomTab = memo(({ item, isActive, onTabSelect }) => (
   <button
-    onClick={(e) => {
-      e.preventDefault();
-      if (onTabSelect) onTabSelect(item.path);
-    }}
+    onClick={() => onTabSelect && onTabSelect(item.path)}
     className={cn(
       "flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-xl w-11 h-11 transition-all duration-200 select-none",
       isActive
@@ -236,17 +233,8 @@ export default function AppLayout() {
   const [navPosition, setNavPosition] = useState("right");
   const [themeColor, setThemeColor] = useState(null);
   const [isLeader, setIsLeader] = useState(false);
-  const [displayPath, setDisplayPath] = useState(location.pathname);
-  const [selectedTab, setSelectedTab] = useState(location.pathname);
 
   useEffect(() => { loadPreferences(); }, []);
-
-  useEffect(() => {
-    setDisplayPath(location.pathname);
-    // Update selected tab based on current path
-    const tabRoot = PRIMARY_NAV.find(nav => location.pathname.startsWith(nav.path));
-    if (tabRoot) setSelectedTab(tabRoot.path);
-  }, [location.pathname]);
 
   const loadPreferences = useCallback(async () => {
     const user = await base44.auth.me();
@@ -269,12 +257,10 @@ export default function AppLayout() {
   }, []);
 
   const handleTabSelect = useCallback((tabPath) => {
-    setSelectedTab(tabPath);
-    setDisplayPath(tabPath);
     navigate(tabPath);
   }, [navigate]);
 
-  const path = displayPath;
+  const path = location.pathname;
   const outletCtx = { navPosition, setNavPosition, themeColor, setThemeColor, applyThemeColor, isLeader };
 
   const topBarClass = "fixed top-0 left-0 right-0 z-50 bg-card/85 backdrop-blur-2xl border-b border-border/50 shadow-[0_4px_24px_hsl(var(--foreground)/0.05)]";

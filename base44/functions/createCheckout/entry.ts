@@ -12,7 +12,7 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
-    const { plan, user_email } = body;
+    const { plan } = body;
 
     const origin = req.headers.get("Origin") || "https://app.base44.com";
     const thankYouPageUrl = `${origin}/Home`;
@@ -20,7 +20,7 @@ Deno.serve(async (req) => {
 
     // Create a pending subscription record to link this checkout to the user
     const pendingSubscription = await base44.asServiceRole.entities.Subscription.create({
-      user_email: user_email || user.email,
+      user_email: user.email,
       checkout_id: "__pending__", // will be updated below
       status: "pending",
       plan: plan || "leader_premium",
@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
           },
         ],
         customerInfo: {
-          email: user_email || user.email,
+          email: user.email,
         },
       },
       callbackUrls: {

@@ -42,5 +42,17 @@
     "verse_number",
     "verse_text",
     "reference"
-  ]
+  ],
+  "rls": {
+    "create": null,
+    "read": {
+      "data.user_email": "{{user.email}}"
+    },
+    "update": {
+      "data.user_email": "{{user.email}}"
+    },
+    "delete": {
+      "data.user_email": "{{user.email}}"
+    }
+  }
 }

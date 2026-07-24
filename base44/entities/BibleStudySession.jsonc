@@ -92,5 +92,13 @@
     "title",
     "created_by",
     "scheduled_time"
-  ]
+  ],
+  "rls": {
+    "create": null,
+    "read": null,
+    "update": null,
+    "delete": {
+      "data.created_by": "{{user.email}}"
+    }
+  }
 }

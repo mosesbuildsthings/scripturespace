@@ -23,5 +23,15 @@
     "post_id",
     "content",
     "author_email"
-  ]
+  ],
+  "rls": {
+    "create": null,
+    "read": null,
+    "update": {
+      "data.author_email": "{{user.email}}"
+    },
+    "delete": {
+      "data.author_email": "{{user.email}}"
+    }
+  }
 }

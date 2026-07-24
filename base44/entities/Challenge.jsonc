@@ -70,5 +70,13 @@
     "title",
     "created_by",
     "group_id"
-  ]
+  ],
+  "rls": {
+    "create": null,
+    "read": null,
+    "update": null,
+    "delete": {
+      "data.created_by": "{{user.email}}"
+    }
+  }
 }

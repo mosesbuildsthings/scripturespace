@@ -21,5 +21,17 @@
     "book",
     "chapter",
     "read_date"
-  ]
+  ],
+  "rls": {
+    "create": null,
+    "read": {
+      "data.user_email": "{{user.email}}"
+    },
+    "update": {
+      "data.user_email": "{{user.email}}"
+    },
+    "delete": {
+      "data.user_email": "{{user.email}}"
+    }
+  }
 }

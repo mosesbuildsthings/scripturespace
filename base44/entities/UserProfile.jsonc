@@ -41,5 +41,22 @@
   },
   "required": [
     "user_email"
-  ]
+  ],
+  "rls": {
+    "create": null,
+    "read": null,
+    "update": null,
+    "delete": {
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
 }

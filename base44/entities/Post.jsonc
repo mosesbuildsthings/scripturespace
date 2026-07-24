@@ -63,5 +63,22 @@
   "required": [
     "content",
     "author_email"
-  ]
+  ],
+  "rls": {
+    "create": null,
+    "read": null,
+    "update": null,
+    "delete": {
+      "$or": [
+        {
+          "data.author_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
 }

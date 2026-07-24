@@ -31,5 +31,15 @@
   "required": [
     "title",
     "created_by"
-  ]
+  ],
+  "rls": {
+    "create": null,
+    "read": null,
+    "update": {
+      "data.created_by": "{{user.email}}"
+    },
+    "delete": {
+      "data.created_by": "{{user.email}}"
+    }
+  }
 }

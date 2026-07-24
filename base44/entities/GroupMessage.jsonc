@@ -21,5 +21,15 @@
     "group_id",
     "author_email",
     "message"
-  ]
+  ],
+  "rls": {
+    "create": null,
+    "read": null,
+    "update": {
+      "data.author_email": "{{user.email}}"
+    },
+    "delete": {
+      "data.author_email": "{{user.email}}"
+    }
+  }
 }

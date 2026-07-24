@@ -23,5 +23,24 @@
     "from_email",
     "to_email",
     "message"
-  ]
+  ],
+  "rls": {
+    "create": null,
+    "read": {
+      "$or": [
+        {
+          "data.from_email": "{{user.email}}"
+        },
+        {
+          "data.to_email": "{{user.email}}"
+        }
+      ]
+    },
+    "update": {
+      "data.from_email": "{{user.email}}"
+    },
+    "delete": {
+      "data.from_email": "{{user.email}}"
+    }
+  }
 }

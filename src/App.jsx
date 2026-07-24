@@ -38,6 +38,12 @@ const LeaderPremium      = lazy(() => import('./pages/LeaderPremium'));
 const PrivacyPolicy      = lazy(() => import('./pages/PrivacyPolicy'));
 const TermsOfService     = lazy(() => import('./pages/TermsOfService'));
 
+const PageLoader = () => (
+  <div className="flex items-center justify-center py-20">
+    <div className="w-7 h-7 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+  </div>
+);
+
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
   const location = useLocation();
@@ -51,7 +57,7 @@ const AuthenticatedApp = () => {
         const me = await base44.auth.me();
         setUser(me);
         // Show onboarding if is_leader has never been set
-        if (me && me.is_leader === undefined || me && me.is_leader === null) {
+        if (me && (me.is_leader === undefined || me.is_leader === null)) {
           setNeedsOnboarding(true);
         }
       }
@@ -101,12 +107,6 @@ const AuthenticatedApp = () => {
     animate: { opacity: 1 },
     exit:    { opacity: 0 },
   };
-
-  const PageLoader = () => (
-    <div className="flex items-center justify-center py-20">
-      <div className="w-7 h-7 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-    </div>
-  );
 
   return (
     <AnimatePresence mode="popLayout" initial={false}>

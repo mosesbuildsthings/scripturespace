@@ -95,12 +95,21 @@ export default function PostCard({ post, currentUser, onUpdate, onDelete }) {
     onUpdate();
   };
 
-  const handleExternalShare = () => {
+  const handleExternalShare = async () => {
     const text = `${post.content}${post.verse_reference ? `\n\n📖 ${post.verse_reference}` : ""}`;
     if (navigator.share) {
       navigator.share({ title: "BibleSocial Post", text });
     } else {
-      navigator.clipboard.writeText(text);
+      try {
+        await navigator.clipboard?.writeText(text);
+      } catch {
+        const input = document.createElement("input");
+        input.value = text;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand("copy");
+        document.body.removeChild(input);
+      }
     }
   };
 

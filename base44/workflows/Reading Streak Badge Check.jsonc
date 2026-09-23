@@ -1,0 +1,37 @@
+{
+  "name": "Reading Streak Badge Check",
+  "description": "Awards Faithful Reader (7-day), Devoted Disciple (30-day), and Word Keeper (100-day) badges instantly when a user logs a Bible reading session.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create"
+      ],
+      "entity_name": "BibleProgress"
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "reading_streak_badge_check",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_function": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "checkReadingBadges",
+            "args": {}
+          },
+          "then": "end"
+        }
+      }
+    ]
+  },
+  "x-base44-migrated-from-automation": {
+    "legacy_payload_function": "checkReadingBadges"
+  }
+}
